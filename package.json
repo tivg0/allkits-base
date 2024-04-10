@@ -1,0 +1,19 @@
+{
+  "name": "allkits-base",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "fabric": "^5.3.0",
+    "next": "14.1.4",
+    "node-loader": "^2.0.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "three": "^0.163.0"
+  }
+}
