@@ -8,6 +8,19 @@ import { getIntersections, loadGLBModel, selectImage, copyCanvas, getIntersectio
 
 export default function Home () {
 
+  //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
+
+  //zonas que deixa de dar para pegar na imagem de novo tem a ver com a area de intersecao e preciso fazer alguma diretamente prop. entre a tolerancia
+  
+  //meio lento a tocar em imagens ate aparecer os quadrados de scale
+
+  //qunado se mete a imagem pequena deixa de se ter acesso
+
+  //limitar scales
+  //tolerance proporcional a scale DONE
+  //raycaster layers
+
+
   //three variables-----------------------------------------------------------------------------------------------
   let editingComponent = useRef(null);
   const containerRef = useRef();
@@ -18,7 +31,7 @@ export default function Home () {
   let currentUVCursor = new THREE.Vector2();
   let initialUVRotationCursor = new THREE.Vector2();
   let orbit;
-  let isOrbiting = false;
+  const [editingComponentHTML, setEditingComponentHTML] = useState(null)
 
   //fabric variables----------------------------------------------------------------------------------------------
   let fabricCanvas = useRef(null);
@@ -51,7 +64,7 @@ export default function Home () {
           originY: "center",
           scaleX: scale * 0.65,
           scaleY: scale * 0.65,
-          cornerSize: 20,
+          cornerSize: 25,
         });
         fabricCanvas.current.add(fabricImage);
         fabricCanvas.current.renderAll();
@@ -59,6 +72,16 @@ export default function Home () {
       }
     }
     reader.readAsDataURL(file);
+  }
+
+  function setBGColor (string) {
+    console.log(string.length);
+    if (string.length == 6) {
+      let prefix = '#';
+      fabricCanvas.current.backgroundColor = prefix + string;
+      fabricCanvas.current.renderAll();
+      updateTexture();
+    } 
   }
 
   const updateTexture = () => {
@@ -69,8 +92,8 @@ export default function Home () {
   useEffect(() => {
 
     fabricCanvas.current = new fabric.Canvas('fabric-canvas', {
-      width: 512,
-      height: 512,
+      width: 1024,
+      height: 1024,
     });
 
     const texture = new THREE.CanvasTexture(fabricCanvas.current.getElement());
@@ -122,7 +145,7 @@ export default function Home () {
     light4.position.x = -6;
     scene.add(light4);
 
-    loadGLBModel('/hoodie.glb', scene);
+    loadGLBModel('/hoodieFinal.glb', scene);
 
     orbit = new OrbitControls(camera, renderer.domElement);
     orbit.target.set(0, 0, 0);
@@ -131,8 +154,9 @@ export default function Home () {
     orbit.mouseButtons = {
       LEFT: THREE.MOUSE.ROTATE,
       MIDDLE: THREE.MOUSE.DOLLY,
-      RIGHT: THREE.MOUSE.PAN,
+      RIGHT: null,
     };
+    orbit.maxPolarAngle = Math.PI / 1.61;
     orbit.enabled = true;
     //---------------------------------------------------------------------------------------------------------------
 
@@ -145,12 +169,10 @@ export default function Home () {
       //caso existam interseções
       if (intersections.length > 0) {
         orbit.enabled = false;
-        isOrbiting = false;
         isDragging = true;
 
         //já existe um editing component ativo
         if (editingComponent.current) {
-          console.log('prevEditingComponent exists')
           fabricCanvas.current.renderAll();
           copyCanvas(fabricCanvas.current, editingComponent.current.userData.canva);
           editingComponent.current.userData.canva.renderAll();
@@ -161,26 +183,16 @@ export default function Home () {
 
           //o editing component é igual ao objeto intersetado
           if (editingComponent.current == intersections[0].object) {
-            console.log('same editingComponent')
             initialUVCursor.x = intersections[0].uv.x * fabricCanvas.current.width;
             initialUVCursor.y = intersections[0].uv.y * fabricCanvas.current.height;
-      
             initialUVRotationCursor.x = initialUVCursor.x;
             initialUVRotationCursor.y = initialUVCursor.y;
-
-            //fabricCanvas.current.renderAll();
-            //updateTexture();
             editingComponent.current.material.map = fabricTexture;
-            //let prevObj = fabricCanvas.current.getActiveObject();
             isImageSelected = selectImage(initialUVCursor, fabricCanvas, isImageSelected, rotated, selectedHandle, isHandleSelected);
-
-            console.log('image selected');
-            //seleciona os handles da imagem caso esteja selecionada
-            let tolerance = 30;
             let obj = fabricCanvas.current.getActiveObject();
-            console.log(obj);
 
             if (obj) {
+              let tolerance = obj.scaleX * obj.width / 10;
               rotated = obj.angle;
               for (let i in obj.oCoords) {
                 let supLimX = obj.oCoords[i].x + tolerance;
@@ -194,7 +206,6 @@ export default function Home () {
       
                   selectedHandle = i;
                   isHandleSelected = true;
-                  console.log(selectedHandle)
                 };
               };
             };
@@ -214,7 +225,6 @@ export default function Home () {
 
         //não existe nenhum editing component ativo
         } else {
-          console.log('editingComponent doesnt exist')
           editingComponent.current = intersections[0].object;
           initialUVCursor.x = intersections[0].uv.x * fabricCanvas.current.width;
           initialUVCursor.y = intersections[0].uv.y * fabricCanvas.current.height;
@@ -227,9 +237,8 @@ export default function Home () {
 
       //caso não existam interseções
       } else {
-        console.log('not intersect')
+        setEditingComponentHTML(null);
         if (editingComponent.current) {
-          console.log('not intersect & exists')
           orbit.enabled = true;
           copyCanvas(fabricCanvas.current, editingComponent.current.userData.canva);
           editingComponent.current.userData.canva.renderAll();
@@ -239,7 +248,6 @@ export default function Home () {
           editingComponent.current.material.map = texture; 
         }
         editingComponent.current = null;
-        //fabricCanvas.current.clear();
         fabricCanvas.current.renderAll();
         isHandleSelected = false;
         selectedHandle = null;
@@ -248,10 +256,12 @@ export default function Home () {
 
       fabricCanvas.current.renderAll();
       updateTexture();
+
+      if (editingComponent.current) setEditingComponentHTML(editingComponent.current.userData.name)
     }
 
     const onMouseMove = (e) => {
-      if (/*!isOrbiting &&*/ isDragging) {
+      if (isDragging) {
         //se não estiver a orbitar e estiver a arrastar
         currentMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
         currentMouse.y = - (e.clientY / window.innerHeight) * 2 + 1;
@@ -261,12 +271,10 @@ export default function Home () {
         if (intersection != null) {
           currentUVCursor.x = intersection.uv.x * fabricCanvas.current.width;
           currentUVCursor.y = intersection.uv.y * fabricCanvas.current.height;
-          isImageSelected = selectImage(initialUVCursor, fabricCanvas, isImageSelected, rotated, selectedHandle, isHandleSelected);
           fabricCanvas.current.renderAll();
           updateTexture();
 
           if (isImageSelected) {
-            isImageSelected = selectImage(initialUVCursor, fabricCanvas, isImageSelected, rotated, selectedHandle, isHandleSelected);
             const activeObject = fabricCanvas.current.getActiveObject();
 
             if (activeObject) {
@@ -281,19 +289,17 @@ export default function Home () {
                 let sin = Math.sin( activeObject.angle * Math.PI / 180 ), cos = Math.cos( activeObject.angle * Math.PI / 180 );
                 let deltaXI = deltaX * cos + deltaY * sin, 
                 deltaYI = - deltaX * sin + deltaY *cos;
-                deltaYI = - deltaXI/aspectRatio;
-                let newDX = cos * deltaXI - sin * deltaYI, 
-                newDY = sin * deltaXI + cos * deltaYI;
-                let corner1DX = - sin * deltaYI, 
-                corner1DY = cos * deltaYI, 
-                corner2DX = cos * deltaXI, 
-                corner2DY = sin * deltaXI;
+                let deltaMin = Math.min(Math.abs(deltaXI),Math.abs(deltaYI));
+                let newDX, newDY;
+                let corner1DX, corner1DY, corner2DX, corner2DY;
                 let aCoords;
                 activeObject.set( { angle: rotated } );
 
                 switch (selectedHandle) {
                   case 'tr':
-                    deltaYI = - deltaXI/aspectRatio;
+                    if (deltaMin == Math.abs(deltaXI)) {
+                      deltaYI = - deltaXI * aspectRatio;
+                    } else deltaXI = - deltaYI /aspectRatio;
                     newDX = cos * deltaXI - sin * deltaYI;
                     newDY = sin * deltaXI + cos * deltaYI;
                     corner1DX = - sin * deltaYI;
@@ -318,7 +324,9 @@ export default function Home () {
                     break;
 
                   case 'tl':
-                    deltaYI = deltaXI/aspectRatio;
+                    if (deltaMin == Math.abs(deltaXI)) {
+                      deltaYI = deltaXI * aspectRatio;
+                    } else deltaXI = deltaYI /aspectRatio;
                     newDX = cos * deltaXI - sin * deltaYI;
                     newDY = sin * deltaXI + cos * deltaYI;
                     corner1DX = - sin * deltaYI;
@@ -344,7 +352,9 @@ export default function Home () {
                     break;
                   
                   case 'bl':
-                    deltaYI = - deltaXI/aspectRatio;
+                    if (deltaMin == Math.abs(deltaXI)) {
+                      deltaYI = - deltaXI * aspectRatio;
+                    } else deltaXI = - deltaYI /aspectRatio;
                     newDX = cos * deltaXI - sin * deltaYI;
                     newDY = sin * deltaXI + cos * deltaYI;
                     corner1DX = - sin * deltaYI;
@@ -370,7 +380,9 @@ export default function Home () {
                     break;
                   
                   case 'br':
-                    deltaYI = deltaXI/aspectRatio;
+                    if (deltaMin == Math.abs(deltaXI)) {
+                      deltaYI = deltaXI * aspectRatio;
+                    } else deltaXI = deltaYI /aspectRatio;
                     newDX = cos * deltaXI - sin * deltaYI;
                     newDY = sin * deltaXI + cos * deltaYI;
                     corner1DX = - sin * deltaYI;
@@ -484,7 +496,7 @@ export default function Home () {
                     break;
                   
                   case 'mtr':
-                    rotated += calculateAngle(new THREE.Vector2(activeObject.left, activeObject.top), initialUVRotationCursor, currentUVCursor);
+                    rotated += calculateAngle(new THREE.Vector2(activeObject.left, activeObject.top), initialUVCursor, currentUVCursor);
 
                     activeObject.set({
                       angle: rotated,
@@ -492,10 +504,6 @@ export default function Home () {
                     fabricCanvas.current.add(activeObject);
                     break;
                 }
-
-                //isImageSelected = selectImage(initialUVCursor, fabricCanvas, isImageSelected, rotated, selectedHandle, isHandleSelected)
-                //fabricCanvas.current.renderAll();
-                //updateTexture();
 
               } else if (isImageSelected && activeObject.containsPoint(initialUVCursor)) {
                 activeObject.set({
@@ -510,7 +518,11 @@ export default function Home () {
             }
             initialUVCursor.x = currentUVCursor.x;
             initialUVCursor.y = currentUVCursor.y;
-            //isImageSelected = selectImage(initialUVCursor, fabricCanvas, isImageSelected, rotated, selectedHandle, isHandleSelected)
+            if (fabricCanvas.current.getActiveObject()) {
+              fabricCanvas.current.getActiveObject().set({
+                cornerSize: fabricCanvas.current.getActiveObject().scaleX * 0.65 * fabricCanvas.current.width / 5,
+              })
+            }
             fabricCanvas.current.renderAll();
             updateTexture();
           }
@@ -522,7 +534,8 @@ export default function Home () {
       isDragging = false;
       orbit.enabled = true;
       isHandleSelected = false;
-      selectedHandle = null;      
+      selectedHandle = null;
+
     }
 
     function onWindowResize() {
@@ -537,6 +550,8 @@ export default function Home () {
       renderer.render(scene, camera);
     };
     animate();
+
+   
 
     //listeners------------------------------------------------------------------------------------------------------
     window.addEventListener( 'resize', onWindowResize );
@@ -571,12 +586,61 @@ export default function Home () {
         <canvas id='fabric-canvas' style={{ border: "1px solid #00bfff", marginRight: '20px', display: 'none' }}/>
         <div ref={containerRef}/>
     </div>
-    <input
-        type='file'
-        accept='image/*'
-        onChange={handleImage}
-        style={{padding: '100px', backgroundColor: '#234567', position: 'absolute', top: '0'}}
-        />
+        {editingComponent.current ? (
+          <>
+          {editingComponentHTML.includes('COR') ? (
+            <>
+            <input style={{position: 'absolute', top:'0px'}}
+              type='text'
+              placeholder='color'
+              onChange={(e) => setBGColor(e.target.value)}
+            />
+            </>
+          ):(
+            <>
+            {editingComponentHTML.includes('MIX') ? (
+            <>
+              <input style={{position: 'absolute', top:'0px'}}
+                type='text'
+                placeholder='color'
+                onChange={(e) => setBGColor(e.target.value)}
+              />
+              <input
+                type='file'
+                accept='image/*'
+                onChange={handleImage}
+                style={{padding: '50px', backgroundColor: '#234567', position: 'absolute', top: '100px'}}
+              />
+            </>
+          ):(
+          <>
+          {editingComponentHTML.includes('IMP') ? (
+            <>
+              <input
+                type='file'
+                accept='image/*'
+                onChange={handleImage}
+                style={{padding: '50px', backgroundColor: '#234567', position: 'absolute', top: '100px'}}
+              />
+            </>
+          ):(
+            <>
+            <h1 style={{fontSize:'100px', color: '#000000', position: 'absolute', top:'0px'}}>Não podes editar isso rapah toma juizo</h1>
+            </>
+          )}
+          </>
+          )}
+            </>
+          )}
+          </>
+        ):(
+          <>
+          </>
+        )}
+
+
+        
+
   </main>
   );
 

@@ -8,8 +8,8 @@ const loadGLBModel = (path, scenario) => {
       gltf.scene.traverse(function (child) {
         if (child.isMesh) {
           let ownCanva = new fabric.Canvas('temp', {
-            width: 512,
-            height:512,
+            width: 1024,
+            height:1024,
             backgroundColor: '#555555',
           });
           child.castShadow = true;
@@ -43,62 +43,46 @@ const loadGLBModel = (path, scenario) => {
   function selectImage(initialUVCursor, fabricCanvas, isImageSelected, rotated, selectedHandle, isHandleSelected) {
     let isSelected = false;
     const point = new fabric.Point(initialUVCursor.x, initialUVCursor.y);
-    fabricCanvas.current.getObjects().forEach(function(obj) {
-      fabricCanvas.current.moveTo(obj, fabricCanvas.current.getObjects().length - 1);
-    });
     let imageSelectedContainsPoint = false;
-
 
     //itera o canvas e verifica se algum objeto contém o ponto
     fabricCanvas.current.forEachObject(function(obj) {
       if (obj.containsPoint(point) && fabricCanvas.current.getActiveObject() == obj) {
-        imageSelectedContainsPoint = true;
+        isSelected = true;
+        fabricCanvas.current.bringToFront(obj);
+      } else if (obj.containsPoint(point) && !imageSelectedContainsPoint) {
+        rotated = obj.angle;
+        isSelected = true;
+        fabricCanvas.current.setActiveObject(obj).bringToFront(obj).renderAll();
+        updateTexture();
       }
-      let tolerance = 30;
 
+      let tolerance = obj.scaleX * obj.width / 10;
+      rotated = obj.angle;
       for (let i in obj.oCoords) {
         let supLimX = obj.oCoords[i].x + tolerance;
         let supLimY = obj.oCoords[i].y + tolerance;
         let infLimX = obj.oCoords[i].x - tolerance;
         let infLimY = obj.oCoords[i].y - tolerance;
-
         if (initialUVCursor.x <= supLimX &&
           initialUVCursor.x >= infLimX &&
           initialUVCursor.y >= infLimY &&
           initialUVCursor.y <= supLimY) {
+
           selectedHandle = i;
           isHandleSelected = true;
-          imageSelectedContainsPoint = true;
-          console.log(selectedHandle)
+          isImageSelected = true;
+          isSelected = true;
         };
-      }
+      };
     });
 
-    if (imageSelectedContainsPoint) {
-      isSelected = true;
-    } else {
-      fabricCanvas.current.forEachObject(function(obj) {
-        if (obj.containsPoint(point)) {
-          rotated = obj.angle;
-          isSelected = true;
-          fabricCanvas.current.setActiveObject(obj);
-          fabricCanvas.current.renderAll();
-          updateTexture();
-        }
-      });
-    }
-
-    if (isSelected) {
-      return isSelected
-    } else {
-      fabricCanvas.current.forEachObject(function(obj) {
-        fabricCanvas.current.discardActiveObject(obj);
-        isImageSelected = false;
-      })
-      fabricCanvas.current.renderAll();
+    if (!isSelected) {
+      fabricCanvas.current.discardActiveObject().renderAll();
+      isImageSelected = false;
       updateTexture();
-      return isSelected;
     }
+    return isSelected;
   }
 
   function copyCanvas (origin, destination) {
@@ -134,7 +118,7 @@ const loadGLBModel = (path, scenario) => {
           originY: "center",
           scaleX: scale * 0.65,
           scaleY: scale * 0.65,
-          cornerSize: 20,
+          cornerSize: scale * 0.65 * fabricCanvas.current.width / 5,
         });
         fabricCanvas.current.add(fabricImage);
         fabricCanvas.current.renderAll();
