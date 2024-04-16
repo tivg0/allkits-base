@@ -56,6 +56,7 @@ export default function Home () {
           fabricCanvas.current.width / fabricImage.width,
           fabricCanvas.current.height / fabricImage.height
         );
+        const aspectRatio = fabricImage.width / fabricImage.height;
         fabricImage.set({
           selectable: true,
           left: fabricCanvas.current.width / 2,
@@ -64,7 +65,10 @@ export default function Home () {
           originY: "center",
           scaleX: scale * 0.65,
           scaleY: scale * 0.65,
-          cornerSize: 25,
+          cornerSize: (scale * 0.65 * fabricImage.scaleX) / 10,
+          cornerStyle: "circle",
+          transparentCorners: false,
+          cornerColor: "rgb(255,0,0)"
         });
         fabricCanvas.current.add(fabricImage);
         fabricCanvas.current.renderAll();
@@ -75,7 +79,6 @@ export default function Home () {
   }
 
   function setBGColor (string) {
-    console.log(string.length);
     if (string.length == 6) {
       let prefix = '#';
       fabricCanvas.current.backgroundColor = prefix + string;
@@ -111,14 +114,14 @@ export default function Home () {
 
     //three set up-------------------------------------------------------------------------------------------------
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xdddddd);
+    scene.background = new THREE.Color(0xf7f7f7);
     const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 20;
     const renderer = new THREE.WebGLRenderer({alpha: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     containerRef.current.appendChild(renderer.domElement);
-    const light1 = new THREE.RectAreaLight(0xf4eeff,7, 10, 10);
+    const light1 = new THREE.RectAreaLight(0xf4eeff,10, 10, 10);
     light1.rotateX(-Math.PI/6)
     light1.position.z = 8;
     light1.position.y = 10;
@@ -145,7 +148,7 @@ export default function Home () {
     light4.position.x = -6;
     scene.add(light4);
 
-    loadGLBModel('/hoodieFinal.glb', scene);
+    loadGLBModel('/hoodieTest.glb', scene);
 
     orbit = new OrbitControls(camera, renderer.domElement);
     orbit.target.set(0, 0, 0);
@@ -173,13 +176,13 @@ export default function Home () {
 
         //já existe um editing component ativo
         if (editingComponent.current) {
-          fabricCanvas.current.renderAll();
+          /*fabricCanvas.current.renderAll();
           copyCanvas(fabricCanvas.current, editingComponent.current.userData.canva);
           editingComponent.current.userData.canva.renderAll();
           const texture = new THREE.CanvasTexture(editingComponent.current.userData.canva.getElement());
           texture.repeat.y = -1;
           texture.offset.y = 1;
-          editingComponent.current.material.map = texture;
+          editingComponent.current.material.map = texture;*/
 
           //o editing component é igual ao objeto intersetado
           if (editingComponent.current == intersections[0].object) {
@@ -212,6 +215,14 @@ export default function Home () {
 
           } else {
             //o editing component é atualizado se não for igual
+            fabricCanvas.current.renderAll();
+            copyCanvas(fabricCanvas.current, editingComponent.current.userData.canva);
+            editingComponent.current.userData.canva.renderAll();
+            const texture = new THREE.CanvasTexture(editingComponent.current.userData.canva.getElement());
+            texture.repeat.y = -1;
+            texture.offset.y = 1;
+            editingComponent.current.material.map = texture;
+
             editingComponent.current = intersections[0].object;
             initialUVCursor.x = intersections[0].uv.x * fabricCanvas.current.width;
             initialUVCursor.y = intersections[0].uv.y * fabricCanvas.current.height;
@@ -271,8 +282,8 @@ export default function Home () {
         if (intersection != null) {
           currentUVCursor.x = intersection.uv.x * fabricCanvas.current.width;
           currentUVCursor.y = intersection.uv.y * fabricCanvas.current.height;
-          fabricCanvas.current.renderAll();
-          updateTexture();
+          //fabricCanvas.current.renderAll();
+          //updateTexture();
 
           if (isImageSelected) {
             const activeObject = fabricCanvas.current.getActiveObject();
@@ -282,7 +293,7 @@ export default function Home () {
               let deltaY = (currentUVCursor.y - initialUVCursor.y);
               const width = activeObject.width,
               height = activeObject.height;
-              const aspectRatio = width/height;
+              const aspectRatio = (activeObject.scaleX*width)/(activeObject.scaleY*height);
 
               if (isHandleSelected) {
                 //handle selecionado
@@ -298,8 +309,8 @@ export default function Home () {
                 switch (selectedHandle) {
                   case 'tr':
                     if (deltaMin == Math.abs(deltaXI)) {
-                      deltaYI = - deltaXI * aspectRatio;
-                    } else deltaXI = - deltaYI /aspectRatio;
+                      deltaYI = - deltaXI / aspectRatio;
+                    } else deltaXI = - deltaYI * aspectRatio;
                     newDX = cos * deltaXI - sin * deltaYI;
                     newDY = sin * deltaXI + cos * deltaYI;
                     corner1DX = - sin * deltaYI;
@@ -320,13 +331,12 @@ export default function Home () {
                       originX: 'center',
                       originY: 'center',
                     })
-                    fabricCanvas.current.add(activeObject);
                     break;
 
                   case 'tl':
                     if (deltaMin == Math.abs(deltaXI)) {
-                      deltaYI = deltaXI * aspectRatio;
-                    } else deltaXI = deltaYI /aspectRatio;
+                      deltaYI = deltaXI / aspectRatio;
+                    } else deltaXI = deltaYI * aspectRatio;
                     newDX = cos * deltaXI - sin * deltaYI;
                     newDY = sin * deltaXI + cos * deltaYI;
                     corner1DX = - sin * deltaYI;
@@ -348,13 +358,12 @@ export default function Home () {
                       originX: 'center',
                       originY: 'center',
                     })
-                    fabricCanvas.current.add(activeObject);
                     break;
                   
                   case 'bl':
                     if (deltaMin == Math.abs(deltaXI)) {
-                      deltaYI = - deltaXI * aspectRatio;
-                    } else deltaXI = - deltaYI /aspectRatio;
+                      deltaYI = - deltaXI / aspectRatio;
+                    } else deltaXI = - deltaYI * aspectRatio;
                     newDX = cos * deltaXI - sin * deltaYI;
                     newDY = sin * deltaXI + cos * deltaYI;
                     corner1DX = - sin * deltaYI;
@@ -376,13 +385,12 @@ export default function Home () {
                       originX: 'center',
                       originY: 'center',
                     })
-                    fabricCanvas.current.add(activeObject);
                     break;
                   
                   case 'br':
                     if (deltaMin == Math.abs(deltaXI)) {
-                      deltaYI = deltaXI * aspectRatio;
-                    } else deltaXI = deltaYI /aspectRatio;
+                      deltaYI = deltaXI / aspectRatio;
+                    } else deltaXI = deltaYI * aspectRatio;
                     newDX = cos * deltaXI - sin * deltaYI;
                     newDY = sin * deltaXI + cos * deltaYI;
                     corner1DX = - sin * deltaYI;
@@ -404,7 +412,6 @@ export default function Home () {
                       originX: 'center',
                       originY: 'center',
                     })
-                    fabricCanvas.current.add(activeObject);
                     break;
                   
                   case 'mb':
@@ -426,7 +433,6 @@ export default function Home () {
                       originX: 'center',
                       originY: 'center',
                     })
-                    fabricCanvas.current.add(activeObject);
                     break;
                   
                   case 'mt':
@@ -448,7 +454,6 @@ export default function Home () {
                       originX: 'center',
                       originY: 'center',
                     })
-                    fabricCanvas.current.add(activeObject);
                     break;
                   
                   case 'mr':   
@@ -471,7 +476,6 @@ export default function Home () {
                       originY: 'center',
                     });
                   
-                    fabricCanvas.current.add(activeObject);
                     break;
                   
                   case 'ml':
@@ -492,7 +496,6 @@ export default function Home () {
                       originX: 'center',
                       originY: 'center',
                     })
-                    fabricCanvas.current.add(activeObject);
                     break;
                   
                   case 'mtr':
@@ -501,7 +504,6 @@ export default function Home () {
                     activeObject.set({
                       angle: rotated,
                     });
-                    fabricCanvas.current.add(activeObject);
                     break;
                 }
 
@@ -519,8 +521,9 @@ export default function Home () {
             initialUVCursor.x = currentUVCursor.x;
             initialUVCursor.y = currentUVCursor.y;
             if (fabricCanvas.current.getActiveObject()) {
+              const obj = fabricCanvas.current.getActiveObject();
               fabricCanvas.current.getActiveObject().set({
-                cornerSize: fabricCanvas.current.getActiveObject().scaleX * 0.65 * fabricCanvas.current.width / 5,
+                cornerSize: obj.width * obj.scaleX / 10,
               })
             }
             fabricCanvas.current.renderAll();
@@ -583,7 +586,7 @@ export default function Home () {
   return (
     <main>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <canvas id='fabric-canvas' style={{ border: "1px solid #00bfff", marginRight: '20px', display: 'none' }}/>
+        {/*<canvas id='fabric-canvas' style={{ border: "1px solid #00bfff", marginRight: '20px', display: 'none' }}/>*/}
         <div ref={containerRef}/>
     </div>
         {editingComponent.current ? (

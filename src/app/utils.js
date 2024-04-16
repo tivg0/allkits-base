@@ -10,7 +10,7 @@ const loadGLBModel = (path, scenario) => {
           let ownCanva = new fabric.Canvas('temp', {
             width: 1024,
             height:1024,
-            backgroundColor: '#555555',
+            backgroundColor: '#aaaaaa',
           });
           child.castShadow = true;
           child.receiveShadow = true;
@@ -118,7 +118,9 @@ const loadGLBModel = (path, scenario) => {
           originY: "center",
           scaleX: scale * 0.65,
           scaleY: scale * 0.65,
-          cornerSize: scale * 0.65 * fabricCanvas.current.width / 5,
+          cornerSize: fabricImage.width * fabricImage.scaleX /100,
+          transparentCorners: false,
+          cornerColor: 'rgb(255,0,0)',
         });
         fabricCanvas.current.add(fabricImage);
         fabricCanvas.current.renderAll();
