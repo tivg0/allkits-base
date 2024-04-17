@@ -185,9 +185,6 @@ export default function Home() {
 
       //caso existam interseções
       if (intersections.length > 0) {
-        orbit.enabled = false;
-        isDragging = true;
-
         //já existe um editing component ativo
         if (editingComponent.current) {
           /*fabricCanvas.current.renderAll();
@@ -344,6 +341,11 @@ export default function Home() {
           console.log(fabricTexture);
           editingComponent.current.material.map = fabricTexture;
           editingComponent.current.material.needsUpdate = true;
+        }
+
+        if (isImageSelected) {
+          orbit.enabled = false;
+          isDragging = true;
         }
 
         //caso não existam interseções
