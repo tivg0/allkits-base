@@ -4,7 +4,8 @@ import { fabric } from 'fabric';
 import { useEffect, useRef, useState } from 'react';
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { getIntersections, loadGLBModel, selectImage, copyCanvas, getIntersection, calculateAngle } from './utils';
+import { getIntersections, loadGLBModel, selectImage, copyCanvas, getIntersection, calculateAngle, toHexString } from './utils';
+import { color } from 'three/examples/jsm/nodes/shadernode/ShaderNode';
 
 export default function Home () {
 
@@ -89,6 +90,7 @@ export default function Home () {
 
   const updateTexture = () => {
     if (fabricTexture) fabricTexture.needsUpdate = true;
+    
   }
 
   //load fabric canvas--------------------------------------------------------------------------------------------
@@ -157,7 +159,7 @@ export default function Home () {
     orbit.mouseButtons = {
       LEFT: THREE.MOUSE.ROTATE,
       MIDDLE: THREE.MOUSE.DOLLY,
-      RIGHT: null,
+      RIGHT: THREE.MOUSE.PAN,
     };
     orbit.maxPolarAngle = Math.PI / 1.61;
     orbit.enabled = true;
@@ -215,6 +217,7 @@ export default function Home () {
 
           } else {
             //o editing component é atualizado se não for igual
+
             fabricCanvas.current.renderAll();
             copyCanvas(fabricCanvas.current, editingComponent.current.userData.canva);
             editingComponent.current.userData.canva.renderAll();
@@ -224,25 +227,58 @@ export default function Home () {
             editingComponent.current.material.map = texture;
 
             editingComponent.current = intersections[0].object;
-            initialUVCursor.x = intersections[0].uv.x * fabricCanvas.current.width;
-            initialUVCursor.y = intersections[0].uv.y * fabricCanvas.current.height;
-            copyCanvas(editingComponent.current.userData.canva, fabricCanvas.current);
+
+            /*if (!editingComponent.current.userData.canva) {
+
+              let ownCanva = new fabric.Canvas('temp', {
+                width: 1024,
+                height: 1024,
+                backgroundColor: toHexString(editingComponent.current.material.color)
+              })
+              ownCanva.renderAll();
+
+              editingComponent.current.userData.canva = ownCanva;
+            }*/
+
+            fabricCanvas.clear();
+            if (editingComponent.current.userData.canva) copyCanvas(editingComponent.current.userData.canva, fabricCanvas.current);
+
             isImageSelected = selectImage(initialUVCursor, fabricCanvas, isImageSelected, rotated, selectedHandle, isHandleSelected);
+            editingComponent.current.material.map = fabricTexture;
             fabricCanvas.current.renderAll();
             updateTexture();
-            editingComponent.current.material.map = fabricTexture;
             
+            initialUVCursor.x = intersections[0].uv.x * fabricCanvas.current.width;
+            initialUVCursor.y = intersections[0].uv.y * fabricCanvas.current.height;
           }
 
         //não existe nenhum editing component ativo
         } else {
           editingComponent.current = intersections[0].object;
+          //console.log(editingComponent.current.name)
+          if (!editingComponent.current.userData.canva) {
+            //console.log('crating canva');
+            let ownCanva = new fabric.Canvas('temp', {
+              width: 1024,
+              height: 1024,
+              backgroundColor: '#ffff00'//toHexString(intersections[0].object.material.color)
+            })
+            ownCanva.renderAll();
+            const initialTexture = new THREE.CanvasTexture(ownCanva.getElement());
+            initialTexture.repeat.y = -1;
+            initialTexture.offset.y = 1;
+            editingComponent.current.userData.canva = ownCanva;
+            console.log(editingComponent.current)
+          }
+
           initialUVCursor.x = intersections[0].uv.x * fabricCanvas.current.width;
           initialUVCursor.y = intersections[0].uv.y * fabricCanvas.current.height;
           copyCanvas(editingComponent.current.userData.canva, fabricCanvas.current);
           isImageSelected = selectImage(initialUVCursor, fabricCanvas, isImageSelected, rotated, selectedHandle, isHandleSelected);
           fabricCanvas.current.renderAll();
           updateTexture();
+          //editingComponent.current.material.color = fabricTexture;
+          console.log(fabricTexture);
           editingComponent.current.material.map = fabricTexture;
         }
 
@@ -586,7 +622,7 @@ export default function Home () {
   return (
     <main>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        {/*<canvas id='fabric-canvas' style={{ border: "1px solid #00bfff", marginRight: '20px', display: 'none' }}/>*/}
+        <canvas id='fabric-canvas' style={{ border: "1px solid #00bfff", marginRight: '20px'}}/>
         <div ref={containerRef}/>
     </div>
         {editingComponent.current ? (

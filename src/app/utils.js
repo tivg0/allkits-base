@@ -7,21 +7,21 @@ const loadGLBModel = (path, scenario) => {
     loader.load(path, function (gltf) {
       gltf.scene.traverse(function (child) {
         if (child.isMesh) {
-          let ownCanva = new fabric.Canvas('temp', {
+          /*let ownCanva = new fabric.Canvas('temp', {
             width: 1024,
             height:1024,
             backgroundColor: '#aaaaaa',
-          });
+          });*/
           child.castShadow = true;
           child.receiveShadow = true;
-        ownCanva.renderAll();
+        /*ownCanva.renderAll();
           const initialTexture = new THREE.CanvasTexture(ownCanva.getElement());
           initialTexture.repeat.y = -1;
           initialTexture.offset.y = 1;
           child.userData.canva = ownCanva;
-          child.material.map = initialTexture;
-        }
-      });
+          child.material.map = initialTexture;*/
+        
+      }});
       scenario.add(gltf.scene);
     }, undefined, function (error) {
       console.log(error);
@@ -157,4 +157,22 @@ const loadGLBModel = (path, scenario) => {
     return anguloRotacao;
   }
 
-  export { loadGLBModel, getIntersections, getIntersection, selectImage, copyCanvas, updateTexture, handleImage, calculateAngle }
+  function toHexString(color) {
+    // Check if isColor is true before proceeding
+
+    // Convert each color component to an integer in the range 0-255
+    const red = Math.round(color.r * 255);
+    const green = Math.round(color.g * 255);
+    const blue = Math.round(color.b * 255);
+
+    // Convert each component to a hexadecimal string and pad with zeros
+    const redHex = red.toString(16).padStart(2, '0');
+    const greenHex = green.toString(16).padStart(2, '0');
+    const blueHex = blue.toString(16).padStart(2, '0');
+
+    // Concatenate the hex strings with a '#' prefix
+    return `#${redHex}${greenHex}${blueHex}`;
+}
+  
+
+  export { loadGLBModel, getIntersections, getIntersection, selectImage, copyCanvas, updateTexture, handleImage, calculateAngle, toHexString }
