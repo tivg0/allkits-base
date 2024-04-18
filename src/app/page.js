@@ -13,7 +13,6 @@ import {
   calculateAngle,
   toHexString,
 } from "./utils";
-import { color } from "three/examples/jsm/nodes/shadernode/ShaderNode";
 
 export default function Home() {
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
@@ -63,7 +62,6 @@ export default function Home() {
           fabricCanvas.current.width / fabricImage.width,
           fabricCanvas.current.height / fabricImage.height
         );
-        const aspectRatio = fabricImage.width / fabricImage.height;
         fabricImage.set({
           selectable: true,
           left: fabricCanvas.current.width / 2,
@@ -72,11 +70,22 @@ export default function Home() {
           originY: "center",
           scaleX: scale * 0.65,
           scaleY: scale * 0.65,
-          cornerSize: (scale * 0.65 * fabricImage.scaleX) / 10,
+          cornerSize: ((scale * 0.65 * fabricImage.width) + (scale * 0.65 * fabricImage.height)) / 20,
           cornerStyle: "circle",
           transparentCorners: false,
           cornerColor: "rgb(255,0,0)",
         });
+
+        const originalControl = fabric.Object.prototype.controls.mtr;
+        fabric.Object.prototype.controls.mtr = new fabric.Control({
+          x: 0,
+          y: 0,
+          offsetY: - (fabricImage.height * fabricImage.scaleY) / 2 - (fabricImage.height * fabricImage.scaleY + fabricImage.width * fabricImage.scaleX) * 0.08,
+          actionHandler: originalControl.actionHandler,
+          withConnection: true,
+          actionName: 'rotate',
+          
+        })
         fabricCanvas.current.add(fabricImage);
         fabricCanvas.current.renderAll();
         updateTexture();
@@ -216,7 +225,7 @@ export default function Home() {
             let obj = fabricCanvas.current.getActiveObject();
 
             if (obj) {
-              let tolerance = (obj.scaleX * obj.width) / 10;
+              let tolerance = ((obj.width * obj.scaleX) + (obj.height * obj.scaleY)) / 40;
               rotated = obj.angle;
               for (let i in obj.oCoords) {
                 let supLimX = obj.oCoords[i].x + tolerance;
@@ -722,6 +731,17 @@ export default function Home() {
                     });
                     break;
                 }
+                let fabricImage = fabricCanvas.current.getActiveObject();
+                const originalControl = fabric.Object.prototype.controls.mtr;
+                fabric.Object.prototype.controls.mtr = new fabric.Control({
+                  x: 0,
+                  y: 0,
+                  offsetY: - (fabricImage.height * fabricImage.scaleY) / 2 - (fabricImage.height * fabricImage.scaleY + fabricImage.width * fabricImage.scaleX) * 0.08,
+                  actionHandler: originalControl.actionHandler,
+                  withConnection: true,
+                  actionName: 'rotate',
+                  
+                })
               } else if (
                 isImageSelected &&
                 activeObject.containsPoint(initialUVCursor)
@@ -731,14 +751,16 @@ export default function Home() {
                   top: activeObject.top + deltaY,
                 });
 
-                isImageSelected = selectImage(
+                
+
+                /*isImageSelected = selectImage(
                   initialUVCursor,
                   fabricCanvas,
                   isImageSelected,
                   rotated,
                   selectedHandle,
                   isHandleSelected
-                );
+                );*/
                 fabricCanvas.current.renderAll();
                 updateTexture();
               }
@@ -747,8 +769,10 @@ export default function Home() {
             initialUVCursor.y = currentUVCursor.y;
             if (fabricCanvas.current.getActiveObject()) {
               const obj = fabricCanvas.current.getActiveObject();
+              console.log(obj.width, obj.height)
               fabricCanvas.current.getActiveObject().set({
-                cornerSize: (obj.width * obj.scaleX) / 10,
+                cornerSize: ((obj.width * obj.scaleX) + (obj.height * obj.scaleY)) / 20,
+                rotatingPointOffset: ((obj.width * obj.scaleX) + (obj.height * obj.scaleY)) / 10,
               });
             }
             fabricCanvas.current.renderAll();

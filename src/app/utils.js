@@ -57,7 +57,7 @@ const loadGLBModel = (path, scenario) => {
         updateTexture();
       }
 
-      let tolerance = obj.scaleX * obj.width / 10;
+      let tolerance = ((obj.width * obj.scaleX) + (obj.height * obj.scaleY)) / 40
       rotated = obj.angle;
       for (let i in obj.oCoords) {
         let supLimX = obj.oCoords[i].x + tolerance;
