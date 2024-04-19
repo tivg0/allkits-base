@@ -78,7 +78,7 @@ function selectImage(
       updateTexture();
     }
 
-    let tolerance = (obj.width * obj.scaleX + obj.height * obj.scaleY) / 40;
+    let tolerance = (obj.scaleX * obj.width) / 10;
     rotated = obj.angle;
     for (let i in obj.oCoords) {
       let supLimX = obj.oCoords[i].x + tolerance;

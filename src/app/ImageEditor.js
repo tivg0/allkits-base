@@ -35,6 +35,7 @@ const ImageEditor = forwardRef(
     const [widthHint, setWidthHint] = useState(190);
     const [fontHint, setFontHint] = useState(12);
     const [displayHint, setDisplayHint] = useState("flex");
+    const [escolheBtn, setEscolheBtn] = useState(false);
 
     const removeBgImgCanva = (newImg) => {
       const canvas = fabricCanvas.current;
