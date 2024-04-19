@@ -27,6 +27,7 @@ import model4 from "@/imgs/model4.png";
 import model5 from "@/imgs/model5.png";
 import ColorEditor from "./ColorEditor";
 import ImageEditor from "./ImageEditor";
+import TextEditor from "./TextEditor";
 
 const ThreeDViewer = () => {
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
@@ -108,6 +109,13 @@ const ThreeDViewer = () => {
   const updateTexture = () => {
     if (fabricTexture) fabricTexture.needsUpdate = true;
   };
+
+  const [fontSize, setFontSize] = useState(35);
+  const [tex, setTex] = useState("");
+  const [texMesh, setTexMesh] = useState("");
+  const [fillColor, setFillColor] = useState("#000000"); // Default color set to blue
+  const [textAlign, setTextAlign] = useState("center");
+  const [fontFamily, setFontFamily] = useState("Arial");
 
   //load fabric canvas--------------------------------------------------------------------------------------------
   useEffect(() => {
@@ -195,7 +203,7 @@ const ThreeDViewer = () => {
       const activeObject = canvas.getActiveObject();
       setActiveObject(activeObject);
 
-      if (activeObject) {
+      if (activeObject && activeObject.type == "image") {
         const imageSrc = activeObject.getSrc();
         setImageSrc(imageSrc); // Seta a URL da fonte da imagem no estado
       }
@@ -899,6 +907,37 @@ const ThreeDViewer = () => {
     }
   };
 
+  function addTextbox(text) {
+    const canvas = fabricCanvas.current;
+
+    if (canvas) {
+      // Create a new textbox
+      const textbox = new fabric.Textbox(text, {
+        left: canvas.width / 2 - 77.5, // Center the textbox horizontally
+        top: canvas.height / 2 - 10,
+        width: 155, // Adjust as needed
+        height: 200,
+        fontSize: fontSize,
+        fontFamily: fontFamily,
+        fill: fillColor,
+        textAlign: textAlign, // Adjust as needed
+        editable: false, // Set to true to allow editing
+        borderColor: "transparent",
+        cornerColor: "rgba(0, 0, 0, 0.2)",
+        padding: 5,
+        transparentCorners: false,
+        cornerStyle: "circle",
+        shadow: "rgba(0,0,0,0.3) 0px 0px 10px",
+      });
+
+      // Add the textbox to the canvas
+      canvas.add(textbox).setActiveObject(textbox);
+      canvas.renderAll();
+      // updateActiveObject(targetCanvasId, textbox); // Apply changes by re-rendering the canvas
+      updateTexture(); // Update the texture to reflect changes
+    }
+  }
+
   useEffect(() => {
     const canvas = fabricCanvasRef.current;
     if (!canvas) return;
@@ -1202,13 +1241,20 @@ const ThreeDViewer = () => {
       )}
 
       {textEditor && (
-        <textEditor
+        <TextEditor
           fabricCanvas={fabricCanvas}
           updateTexture={updateTexture}
           closeTabs={closeTabs}
+          addTextbox={addTextbox}
+          fontFamily={fontFamily}
+          setFontFamily={setFontFamily}
           activeObject={activeObject}
-          setImageSrc={setImageSrc}
-          imageSrc={imageSrc}
+          fontSize={fontSize}
+          setFontSize={setFontSize}
+          textAlign={textAlign}
+          setTextAlign={setTextAlign}
+          fillColor={fillColor}
+          setFillColor={setFillColor}
         />
       )}
       {/* {colorEditor && (
