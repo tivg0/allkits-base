@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { fabric } from "fabric";
 import { use, useEffect, useRef, useState } from "react";
+import TWEEN from "@tweenjs/tween.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import {
@@ -59,6 +60,7 @@ const ThreeDViewer = () => {
 
   const [model, setModel] = useState("1");
   const [escolheBtn, setEscolheBtn] = useState(false);
+  const [preview, setPreview] = useState(false);
 
   const [canvasSize, setCanvasSize] = useState(1024); // Default to larger size
 
@@ -74,6 +76,9 @@ const ThreeDViewer = () => {
       setCanvasSize(1024); // Tamanho padrão para outros navegadores
     }
   }, []);
+
+  const [objectNames, setObjectNames] = useState([]); // Estado para armazenar os nomes dos objetos
+  const [currentIndex, setCurrentIndex] = useState(0); // Estado para o índice atual
 
   //fabric variables----------------------------------------------------------------------------------------------
   let fabricCanvas = useRef(null);
@@ -93,17 +98,40 @@ const ThreeDViewer = () => {
   const [activeObject, setActiveObject] = useState(null);
 
   function setBGColor(hexColor) {
-    // Remover qualquer espaço em branco e checar se já tem o prefixo '#'
-    const color = hexColor.trim();
-    if (color[0] === "#" && color.length === 7) {
-      fabricCanvas.current.backgroundColor = color;
-      fabricCanvas.current.renderAll();
-      updateTexture();
+    const color = hexColor.trim(); // Clean the input
+    if (color[0] !== "#" || color.length !== 7) return; // Ensure valid color
+    editingComponent.current.material.emissive.setHex(0x000000); // Reset emissive color
+
+    const canvas = fabricCanvas.current;
+    if (!canvas) return;
+
+    const startColor = new THREE.Color(canvas.backgroundColor); // Current color
+    const endColor = new THREE.Color(color); // New color from input
+
+    let progress = 0; // Initialize progress
+    const duration = 800; // Duration of the transition in milliseconds
+    const stepTime = 10; // Time each step takes
+
+    function step() {
+      progress += stepTime;
+      const lerpFactor = progress / duration;
+      if (lerpFactor < 1) {
+        // Continue interpolation
+        const interpolatedColor = startColor.lerpColors(
+          startColor,
+          endColor,
+          lerpFactor
+        );
+        const cssColor = "#" + interpolatedColor.getHexString();
+        canvas.setBackgroundColor(cssColor, canvas.renderAll.bind(canvas));
+        requestAnimationFrame(step); // Request the next animation frame
+      } else {
+        // Final color set after the animation ends
+        canvas.setBackgroundColor(color, canvas.renderAll.bind(canvas));
+      }
+      updateTexture(); // Update texture if needed
     }
-    //  if (editingComponent.current) {
-    //   editingComponent.current.material.color.set(color);
-    //   updateTexture();  // Assuming updateTexture updates the Three.js renderer
-    // }
+    step();
   }
 
   const updateTexture = () => {
@@ -172,16 +200,16 @@ const ThreeDViewer = () => {
       model == 1
         ? "/hoodieTest.glb"
         : model == 2
-        ? "/hoodieCortado1.glb"
+        ? "/1.glb"
         : model == 3
-        ? "./hoodieCortado2.glb"
+        ? "./2.glb"
         : model == 4
-        ? "./hoodieCortado3.glb"
+        ? "./3.glb"
         : model == 5
-        ? "./hoodieCortado4.glb"
+        ? "./4.glb"
         : null;
 
-    loadGLBModel(url, scene, setIsLoading);
+    loadGLBModel(url, scene, setIsLoading, setObjectNames);
 
     orbit = new OrbitControls(camera, renderer.domElement);
     orbit.target.set(0, 0, 0);
@@ -195,6 +223,20 @@ const ThreeDViewer = () => {
       RIGHT: null,
     };
     orbit.enabled = true;
+
+    // Função para animar a cor emissiva
+    function animateEmissiveColor(object, startColor, endColor, duration) {
+      const start = { r: startColor.r, g: startColor.g, b: startColor.b };
+      const end = { r: endColor.r, g: endColor.g, b: endColor.b };
+
+      new TWEEN.Tween(start)
+        .to(end, duration)
+        .onUpdate(() => {
+          // Atualiza a cor emissiva do material
+          object.material.emissive.setRGB(start.r, start.g, start.b);
+        })
+        .start(); // Inicia a animação
+    }
 
     //functions------------------------------------------------------------------------------------------------------
     const onMouseDown = (e) => {
@@ -298,7 +340,8 @@ const ThreeDViewer = () => {
             editingComponent.current.material.map = texture;
 
             editingComponent.current = intersections[0].object;
-            intersections[0].object.material.emissive.setHex(0xffffff); // Bright cyan glow
+
+            // intersections[0].object.material.emissive.setHex(0xffffff); // Bright cyan glow
 
             if (!editingComponent.current.userData.canva) {
               let ownCanva = new fabric.Canvas("temp", {
@@ -390,6 +433,16 @@ const ThreeDViewer = () => {
           editingComponent.current.material.map = fabricTexture;
           editingComponent.current.material.needsUpdate = true;
         }
+
+        const object = intersections[0].object;
+        intersections[0].object.material.emissive.setHex;
+        const currentEmissive = object.material.emissive.getHex();
+        animateEmissiveColor(
+          object,
+          new THREE.Color(currentEmissive),
+          new THREE.Color(0xffffffaa),
+          400
+        );
 
         if (isImageSelected) {
           orbit.enabled = false;
@@ -822,6 +875,8 @@ const ThreeDViewer = () => {
     //animate--------------------------------------------------------------------------------------------------------
     const animate = () => {
       requestAnimationFrame(animate);
+      TWEEN.update(); // Atualiza todas as animações do Tween
+
       renderer.render(scene, camera);
     };
     animate();
@@ -853,6 +908,41 @@ const ThreeDViewer = () => {
       fabricCanvas.current.off("object:added", updateTexture);
     };
   }, [fabricTexture, model]);
+
+  // //calcular area imprimida
+  // useEffect(() => {
+  //   const area = 300;
+  //   // A função que realiza o cálculo da área ocupada
+  //   const calcularEImprimirAreaOcupada = () => {
+  //     // Garante que o canvas foi inicializado
+  //     if (fabricCanvas.current) {
+  //       const areaTotalCanvas =
+  //         fabricCanvas.current.width * fabricCanvas.current.height;
+  //       fabricCanvas.current.getObjects().forEach((obj) => {
+  //         const areaObjeto = obj.width * obj.scaleX * (obj.height * obj.scaleY);
+  //         const percentagemOcupada = (areaObjeto / areaTotalCanvas) * 100;
+  //         console.log(
+  //           `Tipo: ${
+  //             obj.type
+  //           }, Percentagem ocupada Frente: ${percentagemOcupada.toFixed(2)}%`
+  //         );
+  //       });
+  //     }
+  //   };
+
+  //   // Chama a função definida acima
+  //   calcularEImprimirAreaOcupada();
+
+  //   // Opção: para recalcular sempre que um objeto for adicionado ou removido
+  //   fabricCanvas.current?.on("object:modified", calcularEImprimirAreaOcupada);
+
+  //   return () => {
+  //     fabricCanvas.current?.off(
+  //       "object:modified",
+  //       calcularEImprimirAreaOcupada
+  //     );
+  //   };
+  // }, [fabricCanvas.current]);
 
   //funcoes de abrir e fechar a janela de edicao-------------------------------------------------------------------
   const openTabs = () => {
@@ -909,7 +999,6 @@ const ThreeDViewer = () => {
 
   function addTextbox(text) {
     const canvas = fabricCanvas.current;
-
     if (canvas) {
       // Create a new textbox
       const textbox = new fabric.Textbox(text, {
@@ -926,17 +1015,42 @@ const ThreeDViewer = () => {
         cornerColor: "rgba(0, 0, 0, 0.2)",
         padding: 5,
         transparentCorners: false,
+        // cornerSize: (scale * 0.65 * fabricImage.scaleX) / 10,
+        cornerSize: 25,
         cornerStyle: "circle",
         shadow: "rgba(0,0,0,0.3) 0px 0px 10px",
       });
 
       // Add the textbox to the canvas
-      canvas.add(textbox).setActiveObject(textbox);
+      canvas.add(textbox);
+      canvas.setActiveObject(textbox);
+      setActiveObject(textbox); // Update the React state to the newly added textbox
       canvas.renderAll();
-      // updateActiveObject(targetCanvasId, textbox); // Apply changes by re-rendering the canvas
-      updateTexture(); // Update the texture to reflect changes
+      updateTexture();
     }
   }
+
+  const updateActiveObjectProperties = (property, value) => {
+    const canvas = fabricCanvas.current;
+    const activeObject = canvas.getActiveObject();
+
+    if (activeObject) {
+      activeObject.set(property, value); // Set the new value for the specified property
+      canvas.renderAll(); // Re-render the canvas to show changes
+      updateTexture(); // If you use a texture that needs to be updated
+    }
+  };
+
+  useEffect(() => {
+    // This effect will run whenever fillColor changes and apply it to the selected object
+    if (fillColor && activeObject) {
+      updateActiveObjectProperties("fill", fillColor);
+    }
+
+    if (fontFamily && activeObject) {
+      updateActiveObjectProperties("fontFamily", fontFamily);
+    }
+  }, [fillColor, fontFamily, activeObject]); // Depend on fillColor and activeObject
 
   useEffect(() => {
     const canvas = fabricCanvasRef.current;
@@ -968,6 +1082,18 @@ const ThreeDViewer = () => {
     }
   }, [activeObject]);
 
+  // Função para retroceder ao nome anterior
+  const retrocederZona = () => {
+    setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+  };
+
+  // Função para avançar ao próximo nome
+  const avancarZona = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex < objectNames.length - 1 ? prevIndex + 1 : prevIndex
+    );
+  };
+
   return (
     <>
       {isLoading && (
@@ -998,20 +1124,11 @@ const ThreeDViewer = () => {
         <div className={styles.bottomBar}>
           <div>
             <div className={styles.headerNomes}>
-              <button
-                className={styles.buttonArrows}
-                //  onClick={retrocederZona}
-              >
+              <button className={styles.buttonArrows} onClick={retrocederZona}>
                 &#8592;
               </button>
-              <p className={styles.nomeZonas}>
-                {/* {zonas[indiceZonaAtual]} */}
-                Frente
-              </p>
-              <button
-                className={styles.buttonArrows}
-                // onClick={avancarZona}
-              >
+              <p className={styles.nomeZonas}>{objectNames[currentIndex]}</p>
+              <button className={styles.buttonArrows} onClick={avancarZona}>
                 &#8594;
               </button>
             </div>
@@ -1064,7 +1181,7 @@ const ThreeDViewer = () => {
         </div>
       </div>
 
-      {editingComponent.current && editingComponent && (
+      {editingComponent.current && (
         <div id="editZone" className={styles.editZone}>
           <div className={styles.nameZone}>
             <button onClick={closeEditor} className={styles.fileUploadLabeal}>
@@ -1189,7 +1306,7 @@ const ThreeDViewer = () => {
                     </>
                   ) : (
                     <>
-                      {editingComponentHTML.includes("IMP") ? (
+                      {editingComponentHTML.includes("IMP") && (
                         <>
                           <input
                             type="file"
@@ -1203,19 +1320,6 @@ const ThreeDViewer = () => {
                             }}
                           />
                         </>
-                      ) : (
-                        <>
-                          <h1
-                            style={{
-                              fontSize: "100px",
-                              color: "#000000",
-                              position: "absolute",
-                              top: "0px",
-                            }}
-                          >
-                            Não podes editar isso rapah toma juizo
-                          </h1>
-                        </>
                       )}
                     </>
                   )}
@@ -1225,6 +1329,14 @@ const ThreeDViewer = () => {
           </div>
         </div>
       )}
+
+      <div className={styles.exportBtnNot}>
+        {/* Add your content for the bottom bar */}
+        <button onClick={() => setPreview(!preview)}>
+          {preview ? "Voltar à Personalização" : "Pré-visualizar"}
+        </button>
+      </div>
+
       {colorEditor && (
         <ColorEditor setBGColor={setBGColor} closeTabs={closeTabs} />
       )}
@@ -1268,82 +1380,184 @@ const ThreeDViewer = () => {
       )} */}
       {escolheBtn == false && (
         <div className={styles.modelsZone}>
-          <h1
-            className={styles.title}
-            style={{ textAlign: "center", marginBottom: 25 }}
-          >
-            Escolhe um modelo para começares
-          </h1>
-          <div className={styles.modelosBtns}>
-            <button
-              className={styles.modeloBtn}
-              onClick={() => {
-                setModel("1");
-                setEscolheBtn(true);
+          <div className={styles.modelsList}>
+            <h1
+              className={styles.title}
+              style={{
+                textAlign: "center",
+                marginBottom: 15,
+                fontSize: 15,
+                color: "#fff",
               }}
             >
-              <NextImage
-                src={model1}
-                className={styles.modelosImgs}
-                width={150}
-                height={150}
-              />
-            </button>
-            <button
-              className={styles.modeloBtn}
-              onClick={() => {
-                setModel("2");
-                setEscolheBtn(true);
+              ESCOLHE O TEU MODELO
+            </h1>
+            <div className={styles.modelosBtns}>
+              <button
+                className={styles.modeloBtn}
+                onClick={() => {
+                  setModel("1");
+                  setEscolheBtn(true);
+                }}
+              >
+                <NextImage
+                  src={model1}
+                  className={styles.modelosImgs}
+                  width={150}
+                  height={150}
+                />
+              </button>
+              <button
+                className={styles.modeloBtn}
+                onClick={() => {
+                  setModel("2");
+                  setEscolheBtn(true);
+                }}
+              >
+                <NextImage
+                  src={model2}
+                  className={styles.modelosImgs}
+                  width={150}
+                  height={150}
+                />
+              </button>
+              <button
+                className={styles.modeloBtn}
+                onClick={() => {
+                  setModel("3");
+                  setEscolheBtn(true);
+                }}
+              >
+                <NextImage
+                  src={model3}
+                  className={styles.modelosImgs}
+                  width={150}
+                  height={150}
+                />
+              </button>
+              <button
+                className={styles.modeloBtn}
+                onClick={() => {
+                  setModel("4");
+                  setEscolheBtn(true);
+                }}
+              >
+                <NextImage
+                  src={model4}
+                  className={styles.modelosImgs}
+                  width={150}
+                  height={150}
+                />
+              </button>
+              <button
+                className={styles.modeloBtn}
+                onClick={() => {
+                  setModel("5");
+                  setEscolheBtn(true);
+                }}
+              >
+                <NextImage
+                  src={model5}
+                  className={styles.modelosImgs}
+                  width={150}
+                  height={150}
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {preview && (
+        <div className={styles.checkoutZone}>
+          <div className={styles.modelsList} style={{ marginTop: "7%" }}>
+            <h1
+              className={styles.title}
+              style={{
+                textAlign: "center",
+                marginBottom: 15,
+                fontSize: 15,
+                color: "#fff",
               }}
             >
-              <NextImage
-                src={model2}
-                className={styles.modelosImgs}
-                width={150}
-                height={150}
-              />
-            </button>
-            <button
-              className={styles.modeloBtn}
-              onClick={() => {
-                setModel("3");
-                setEscolheBtn(true);
+              RESUMO DA ENCOMENDA
+            </h1>
+            <table className={styles.tableEncomenda}>
+              <tr>
+                <th></th>
+                <th>Cor</th>
+                <th>Texto</th>
+                <th>Imagem</th>
+              </tr>
+              <tr>
+                <th>Frente</th>
+                <td>v</td>
+                <td>v</td>
+                <td>v</td>
+              </tr>
+              <tr>
+                <th>Trás</th>
+                <td>v</td>
+                <td>v</td>
+                <td>v</td>
+              </tr>
+              <tr>
+                <th>Manga Esquerda</th>
+                <td className={styles.checkoutCor}>cor</td>
+                <td>v</td>
+                <td>v</td>
+              </tr>
+              <tr>
+                <th>Manga Direita</th>
+                <td className={styles.checkoutCor}>cor</td>
+                <td>v</td>
+                <td>v</td>
+              </tr>
+              <tr>
+                <th>Capuz</th>
+                <td className={styles.checkoutCor}>v</td>
+                <td>v</td>
+                <td>v</td>
+              </tr>
+              <tr>
+                <th>Forro</th>
+                <td className={styles.checkoutCor}>v</td>
+                <td>v</td>
+                <td>v</td>
+              </tr>
+              <tr>
+                <th>Elástico Central</th>
+                <td>v</td>
+                <td>v</td>
+                <td>v</td>
+              </tr>
+              <tr>
+                <th>Elástico Esquerdo</th>
+                <td>v</td>
+                <td>v</td>
+                <td>v</td>
+              </tr>
+              <tr>
+                <th>Elástico Direito</th>
+                <td>v</td>
+                <td>v</td>
+                <td>v</td>
+              </tr>
+            </table>
+
+            <h1
+              className={styles.title}
+              style={{
+                textAlign: "center",
+                marginBottom: 15,
+                fontSize: 15,
+                color: "#fff",
               }}
             >
-              <NextImage
-                src={model3}
-                className={styles.modelosImgs}
-                width={150}
-                height={150}
-              />
-            </button>
-            <button
-              className={styles.modeloBtn}
-              onClick={() => {
-                setModel("4");
-                setEscolheBtn(true);
-              }}
-            >
-              <NextImage
-                src={model4}
-                className={styles.modelosImgs}
-                width={150}
-                height={150}
-              />
-            </button>
-            <button
-              className={styles.modeloBtn}
-              onClick={() => {
-                setModel("5");
-                setEscolheBtn(true);
-              }}
-            >
-              <NextImage
-                src={model5}
-                className={styles.modelosImgs}
-                width={150}
-                height={150}
-              />
+              Preço €
+            </h1>
+            <button className={styles.priceBtn}>
+              Continuar para check-out
             </button>
           </div>
         </div>

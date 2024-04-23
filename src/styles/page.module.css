@@ -493,12 +493,10 @@
 }
 
 .exportBtnNot button {
-  cursor: not-allowed;
-  background-color: #bfbfbf;
-}
-
-.exportBtn button,
-.exportBtnNot button {
+  background-color: #00bfff;
+  z-index: 100;
+  border: 0;
+  color: #fff;
   position: fixed;
   top: 50px;
   right: 50px;
@@ -512,9 +510,27 @@
   padding-left: 15px;
   padding-right: 15px;
   border: 1px solid transparent;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
 }
 
-.exportBtn button:hover {
+.exportBtn button {
+  position: fixed;
+  top: 50px;
+  right: 50px;
+  border-radius: 100px;
+  color: #fff;
+  padding: 5px;
+  font-family: "Inter";
+  font-size: 14px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border: 1px solid transparent;
+}
+
+.exportBtnNot button:hover {
   padding-left: 20px;
   padding-right: 20px;
   opacity: 0.9;
@@ -702,13 +718,41 @@
 
 .modelsZone {
   position: fixed;
-  padding: 35px;
-  border-radius: 100px;
-  box-shadow: 0 -5px 5px rgba(0, 0, 0, 0.02);
-  background-color: #fff;
+  background-color: rgba(0, 0, 0, 0.4);
   width: 100%;
-  bottom: 85px;
+  height: 100vh;
+  bottom: 0px;
+  top: 0px;
   align-self: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease-in-out;
+}
+
+.checkoutZone {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100vh;
+  bottom: 0px;
+  top: 0px;
+  align-self: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease-in-out;
+}
+
+.checkoutCor {
+  border-radius: 5px;
+}
+
+.modelsList {
+  display: block;
+  margin: auto;
+  width: 50%;
+  border-radius: 25px;
+  justify-content: center;
+  margin-top: 16.1%;
 }
 
 .modelosBtns {
@@ -725,13 +769,73 @@
 }
 
 .modeloBtn:hover {
-  opacity: 0.8;
   cursor: pointer;
   transform: scale(1.161);
 }
 
 .modelosImgs {
   border-radius: 15px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* .modelosImgs:hover {
+  box-shadow: 0 0 75px rgba(0, 161, 255, 0.2);
+} */
+
+.priceBtn {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-radius: 25px;
+  background-color: #fff;
+  color: #000;
+  font-family: "Inter";
+  letter-spacing: -0.8px;
+  border: 0;
+  align-self: center;
+  text-align: center;
+  display: block;
+  margin: auto;
+  transition: all 0.2s ease-in-out;
+  font-size: 15px;
+}
+
+.priceBtn:hover {
+  cursor: pointer;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.tableEncomenda {
+  justify-content: space-between;
+  padding: 25px;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  border-radius: 25px;
+  width: 100%;
+  align-self: center;
+}
+
+.tableEncomenda td {
+  font-family: "Inter";
+  text-align: center;
+  letter-spacing: -0.6px;
+  text-transform: uppercase;
+}
+
+.tableEncomenda th {
+  padding: 15px;
+  width: 0px;
+  color: #fff;
+  border-bottom: 1px solid #e8e8e9;
+  text-transform: uppercase;
+  font-size: 15px;
+  letter-spacing: -0.6px;
+  font-family: "Inter";
 }
 
 @font-face {

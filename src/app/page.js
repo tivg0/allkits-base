@@ -37,8 +37,7 @@ const Home = () => {
         </p>
       </div>
 
-      <div className={styles.exportBtnNot}>
-        {/* Add your content for the bottom bar */}
+      {/* <div className={styles.exportBtnNot}>
         <button
           style={{
             backgroundColor: "#f2f2f2",
@@ -49,7 +48,7 @@ const Home = () => {
         >
           Pré-visualizar
         </button>
-      </div>
+      </div> */}
 
       <main
         style={{

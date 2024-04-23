@@ -2,34 +2,27 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { fabric } from "fabric";
 
-const loadGLBModel = (path, scenario, setIsLoading) => {
+const loadGLBModel = (path, scenario, setIsLoading, onNamesLoaded) => {
   const loader = new GLTFLoader();
+  const objectNames = []; // Array para armazenar os nomes dos objetos
+
   loader.load(
     path,
     function (gltf) {
       gltf.scene.traverse(function (child) {
         gltf.scene.position.set(0, -0.5, 0);
         setIsLoading(false);
-        // console.log("objects", child.name);
 
         if (child.isMesh) {
-          /*let ownCanva = new fabric.Canvas('temp', {
-            width: 1024,
-            height:1024,
-            backgroundColor: '#aaaaaa',
-          });*/
-
           child.castShadow = true;
           child.receiveShadow = true;
-          /*ownCanva.renderAll();
-          const initialTexture = new THREE.CanvasTexture(ownCanva.getElement());
-          initialTexture.repeat.y = -1;
-          initialTexture.offset.y = 1;
-          child.userData.canva = ownCanva;
-          child.material.map = initialTexture;*/
+          objectNames.push(child.name); // Adiciona o nome ao array
         }
       });
       scenario.add(gltf.scene);
+      if (onNamesLoaded) {
+        onNamesLoaded(objectNames); // Chama o callback passando o array de nomes
+      }
     },
     undefined,
     function (error) {

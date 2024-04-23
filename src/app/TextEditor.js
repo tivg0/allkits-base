@@ -137,13 +137,11 @@ const TextEditor = forwardRef(
     };
 
     const handleSizeChange = (newSize) => {
-      console.log("new;", newSize);
-
       // Check which canvas is currently being targeted and if there's an active object selected
       if (fabricCanvas.current && activeObject) {
         // Update text for the active object in fabricCanvas
-        activeObject.set(fontSize, newSize);
-        fabricCanvas.current.requestRenderAll();
+        activeObject.set("fontSize", newSize);
+        fabricCanvas.current.renderAll();
       }
 
       setFontSize(newSize);
@@ -152,11 +150,11 @@ const TextEditor = forwardRef(
 
     const handleFontFamily = (newFontFamily) => {
       // Atualiza o objeto ativo com a nova fontFamily
-      if (fabricCanvas.current && activeObject) {
-        activeObject.set("fontFamily", newFontFamily);
-        fabricCanvas.current.requestRenderAll();
-      }
 
+      activeObject.set({ fontFamily: newFontFamily });
+
+      fabricCanvas.current.renderAll();
+      console.log(newFontFamily);
       setFontFamily(newFontFamily); // Atualiza o estado do React para refletir a mudança
       updateTexture(); // Chamada para atualizar a textura, se necessário
     };
@@ -179,21 +177,17 @@ const TextEditor = forwardRef(
 
     const handleFill = (newFill) => {
       // Atualiza o objeto ativo com a nova fontFamily
-      if (fabricCanvas.current && activeObject) {
-        activeObject.set(fillColor, newFill);
-        fabricCanvas.current.requestRenderAll();
-      }
-
+      activeObject.set("fillColor", newFill);
+      fabricCanvas.current.renderAll();
       setFillColor(newFill); // Atualiza o estado do React para refletir a mudança
       updateTexture(); // Chamada para atualizar a textura, se necessário
     };
 
     const handleTextAlign = (newAlign) => {
       // Atualiza o objeto ativo com a nova fontFamily
-      if (fabricCanvas.current && activeObject) {
-        activeObject.set({ textAlign: newAlign });
-        fabricCanvas.current.requestRenderAll();
-      }
+      activeObject.set({ textAlign: newAlign });
+      fabricCanvas.current.renderAll();
+      console.log(newAlign);
 
       setTextAlign(newAlign); // Atualiza o estado do React para refletir a mudança
       updateTexture(); // Chamada para atualizar a textura, se necessário
@@ -327,7 +321,7 @@ const TextEditor = forwardRef(
                         }}
                       >
                         <option defaultValue value="15">
-                          35
+                          15
                         </option>
                         {/* Ensure this matches the state's initial value */}
                         <option value="50">50</option>
@@ -410,6 +404,7 @@ const TextEditor = forwardRef(
                         value={fillColor} // Control the selected value with the state
                         onChange={(e) => {
                           const newFill = e.target.value;
+                          console.log(newFill);
                           handleFill(newFill);
                           updateTexture(); // Aplica a nova fonte ao objeto ativo
                         }}
