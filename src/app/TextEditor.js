@@ -110,6 +110,16 @@ const TextEditor = forwardRef(
       }
     }, [activeObject]);
 
+    const handleDelete = () => {
+      if (fabricCanvas.current && activeObject) {
+        fabricCanvas.current.remove(activeObject);
+        fabricCanvas.current.discardActiveObject(); // Remove a seleção atual
+        fabricCanvas.current.requestRenderAll(); // Atualiza o canvas
+        // closeTabs(); // Fecha as abas de edição se necessário
+        updateTexture(); // Atualiza a textura para refletir as mudanças
+      }
+    };
+
     // const handleTextChange = (newText, targetCanvasId) => {
     //   setText(newText); // Update the text state
     //   // Determine which canvas to update based on targetCanvasId and update it accordingly
@@ -259,6 +269,10 @@ const TextEditor = forwardRef(
                   // value={text} // Display text from the active object
                   onChange={handleTextChange}
                 />
+
+                <button onClick={handleDelete} className={styles.deleteButton}>
+                  Excluir Texto
+                </button>
                 <div className={styles.fontFamily}>
                   <div>
                     <p
