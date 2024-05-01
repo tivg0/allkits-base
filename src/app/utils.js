@@ -1,25 +1,49 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { fabric } from "fabric";
+import TWEEN from "@tweenjs/tween.js";
+import { TextureLoader } from "three";
 
 const loadGLBModel = (path, scenario, setIsLoading, onNamesLoaded) => {
   const loader = new GLTFLoader();
+  const textureLoader = new TextureLoader();
+
   const objectNames = []; // Array para armazenar os nomes dos objetos
+
+  // Load normal and roughness maps
+  const normalMap = textureLoader.load("/normal.png");
+  const roughnessMap = textureLoader.load("/roughness.png");
 
   loader.load(
     path,
     function (gltf) {
+      // Ajuste da posição inicial da cena do modelo
+      gltf.scene.position.set(0, -1, 0);
       gltf.scene.traverse(function (child) {
-        gltf.scene.position.set(0, -0.5, 0);
-        setIsLoading(false);
-
         if (child.isMesh) {
+          child.material.normalMap = normalMap;
+          child.material.roughnessMap = roughnessMap;
+          child.material.needsUpdate = true;
           child.castShadow = true;
           child.receiveShadow = true;
           objectNames.push(child.name); // Adiciona o nome ao array
         }
       });
+
+      // Adiciona a cena completa ao cenário
       scenario.add(gltf.scene);
+
+      // Inicia a animação da escala da cena completa
+      new TWEEN.Tween({ x: 0, y: 0, z: 0 })
+        .to({ x: 1.1, y: 1.1, z: 1.1 }, 1610)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .onUpdate((scale) => {
+          gltf.scene.scale.set(scale.x, scale.y, scale.z);
+        })
+        .start();
+
+      setIsLoading(false);
+
       if (onNamesLoaded) {
         onNamesLoaded(objectNames); // Chama o callback passando o array de nomes
       }

@@ -33,22 +33,9 @@ const Home = () => {
           }}
           className={styles.subtitle}
         >
-          STEP, Lda. Default Hoodie 3d Model
+          STEP, Lda. Hoodie 3D Models
         </p>
       </div>
-
-      {/* <div className={styles.exportBtnNot}>
-        <button
-          style={{
-            backgroundColor: "#f2f2f2",
-            border: "1px solid #8c8c8c",
-            cursor: "not-allowed",
-            color: "#8c8c8c",
-          }}
-        >
-          Pré-visualizar
-        </button>
-      </div> */}
 
       <main
         style={{

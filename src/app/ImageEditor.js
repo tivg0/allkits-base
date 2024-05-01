@@ -44,18 +44,23 @@ const ImageEditor = forwardRef(
         const originalProps = {
           left: activeObject.left,
           top: activeObject.top,
+          angle: activeObject.angle,
           scaleX: activeObject.scaleX,
           scaleY: activeObject.scaleY,
-          angle: activeObject.angle,
         };
 
         fabric.Image.fromURL(newImg, (newImg) => {
           //console.log(editingComponent.current.name);
           // Scale the new image to match the size of the previous image
-
+          const scale = Math.min(
+            fabricCanvas.current.width / newImg.width,
+            fabricCanvas.current.height / newImg.height
+          );
           // Set the position of the new image to match the previous image
           newImg.set({
             ...originalProps,
+            scaleX: scale * 0.85,
+            scaleY: scale * 0.85,
             borderColor: "#00bfff",
             cornerSize: 15,
             cornerColor: "#00bfff", // size of the control corners
@@ -500,10 +505,6 @@ const ImageEditor = forwardRef(
             <p className={styles.trititle}>Adicione uma imagem para começar</p>
           </div>
         )} */}
-
-          <div className={styles.exportBtn}>
-            <button>Pré-visualizar</button>
-          </div>
         </div>
       </>
     );

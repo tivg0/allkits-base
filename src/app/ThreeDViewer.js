@@ -21,11 +21,11 @@ import styles from "@/styles/page.module.css";
 import galeryIcon from "../imgs/galeryBlack.png";
 import textIcon from "@/imgs/textIcon.png";
 import colorIcon from "@/imgs/colorIcon.webp";
-import model1 from "@/imgs/model1.png";
-import model2 from "@/imgs/model2.png";
-import model3 from "@/imgs/model3.png";
-import model4 from "@/imgs/model4.png";
-import model5 from "@/imgs/model5.png";
+import model1 from "@/imgs/1foto.png";
+import model2 from "@/imgs/2foto.png";
+import model3 from "@/imgs/3foto.png";
+import model4 from "@/imgs/4foto.png";
+import model5 from "@/imgs/5foto.png";
 import ColorEditor from "./ColorEditor";
 import ImageEditor from "./ImageEditor";
 import TextEditor from "./TextEditor";
@@ -55,14 +55,17 @@ const ThreeDViewer = () => {
   let initialUVRotationCursor = new THREE.Vector2();
   let orbit;
   const [editingComponentHTML, setEditingComponentHTML] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
 
-  const [model, setModel] = useState("1");
+  const [model, setModel] = useState("0");
   const [escolheBtn, setEscolheBtn] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [tutorial, setTutorial] = useState(false);
 
-  const [canvasSize, setCanvasSize] = useState(1024); // Default to larger size
+  const [canvasSize, setCanvasSize] = useState(480); // Default to larger size
+
+  const [fabricCanvases, setFabricCanvases] = useState([]);
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent;
@@ -71,7 +74,7 @@ const ThreeDViewer = () => {
     const isSafari = /Safari/.test(userAgent) && !isChrome;
 
     if (isSafari) {
-      setCanvasSize(250); // Supondo que você quer um tamanho menor para Safari
+      setCanvasSize(480); // Supondo que você quer um tamanho menor para Safari
     } else {
       setCanvasSize(1024); // Tamanho padrão para outros navegadores
     }
@@ -79,6 +82,11 @@ const ThreeDViewer = () => {
 
   const [objectNames, setObjectNames] = useState([]); // Estado para armazenar os nomes dos objetos
   const [currentIndex, setCurrentIndex] = useState(0); // Estado para o índice atual
+
+  const [firstClick, setFirstClick] = useState(true);
+  let localFirstClick = firstClick; // Copia o estado atual para uma variável local
+
+  const [editorOpen, setEditorOpen] = useState(false);
 
   //fabric variables----------------------------------------------------------------------------------------------
   let fabricCanvas = useRef(null);
@@ -109,7 +117,7 @@ const ThreeDViewer = () => {
     const endColor = new THREE.Color(color); // New color from input
 
     let progress = 0; // Initialize progress
-    const duration = 800; // Duration of the transition in milliseconds
+    const duration = 400; // Duration of the transition in milliseconds
     const stepTime = 10; // Time each step takes
 
     function step() {
@@ -152,6 +160,7 @@ const ThreeDViewer = () => {
       height: canvasSize,
       backgroundColor: "#fff",
     });
+    // setFabricCanvases((prevCanvases) => [...prevCanvases, newCanvas]);
 
     const texture = new THREE.CanvasTexture(fabricCanvas.current.getElement());
     texture.repeat.y = -1;
@@ -174,7 +183,7 @@ const ThreeDViewer = () => {
       1000
     );
     camera.position.z = 25;
-    camera.position.y = 0;
+    camera.position.y = -5;
     const renderer = new THREE.WebGLRenderer({ alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0xf4f4f4); // cor de fundo da cena
@@ -186,10 +195,10 @@ const ThreeDViewer = () => {
     const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
     scene.add(hemisphereLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5); // luz para se ver à frente
+    const directionalLight = new THREE.DirectionalLight(0xf4f4f4, 1.5); // luz para se ver à frente
     const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1.5); // luz para se ver à frente
-    directionalLight.position.set(45, 45, -45);
-    directionalLight2.position.set(-45, 45, 45);
+    directionalLight.position.set(90, 45, -45);
+    directionalLight2.position.set(-45, 90, 90);
     directionalLight.castShadow = true;
     directionalLight2.castShadow = true;
 
@@ -209,12 +218,13 @@ const ThreeDViewer = () => {
         ? "./4.glb"
         : null;
 
-    loadGLBModel(url, scene, setIsLoading, setObjectNames);
+    if (model == 1 || model == 2 || model == 3 || model == 4 || model == 5)
+      loadGLBModel(url, scene, setIsLoading, setObjectNames);
 
     orbit = new OrbitControls(camera, renderer.domElement);
     orbit.target.set(0, 0, 0);
     orbit.enableDamping = true;
-    orbit.dampingFactor = 0.35;
+    orbit.dampingFactor = 0.161;
     orbit.screenSpacePanning = false;
     orbit.maxPolarAngle = Math.PI / 1.61; // nao deixa ir o user ver por baixo do hoodie, so o suficiente
     orbit.mouseButtons = {
@@ -223,6 +233,12 @@ const ThreeDViewer = () => {
       RIGHT: null,
     };
     orbit.enabled = true;
+    orbit.minDistance = 16.1;
+    orbit.maxDistance = 35;
+    // Create the fog instance and add it to the scene
+    // Parameters: fog color, start distance, end distance
+    // scene.fog = new THREE.Fog(0xff0000, 10, 100);
+    scene.fog = new THREE.FogExp2(0xffffff, 0.0161);
 
     // Função para animar a cor emissiva
     function animateEmissiveColor(object, startColor, endColor, duration) {
@@ -240,7 +256,6 @@ const ThreeDViewer = () => {
 
     //functions------------------------------------------------------------------------------------------------------
     const onMouseDown = (e) => {
-      openTabs();
       const canvas = fabricCanvas.current;
       const activeObject = canvas.getActiveObject();
       setActiveObject(activeObject);
@@ -271,19 +286,39 @@ const ThreeDViewer = () => {
 
       //caso existam interseções
       if (intersections.length > 0) {
+        openTabs();
+
+        console.log("intercetou", intersections[0].object.name);
+        // editingComponent.current = intersections[0].object;
         //já existe um editing component ativo
         if (editingComponent.current) {
-          /*fabricCanvas.current.renderAll();
-          copyCanvas(fabricCanvas.current, editingComponent.current.userData.canva);
-          editingComponent.current.userData.canva.renderAll();
-          const texture = new THREE.CanvasTexture(editingComponent.current.userData.canva.getElement());
-          texture.repeat.y = -1;
-          texture.offset.y = 1;
-          editingComponent.current.material.map = texture;*/
-
           //o editing component é igual ao objeto intersetado
           if (editingComponent.current == intersections[0].object) {
-            intersections[0].object.material.emissive.setHex(0x000000); // Bright cyan glow
+            console.log("local", localFirstClick);
+            if (localFirstClick) {
+              setTutorial(true);
+              const object = intersections[0].object;
+              intersections[0].object.material.emissive.setHex;
+              const currentEmissive = object.material.emissive.getHex();
+
+              animateEmissiveColor(
+                object,
+                new THREE.Color(currentEmissive),
+                new THREE.Color(0x00bfff),
+                400
+              );
+              animateEmissiveColor(
+                object,
+                new THREE.Color(0x00bfff),
+
+                new THREE.Color(currentEmissive),
+                400
+              );
+              setFirstClick(false);
+              localFirstClick = false; // Atualiza a variável local imediatamente
+            } else {
+              intersections[0].object.material.emissive.setHex(0x000000); // Bright cyan glow
+            }
 
             initialUVCursor.x =
               intersections[0].uv.x * fabricCanvas.current.width;
@@ -325,6 +360,23 @@ const ThreeDViewer = () => {
             }
           } else {
             //o editing component é atualizado se não for igual
+            const object = intersections[0].object;
+            intersections[0].object.material.emissive.setHex;
+            const currentEmissive = object.material.emissive.getHex();
+
+            animateEmissiveColor(
+              object,
+              new THREE.Color(currentEmissive),
+              new THREE.Color(0x00bfff),
+              400
+            );
+            animateEmissiveColor(
+              object,
+              new THREE.Color(0x00bfff),
+
+              new THREE.Color(currentEmissive),
+              400
+            );
 
             fabricCanvas.current.renderAll();
             copyCanvas(
@@ -349,6 +401,8 @@ const ThreeDViewer = () => {
                 height: canvasSize,
                 backgroundColor: "#ffffff",
               });
+              setFabricCanvases((prevCanvases) => [...prevCanvases, ownCanva]);
+
               ownCanva.renderAll();
 
               editingComponent.current.userData.canva = ownCanva;
@@ -400,6 +454,8 @@ const ThreeDViewer = () => {
               //   ), //toHexString(intersections[0].object.material.color)
               backgroundColor: "#ffffff",
             });
+            setFabricCanvases((prevCanvases) => [...prevCanvases, ownCanva]);
+
             ownCanva.renderAll();
             const initialTexture = new THREE.CanvasTexture(
               ownCanva.getElement()
@@ -407,7 +463,6 @@ const ThreeDViewer = () => {
             initialTexture.repeat.y = -1;
             initialTexture.offset.y = 1;
             editingComponent.current.userData.canva = ownCanva;
-            console.log(editingComponent.current);
           }
 
           initialUVCursor.x =
@@ -429,20 +484,9 @@ const ThreeDViewer = () => {
           fabricCanvas.current.renderAll();
           updateTexture();
           //editingComponent.current.material.color = fabricTexture;
-          console.log(fabricTexture);
           editingComponent.current.material.map = fabricTexture;
           editingComponent.current.material.needsUpdate = true;
         }
-
-        const object = intersections[0].object;
-        intersections[0].object.material.emissive.setHex;
-        const currentEmissive = object.material.emissive.getHex();
-        animateEmissiveColor(
-          object,
-          new THREE.Color(currentEmissive),
-          new THREE.Color(0xffffffaa),
-          400
-        );
 
         if (isImageSelected) {
           orbit.enabled = false;
@@ -452,6 +496,11 @@ const ThreeDViewer = () => {
         //caso não existam interseções
       } else {
         setEditingComponentHTML(null);
+        setTimeout(() => {
+          closeEditor();
+        }, 200);
+        closeTabs();
+
         if (editingComponent.current) {
           orbit.enabled = true;
           copyCanvas(
@@ -466,7 +515,7 @@ const ThreeDViewer = () => {
           texture.offset.y = 1;
           editingComponent.current.material.map = texture;
         }
-        editingComponent.current = null;
+        // editingComponent.current = null;
         fabricCanvas.current.renderAll();
         isHandleSelected = false;
         selectedHandle = null;
@@ -478,6 +527,7 @@ const ThreeDViewer = () => {
 
       if (editingComponent.current)
         setEditingComponentHTML(editingComponent.current.userData.name);
+      else if (!editingComponent.current) setEditingComponentHTML("hoodInCOR");
     };
 
     const onMouseMove = (e) => {
@@ -876,6 +926,7 @@ const ThreeDViewer = () => {
     const animate = () => {
       requestAnimationFrame(animate);
       TWEEN.update(); // Atualiza todas as animações do Tween
+      orbit.update(); // Ensures damping effects are recalculated each frame
 
       renderer.render(scene, camera);
     };
@@ -910,60 +961,58 @@ const ThreeDViewer = () => {
   }, [fabricTexture, model]);
 
   // //calcular area imprimida
-  // useEffect(() => {
-  //   const area = 300;
-  //   // A função que realiza o cálculo da área ocupada
-  //   const calcularEImprimirAreaOcupada = () => {
-  //     // Garante que o canvas foi inicializado
-  //     if (fabricCanvas.current) {
-  //       const areaTotalCanvas =
-  //         fabricCanvas.current.width * fabricCanvas.current.height;
-  //       fabricCanvas.current.getObjects().forEach((obj) => {
-  //         const areaObjeto = obj.width * obj.scaleX * (obj.height * obj.scaleY);
-  //         const percentagemOcupada = (areaObjeto / areaTotalCanvas) * 100;
-  //         console.log(
-  //           `Tipo: ${
-  //             obj.type
-  //           }, Percentagem ocupada Frente: ${percentagemOcupada.toFixed(2)}%`
-  //         );
-  //       });
-  //     }
-  //   };
+  useEffect(() => {
+    if (!firstClick) {
+      // Execute qualquer lógica que dependa de firstClick sendo false
+      console.log("Primeiro clique agora é false.");
+    } else {
+      console.log("Primeiro clique agora é true.");
+    }
+  }, [firstClick]); // Esta função será chamada sempre que firstClick mudar
 
-  //   // Chama a função definida acima
-  //   calcularEImprimirAreaOcupada();
+  const calcularEImprimirAreasOcupadas = () => {
+    fabricCanvases.forEach((canvas) => {
+      const areaTotalCanvas = canvas.width * canvas.height;
+      canvas.getObjects().forEach((obj) => {
+        const areaObjeto = obj.width * obj.scaleX * (obj.height * obj.scaleY);
+        const percentagemOcupada = (areaObjeto / areaTotalCanvas) * 100;
+        console.log(
+          `Canvas ID: ${canvas.getElement().id}, Tipo: ${
+            obj.type
+          }, Percentagem Ocupada: ${percentagemOcupada.toFixed(2)}%`
+        );
+      });
+    });
+  };
 
-  //   // Opção: para recalcular sempre que um objeto for adicionado ou removido
-  //   fabricCanvas.current?.on("object:modified", calcularEImprimirAreaOcupada);
-
-  //   return () => {
-  //     fabricCanvas.current?.off(
-  //       "object:modified",
-  //       calcularEImprimirAreaOcupada
-  //     );
-  //   };
-  // }, [fabricCanvas.current]);
+  useEffect(() => {
+    const area = 300;
+    // A função que realiza o cálculo da área ocupada
+    calcularEImprimirAreasOcupadas();
+  }, [fabricCanvases]);
 
   //funcoes de abrir e fechar a janela de edicao-------------------------------------------------------------------
-  const openTabs = () => {
-    const janela = document.getElementById("editZone");
 
-    if (janela) {
-      janela.style.right = "50px";
-      janela.style.opacity = 1;
-      janela.style.transition = "all 0.32s ease-in-out";
-      janela.style.scale = 1;
+  const editZoneRef = useRef(null);
+
+  const openTabs = () => {
+    if (editZoneRef.current) {
+      editZoneRef.current.style.right = "50px";
+      editZoneRef.current.style.opacity = 1;
+      editZoneRef.current.style.transition = "all 0.32s ease-in-out";
+      editZoneRef.current.style.scale = 1;
+      setEditorOpen(true);
     }
   };
 
+  // Função para fechar a janela de edição
   const closeEditor = () => {
-    const janela = document.getElementById("editZone");
-
-    if (janela) {
-      janela.style.right = "-300px";
-      janela.style.opacity = 0;
-      janela.style.transition = "all 0.32s ease-in-out";
-      janela.style.scale = 0;
+    if (editZoneRef.current) {
+      editZoneRef.current.style.right = "-300px";
+      editZoneRef.current.style.opacity = 0;
+      editZoneRef.current.style.transition = "all 0.32s ease-in-out";
+      editZoneRef.current.style.scale = 0;
+      setEditorOpen(false);
     }
   };
 
@@ -1002,8 +1051,10 @@ const ThreeDViewer = () => {
     if (canvas) {
       // Create a new textbox
       const textbox = new fabric.Textbox(text, {
-        left: canvas.width / 2 - 77.5, // Center the textbox horizontally
-        top: canvas.height / 2 - 10,
+        left: canvas.width / 2, // Center the textbox horizontally
+        top: canvas.height / 2,
+        originX: "center",
+        originY: "center",
         width: 155, // Adjust as needed
         height: 200,
         fontSize: fontSize,
@@ -1016,9 +1067,14 @@ const ThreeDViewer = () => {
         padding: 5,
         transparentCorners: false,
         // cornerSize: (scale * 0.65 * fabricImage.scaleX) / 10,
-        cornerSize: 25,
+        cornerSize: (155 + 200) / 20,
         cornerStyle: "circle",
         shadow: "rgba(0,0,0,0.3) 0px 0px 10px",
+      });
+
+      textbox.setControlsVisibility({
+        mt: false,
+        mb: false,
       });
 
       // Add the textbox to the canvas
@@ -1041,16 +1097,16 @@ const ThreeDViewer = () => {
     }
   };
 
-  useEffect(() => {
-    // This effect will run whenever fillColor changes and apply it to the selected object
-    if (fillColor && activeObject) {
-      updateActiveObjectProperties("fill", fillColor);
-    }
+  // useEffect(() => {
+  //   // This effect will run whenever fillColor changes and apply it to the selected object
+  //   if (fillColor && activeObject) {
+  //     updateActiveObjectProperties("fill", fillColor);
+  //   }
 
-    if (fontFamily && activeObject) {
-      updateActiveObjectProperties("fontFamily", fontFamily);
-    }
-  }, [fillColor, fontFamily, activeObject]); // Depend on fillColor and activeObject
+  //   if (fontFamily && activeObject) {
+  //     updateActiveObjectProperties("fontFamily", fontFamily);
+  //   }
+  // }, [fillColor, fontFamily, activeObject]); // Depend on fillColor and activeObject
 
   useEffect(() => {
     const canvas = fabricCanvasRef.current;
@@ -1094,6 +1150,34 @@ const ThreeDViewer = () => {
     );
   };
 
+  // useEffect(() => {
+  //   if (editingComponent.current) {
+  //     // lógica que depende de editingComponent.current
+  //     setEditingComponentHTML(editingComponent.current.userData.name);
+  //   }
+  // }, [editingComponent.current]);
+
+  const simulateCenterClick = () => {
+    if (!containerRef.current) return;
+
+    // Get the bounding rectangle of the container
+    const rect = containerRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Create a new mouse event
+    const event = new MouseEvent("mousedown", {
+      clientX: centerX,
+      clientY: centerY,
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+
+    // Dispatch the event on the container
+    containerRef.current.dispatchEvent(event);
+  };
+
   return (
     <>
       {isLoading && (
@@ -1102,7 +1186,16 @@ const ThreeDViewer = () => {
         </div>
       )}
 
-      <div ref={containerRef}></div>
+      <div ref={containerRef}>{/* Content in the behind div */}</div>
+
+      {/* {tutorial && (
+        <>
+          <div className={styles.front}></div>
+          <div className={styles.left}></div>
+          <div className={styles.right}></div>
+          <div className={styles.front}></div>
+        </>
+      )} */}
 
       <div
         style={{
@@ -1121,7 +1214,7 @@ const ThreeDViewer = () => {
             }}
           />
         </div>
-        <div className={styles.bottomBar}>
+        {/* <div className={styles.bottomBar}>
           <div>
             <div className={styles.headerNomes}>
               <button className={styles.buttonArrows} onClick={retrocederZona}>
@@ -1178,11 +1271,11 @@ const ThreeDViewer = () => {
               />
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {editingComponent.current && (
-        <div id="editZone" className={styles.editZone}>
+        <div ref={editZoneRef} className={styles.editZone}>
           <div className={styles.nameZone}>
             <button onClick={closeEditor} className={styles.fileUploadLabeal}>
               <p
@@ -1323,6 +1416,14 @@ const ThreeDViewer = () => {
                       )}
                     </>
                   )}
+                  {editingComponentHTML.includes("NOT") && (
+                    <p
+                      style={{ marginTop: 75, textAlign: "center" }}
+                      className={styles.infoText}
+                    >
+                      Não é possível personalizar esta área
+                    </p>
+                  )}
                 </>
               )}
             </div>
@@ -1331,9 +1432,16 @@ const ThreeDViewer = () => {
       )}
 
       <div className={styles.exportBtnNot}>
-        {/* Add your content for the bottom bar */}
-        <button onClick={() => setPreview(!preview)}>
-          {preview ? "Voltar à Personalização" : "Pré-visualizar"}
+        <button
+          onClick={() => {
+            setPreview(!preview);
+            setTimeout(() => {
+              closeEditor();
+            }, 200);
+            closeTabs();
+          }}
+        >
+          {preview ? "Voltar à Personalização" : "Concluído"}
         </button>
       </div>
 
@@ -1397,7 +1505,12 @@ const ThreeDViewer = () => {
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("1");
+                  setTutorial(true);
                   setEscolheBtn(true);
+                  setTimeout(() => {
+                    simulateCenterClick();
+                    console.log("clicked");
+                  }, 2000);
                 }}
               >
                 <NextImage
@@ -1411,7 +1524,13 @@ const ThreeDViewer = () => {
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("2");
+
+                  setTutorial(true);
                   setEscolheBtn(true);
+                  setTimeout(() => {
+                    simulateCenterClick();
+                    console.log("clicked");
+                  }, 2000);
                 }}
               >
                 <NextImage
@@ -1425,7 +1544,12 @@ const ThreeDViewer = () => {
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("3");
+                  setTutorial(true);
                   setEscolheBtn(true);
+                  setTimeout(() => {
+                    simulateCenterClick();
+                    console.log("clicked");
+                  }, 2000);
                 }}
               >
                 <NextImage
@@ -1439,7 +1563,12 @@ const ThreeDViewer = () => {
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("4");
+                  setTutorial(true);
                   setEscolheBtn(true);
+                  setTimeout(() => {
+                    simulateCenterClick();
+                    console.log("clicked");
+                  }, 2000);
                 }}
               >
                 <NextImage
@@ -1453,7 +1582,12 @@ const ThreeDViewer = () => {
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("5");
+                  setTutorial(true);
                   setEscolheBtn(true);
+                  setTimeout(() => {
+                    simulateCenterClick();
+                    console.log("clicked");
+                  }, 2000);
                 }}
               >
                 <NextImage
