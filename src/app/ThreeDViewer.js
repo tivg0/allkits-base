@@ -21,14 +21,15 @@ import styles from "@/styles/page.module.css";
 import galeryIcon from "../imgs/galeryBlack.png";
 import textIcon from "@/imgs/textIcon.png";
 import colorIcon from "@/imgs/colorIcon.webp";
-import model1 from "@/imgs/1foto.png";
-import model2 from "@/imgs/2foto.png";
-import model3 from "@/imgs/3foto.png";
-import model4 from "@/imgs/4foto.png";
-import model5 from "@/imgs/5foto.png";
+import model1 from "@/imgs/fotoTeste.png";
+import model2 from "@/imgs/fotoTeste.png";
+import model3 from "@/imgs/fotoTeste.png";
+import model4 from "@/imgs/fotoTeste.png";
+import model5 from "@/imgs/fotoTeste.png";
 import ColorEditor from "./ColorEditor";
 import ImageEditor from "./ImageEditor";
 import TextEditor from "./TextEditor";
+import { fontList } from "./fonts";
 
 const ThreeDViewer = () => {
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
@@ -104,6 +105,24 @@ const ThreeDViewer = () => {
 
   //activeObject variable
   const [activeObject, setActiveObject] = useState(null);
+
+  //nomes certos dos objetos
+  const getPartName = (filename) => {
+    if (filename.startsWith("bodyF")) return "Frente";
+    if (filename.startsWith("bodyB")) return "Trás";
+    if (filename.startsWith("mangaL")) return "Manga Esquerda";
+    if (filename.startsWith("mangaR")) return "Manga Direita";
+    if (filename.startsWith("hoodOut")) return "Capuz";
+    if (filename.startsWith("hoodIn")) return "Forro";
+    if (filename.startsWith("agulhetas")) return "Agulhetas";
+    if (filename.startsWith("pocket")) return "Bolso";
+    if (filename.startsWith("argolas")) return "Argolas";
+    if (filename.startsWith("corda")) return "Cordas";
+    if (filename.startsWith("elasticoC")) return "Elástico Central";
+    if (filename.startsWith("elasticoL")) return "Elástico Esquerdo";
+    if (filename.startsWith("elasticoR")) return "Elástico Direito";
+    return "Parte Desconhecida"; // Default case
+  };
 
   function setBGColor(hexColor) {
     const color = hexColor.trim(); // Clean the input
@@ -298,13 +317,12 @@ const ThreeDViewer = () => {
       if (intersections.length > 0) {
         openTabs();
 
-        console.log("intercetou", intersections[0].object.name);
+        // console.log("intercetou", intersections[0].object.name);
         // editingComponent.current = intersections[0].object;
         //já existe um editing component ativo
         if (editingComponent.current) {
           //o editing component é igual ao objeto intersetado
           if (editingComponent.current == intersections[0].object) {
-            console.log("local", localFirstClick);
             if (localFirstClick) {
               setTutorial(true);
               const object = intersections[0].object;
@@ -387,6 +405,7 @@ const ThreeDViewer = () => {
               new THREE.Color(currentEmissive),
               400
             );
+            closeTabs();
 
             fabricCanvas.current.renderAll();
             copyCanvas(
@@ -971,15 +990,6 @@ const ThreeDViewer = () => {
   }, [fabricTexture, model]);
 
   // //calcular area imprimida
-  useEffect(() => {
-    if (!firstClick) {
-      // Execute qualquer lógica que dependa de firstClick sendo false
-      console.log("Primeiro clique agora é false.");
-    } else {
-      console.log("Primeiro clique agora é true.");
-    }
-  }, [firstClick]); // Esta função será chamada sempre que firstClick mudar
-
   const calcularEImprimirAreasOcupadas = () => {
     let precoTotal = 10; // Preço base de 10€
     fabricCanvases.forEach((canvas) => {
@@ -1020,7 +1030,6 @@ const ThreeDViewer = () => {
     const area = 300;
     // A função que realiza o cálculo da área ocupada
     calcularEImprimirAreasOcupadas();
-    console.log("preview", preview);
   }, [fabricCanvases, preview, activeObject]);
 
   //funcoes de abrir e fechar a janela de edicao-------------------------------------------------------------------
@@ -1103,6 +1112,10 @@ const ThreeDViewer = () => {
         cornerStyle: "circle",
         shadow: "rgba(0,0,0,0.3) 0px 0px 10px",
       });
+      for (const font of fontList) {
+        textbox.set("fontFamily", font);
+      }
+      textbox.set("fontFamily", "Arial");
 
       textbox.setControlsVisibility({
         mt: false,
@@ -1168,6 +1181,14 @@ const ThreeDViewer = () => {
     if (activeObject && activeObject.type === "image") {
       setImageSrc(activeObject.getSrc());
     }
+
+    if (fabricCanvas.current) {
+      const canvas = fabricCanvas.current;
+      const activeObject = canvas.getActiveObject();
+      setActiveObject(activeObject);
+    }
+
+    console.log("active object selecionado", activeObject);
   }, [activeObject]);
 
   // Função para retroceder ao nome anterior
@@ -1325,7 +1346,8 @@ const ThreeDViewer = () => {
               <p className={styles.trititle}>
                 A Costumizar{" "}
                 <b className={styles.subtitle}>
-                  {editingComponent.current.name}
+                  {getPartName(editingComponent.current.name)}
+                  {/* {editingComponent.current.name} */}
                 </b>
               </p>
             </div>
@@ -1547,96 +1569,99 @@ const ThreeDViewer = () => {
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("1");
+                  setIsLoading(true);
                   setTutorial(true);
                   setEscolheBtn(true);
                   setTimeout(() => {
                     simulateCenterClick();
-                    console.log("clicked");
-                  }, 2000);
+                  }, 1610);
                 }}
               >
                 <NextImage
                   src={model1}
                   className={styles.modelosImgs}
-                  width={150}
-                  height={150}
+                  width={200}
+                  height={200}
                 />
               </button>
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("2");
+                  setIsLoading(true);
 
                   setTutorial(true);
                   setEscolheBtn(true);
                   setTimeout(() => {
                     simulateCenterClick();
-                    console.log("clicked");
-                  }, 2000);
+                  }, 1610);
                 }}
               >
                 <NextImage
                   src={model2}
                   className={styles.modelosImgs}
-                  width={150}
-                  height={150}
+                  width={200}
+                  height={200}
                 />
               </button>
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("3");
+                  setIsLoading(true);
+
                   setTutorial(true);
                   setEscolheBtn(true);
                   setTimeout(() => {
                     simulateCenterClick();
-                    console.log("clicked");
-                  }, 2000);
+                  }, 1610);
                 }}
               >
                 <NextImage
                   src={model3}
                   className={styles.modelosImgs}
-                  width={150}
-                  height={150}
+                  width={200}
+                  height={200}
                 />
               </button>
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("4");
+                  setIsLoading(true);
+
                   setTutorial(true);
                   setEscolheBtn(true);
                   setTimeout(() => {
                     simulateCenterClick();
-                    console.log("clicked");
-                  }, 2000);
+                  }, 1610);
                 }}
               >
                 <NextImage
                   src={model4}
                   className={styles.modelosImgs}
-                  width={150}
-                  height={150}
+                  width={200}
+                  height={200}
                 />
               </button>
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("5");
+                  setIsLoading(true);
+
                   setTutorial(true);
                   setEscolheBtn(true);
                   setTimeout(() => {
                     simulateCenterClick();
-                    console.log("clicked");
-                  }, 2000);
+                  }, 1610);
                 }}
               >
                 <NextImage
                   src={model5}
                   className={styles.modelosImgs}
-                  width={150}
-                  height={150}
+                  width={200}
+                  height={200}
                 />
               </button>
             </div>

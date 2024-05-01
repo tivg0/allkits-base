@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect, forwardRef } from "react";
 import styles from "@/styles/page.module.css";
-
+import { fontList } from "./fonts";
 const TextEditor = forwardRef(
   (
     {
@@ -25,81 +25,9 @@ const TextEditor = forwardRef(
     const [fill, setFill] = useState(
       activeObject ? activeObject.fill : "#000000"
     );
-    const [fontList, setFontList] = useState([
-      "Akira Expanded Demo",
-      "Alfa Slab One",
-      "Antonio Medium",
-      "Antonio Thin",
-      "Arial",
-      "Arial Bold",
-      "Arial Black",
-      "Bebas Neue",
-      "Belinda New",
-      "College Block",
-      "Constantia",
-      "Constantia Bold",
-      "Courier",
-      "Courier Bold",
-      "Filson Pro Bold",
-      "Filson Pro Book",
-      "Filson Pro Heavy",
-      "Filson Pro Light",
-      "Filson Pro Medium Italic",
-      "Filson Pro Regular",
-      "Filson Pro Thin",
-      "Fineday Style One",
-      "Fineday Style Two",
-      "Futura Bk BT Book",
-      "Futura Md BT Bold",
-      "Futura Md BT Medium",
-      "Ghost Clan",
-      "Graduate Regular",
-      "Helvetica Bold",
-      "Helvetica Light",
-      "Helvetica",
-      "Himalaya",
-      "Hudson NY Slab",
-      "Hudson NY Pro Slab Light",
-      "Impact",
-      "Kettering 105 Bold",
-      "Kettering 205 Heavy",
-      "LEMONMILK Bold",
-      "LEMONMILK Light",
-      "LEMONMILK Regular",
-      "Libre Baskerville Bold",
-      "Libre Baskerville Regular",
-      "Octin Sports Free Regular",
-      "Picturama Alternate",
-      "Picturama Founder PERSONAL USE ONLY",
-      "Princetown Std Regular",
-      "Resolve Sans Bold Condensed",
-      "Sanchez Italic",
-      "Sanchez Regular",
-      "Shrikhand Regular",
-      "Super Plants",
-      "Super Summer Personal Use",
-      "Times New Roman",
-      "Times New Roman Bold",
-      "Yearbook Solid",
-    ]);
 
     const [heightWindow, setHeightWindow] = useState(292);
-
-    useEffect(() => {
-      // Carregar as fontes disponíveis
-      const fetchFonts = async () => {
-        try {
-          const response = await fetch("/fonts");
-          const fontData = await response.json();
-          console.log("Conteúdo retornado:", fontData); // Verifique o conteúdo retornado
-          setFontList(fontData.fonts);
-        } catch (error) {
-          console.error("Erro ao carregar fontes:", error);
-        }
-      };
-
-      fetchFonts();
-    }, []);
+    const [deleteBtn, setDeleteBtn] = useState(false);
 
     useEffect(() => {
       // Determine which active object is currently selected based on the targetCanvasId
@@ -110,15 +38,20 @@ const TextEditor = forwardRef(
       }
     }, [activeObject]);
 
-    const handleDelete = () => {
-      if (fabricCanvas.current && activeObject) {
-        fabricCanvas.current.remove(activeObject);
-        fabricCanvas.current.discardActiveObject(); // Remove a seleção atual
-        fabricCanvas.current.requestRenderAll(); // Atualiza o canvas
-        // closeTabs(); // Fecha as abas de edição se necessário
-        updateTexture(); // Atualiza a textura para refletir as mudanças
-      }
-    };
+    // useEffect(() => {
+    //   handleDelete();
+    // }, [deleteBtn]);
+
+    // const handleDelete = () => {
+    //   // setDeleteBtn(!deleteBtn);
+    //   if (fabricCanvas.current && activeObject) {
+    //     fabricCanvas.current.remove(activeObject);
+    //     fabricCanvas.current.discardActiveObject(); // Remove a seleção atual
+    //     fabricCanvas.current.requestRenderAll(); // Atualiza o canvas
+    //     // closeTabs(); // Fecha as abas de edição se necessário
+    //     updateTexture(); // Atualiza a textura para refletir as mudanças
+    //   }
+    // };
 
     // const handleTextChange = (newText, targetCanvasId) => {
     //   setText(newText); // Update the text state
@@ -270,9 +203,7 @@ const TextEditor = forwardRef(
                   onChange={handleTextChange}
                 />
 
-                <button onClick={handleDelete} className={styles.deleteButton}>
-                  Excluir Texto
-                </button>
+                <button className={styles.deleteButton}>Excluir Texto</button>
                 <div className={styles.fontFamily}>
                   <div>
                     <p
