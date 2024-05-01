@@ -146,6 +146,16 @@ const ThreeDViewer = () => {
     if (fabricTexture) fabricTexture.needsUpdate = true;
   };
 
+  const [precoFinal, setPrecoFinal] = useState("10.00"); // Preço inicial de 10€ como string para fácil manipulação na renderização
+  const [precoAnimado, setPrecoAnimado] = useState("0.00"); // Estado para controlar o valor animado do preço
+
+  const setupCanvases = () => {
+    fabricCanvases[0].setDimensions({ width: 100, height: 80 }); // Front
+    fabricCanvases[1].setDimensions({ width: 100, height: 100 }); // Back
+    fabricCanvases[2].setDimensions({ width: 60, height: 100 }); // Left
+    fabricCanvases[3].setDimensions({ width: 60, height: 100 }); // Right
+  };
+
   const [fontSize, setFontSize] = useState(35);
   const [tex, setTex] = useState("");
   const [texMesh, setTexMesh] = useState("");
@@ -971,25 +981,47 @@ const ThreeDViewer = () => {
   }, [firstClick]); // Esta função será chamada sempre que firstClick mudar
 
   const calcularEImprimirAreasOcupadas = () => {
+    let precoTotal = 10; // Preço base de 10€
     fabricCanvases.forEach((canvas) => {
-      const areaTotalCanvas = canvas.width * canvas.height;
+      const areaTotalCanvas = canvas.width * canvas.height; // área em cm²
       canvas.getObjects().forEach((obj) => {
-        const areaObjeto = obj.width * obj.scaleX * (obj.height * obj.scaleY);
-        const percentagemOcupada = (areaObjeto / areaTotalCanvas) * 100;
-        console.log(
-          `Canvas ID: ${canvas.getElement().id}, Tipo: ${
-            obj.type
-          }, Percentagem Ocupada: ${percentagemOcupada.toFixed(2)}%`
-        );
+        const areaObjeto = obj.width * obj.scaleX * (obj.height * obj.scaleY); // área ocupada em cm²
+        const areaEmDezCm2 = (areaObjeto / (obj.width * obj.height)) * 2; // converter área ocupada para blocos de 10 cm²
+        const custoAdicional = areaEmDezCm2 * 1.6; // custo adicional baseado em 1.65€ por cada 10 cm²
+
+        precoTotal += custoAdicional; // soma o custo adicional ao preço total
       });
     });
+    setPrecoFinal(precoTotal.toFixed(2)); // atualiza o estado com o preço total
+    animatePrice(0, precoTotal, 1000);
+  };
+
+  const animatePrice = (start, end, duration) => {
+    let startTime = null;
+    const step = (currentTime) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      setPrecoAnimado((progress * (end - start) + start).toFixed(2));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      } else {
+        setPrecoAnimado(end.toFixed(2)); // Certifica-se de que o preço final é exatamente o que deve ser
+      }
+    };
+    window.requestAnimationFrame(step);
+  };
+
+  const onConcluirClicked = () => {
+    const precoFinal = calcularEImprimirAreasOcupadas();
+    document.getElementById("precoFinal").textContent = `Preço: €${precoFinal}`;
   };
 
   useEffect(() => {
     const area = 300;
     // A função que realiza o cálculo da área ocupada
     calcularEImprimirAreasOcupadas();
-  }, [fabricCanvases]);
+    console.log("preview", preview);
+  }, [fabricCanvases, preview, activeObject]);
 
   //funcoes de abrir e fechar a janela de edicao-------------------------------------------------------------------
 
@@ -1430,15 +1462,25 @@ const ThreeDViewer = () => {
           </div>
         </div>
       )}
-
+      <div className={styles.priceBtnMain}>
+        {preview && (
+          <button className={styles.priceBtn}>Continuar para check-out</button>
+        )}
+      </div>
       <div className={styles.exportBtnNot}>
         <button
           onClick={() => {
+            calcularEImprimirAreasOcupadas();
             setPreview(!preview);
             setTimeout(() => {
               closeEditor();
             }, 200);
             closeTabs();
+          }}
+          style={{
+            right: preview ? 260 : 50,
+            color: preview ? "#fff" : "#000",
+            backgroundColor: preview ? "transparent" : "#fff",
           }}
         >
           {preview ? "Voltar à Personalização" : "Concluído"}
@@ -1604,95 +1646,33 @@ const ThreeDViewer = () => {
 
       {preview && (
         <div className={styles.checkoutZone}>
-          <div className={styles.modelsList} style={{ marginTop: "7%" }}>
-            <h1
+          <div className={styles.modelsList}>
+            <p
               className={styles.title}
               style={{
                 textAlign: "center",
-                marginBottom: 15,
                 fontSize: 15,
                 color: "#fff",
               }}
             >
-              RESUMO DA ENCOMENDA
-            </h1>
-            <table className={styles.tableEncomenda}>
-              <tr>
-                <th></th>
-                <th>Cor</th>
-                <th>Texto</th>
-                <th>Imagem</th>
-              </tr>
-              <tr>
-                <th>Frente</th>
-                <td>v</td>
-                <td>v</td>
-                <td>v</td>
-              </tr>
-              <tr>
-                <th>Trás</th>
-                <td>v</td>
-                <td>v</td>
-                <td>v</td>
-              </tr>
-              <tr>
-                <th>Manga Esquerda</th>
-                <td className={styles.checkoutCor}>cor</td>
-                <td>v</td>
-                <td>v</td>
-              </tr>
-              <tr>
-                <th>Manga Direita</th>
-                <td className={styles.checkoutCor}>cor</td>
-                <td>v</td>
-                <td>v</td>
-              </tr>
-              <tr>
-                <th>Capuz</th>
-                <td className={styles.checkoutCor}>v</td>
-                <td>v</td>
-                <td>v</td>
-              </tr>
-              <tr>
-                <th>Forro</th>
-                <td className={styles.checkoutCor}>v</td>
-                <td>v</td>
-                <td>v</td>
-              </tr>
-              <tr>
-                <th>Elástico Central</th>
-                <td>v</td>
-                <td>v</td>
-                <td>v</td>
-              </tr>
-              <tr>
-                <th>Elástico Esquerdo</th>
-                <td>v</td>
-                <td>v</td>
-                <td>v</td>
-              </tr>
-              <tr>
-                <th>Elástico Direito</th>
-                <td>v</td>
-                <td>v</td>
-                <td>v</td>
-              </tr>
-            </table>
+              PREÇO TOTAL ESTIMADO (POR UN.)
+            </p>
 
             <h1
+              id="precoFinal"
               className={styles.title}
               style={{
                 textAlign: "center",
                 marginBottom: 15,
-                fontSize: 15,
+                fontSize: 100,
                 color: "#fff",
+                fontWeight: 800,
+                letterSpacing: -3.2,
+                marginTop: -15,
               }}
             >
-              Preço €
+              €{precoAnimado}
             </h1>
-            <button className={styles.priceBtn}>
-              Continuar para check-out
-            </button>
           </div>
         </div>
       )}

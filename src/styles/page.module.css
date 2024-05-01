@@ -492,9 +492,28 @@
   transition: all 0.2s ease-in-out;
 } */
 
+.priceBtnMain button {
+  background-color: #00bfff;
+  z-index: 100;
+  position: fixed;
+  top: 50px;
+  right: 50px;
+  color: #fff;
+  border-radius: 100px;
+  padding: 5px;
+  font-family: "Inter";
+  font-size: 14px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
 .exportBtnNot button {
   background-color: #fff;
-  border: 1px solid #bfbfbf;
+  border: 0px solid #bfbfbf;
   z-index: 100;
   position: fixed;
   top: 50px;
@@ -787,8 +806,8 @@
   padding-top: 12px;
   padding-bottom: 12px;
   border-radius: 25px;
-  background-color: #fff;
-  color: #000;
+  background-color: #00bfff;
+  color: #fff;
   font-family: "Inter";
   letter-spacing: -0.8px;
   border: 0;
@@ -802,10 +821,9 @@
 
 .priceBtn:hover {
   cursor: pointer;
+  /* padding-right: 15px; */
   padding-left: 25px;
   padding-right: 25px;
-  padding-top: 15px;
-  padding-bottom: 15px;
 }
 
 .tableEncomenda {
