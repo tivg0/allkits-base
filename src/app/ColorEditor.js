@@ -50,113 +50,115 @@ const ColorEditor = forwardRef(({ setBGColor, closeTabs }, ref) => {
           </label>
         </div>
 
-        <div className={styles.coresDisposalPrimeiraRow}>
-          <button
-            style={{ backgroundColor: "#feff00" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#feff00")}
-          />
-          <button
-            style={{ backgroundColor: "#88bcec" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#88bcec")}
-          />
-          <button
-            style={{ backgroundColor: "#f8c404" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#f8c404")}
-          />
-          <button
-            style={{ backgroundColor: "#000000" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#000000")}
-          />
-          <button
-            style={{ backgroundColor: "#90240c" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#90240c")}
-          />
-        </div>
-        <div className={styles.coresDisposal}>
-          <button
-            style={{ backgroundColor: "#188434" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#188434")}
-          />
-          <button
-            style={{ backgroundColor: "#f0540c" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#f0540c")}
-          />
-          <button
-            style={{ backgroundColor: "#1004d4" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#1004d4")}
-          />
-          <button
-            style={{ backgroundColor: "#08a4d4" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#08a4d4")}
-          />
-          <button
-            style={{ backgroundColor: "#600c14" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#600c14")}
-          />
-        </div>
-        <div className={styles.coresDisposal}>
-          <button
-            style={{ backgroundColor: "#48cc3c" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#48cc3c")}
-          />
-          <button
-            style={{ backgroundColor: "#d8d49c" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#d8d49c")}
-          />
-          <button
-            style={{ backgroundColor: "#c8c4c4" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#c8c4c4")}
-          />
-          <button
-            style={{ backgroundColor: "#082c0c" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#082c0c")}
-          />
-          <button
-            style={{ backgroundColor: "#080c1c" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#080c1c")}
-          />
-        </div>
-        <div className={styles.coresDisposal}>
-          <button
-            style={{ backgroundColor: "#d02414" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#d02414")}
-          />
-          <button
-            style={{ backgroundColor: "#68147c" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#68147c")}
-          />
-          <button
-            style={{ backgroundColor: "#ffffff" }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#ffffff")}
-          />
-          <button
-            style={{ backgroundColor: "#ffffff", opacity: 0 }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#ffffff")}
-          />
-          <button
-            style={{ backgroundColor: "#ffffff", opacity: 0 }}
-            className={styles.addCorBtn}
-            onClick={() => setBGColor("#ffffff")}
-          />
+        <div className={styles.coresDisposalTlm}>
+          <div className={styles.coresDisposal}>
+            <button
+              style={{ backgroundColor: "#feff00" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#feff00")}
+            />
+            <button
+              style={{ backgroundColor: "#88bcec" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#88bcec")}
+            />
+            <button
+              style={{ backgroundColor: "#f8c404" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#f8c404")}
+            />
+            <button
+              style={{ backgroundColor: "#000000" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#000000")}
+            />
+            <button
+              style={{ backgroundColor: "#90240c" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#90240c")}
+            />
+          </div>
+          <div className={styles.coresDisposal}>
+            <button
+              style={{ backgroundColor: "#188434" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#188434")}
+            />
+            <button
+              style={{ backgroundColor: "#f0540c" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#f0540c")}
+            />
+            <button
+              style={{ backgroundColor: "#1004d4" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#1004d4")}
+            />
+            <button
+              style={{ backgroundColor: "#08a4d4" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#08a4d4")}
+            />
+            <button
+              style={{ backgroundColor: "#600c14" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#600c14")}
+            />
+          </div>
+          <div className={styles.coresDisposal}>
+            <button
+              style={{ backgroundColor: "#48cc3c" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#48cc3c")}
+            />
+            <button
+              style={{ backgroundColor: "#d8d49c" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#d8d49c")}
+            />
+            <button
+              style={{ backgroundColor: "#c8c4c4" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#c8c4c4")}
+            />
+            <button
+              style={{ backgroundColor: "#082c0c" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#082c0c")}
+            />
+            <button
+              style={{ backgroundColor: "#080c1c" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#080c1c")}
+            />
+          </div>
+          <div className={styles.coresDisposal}>
+            <button
+              style={{ backgroundColor: "#d02414" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#d02414")}
+            />
+            <button
+              style={{ backgroundColor: "#68147c" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#68147c")}
+            />
+            <button
+              style={{ backgroundColor: "#ffffff" }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#ffffff")}
+            />
+            <button
+              style={{ backgroundColor: "#ffffff", opacity: 0 }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#ffffff")}
+            />
+            <button
+              style={{ backgroundColor: "#ffffff", opacity: 0 }}
+              className={styles.addCorBtn}
+              onClick={() => setBGColor("#ffffff")}
+            />
+          </div>
         </div>
       </div>
     </>
