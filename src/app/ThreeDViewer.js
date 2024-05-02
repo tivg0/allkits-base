@@ -203,11 +203,23 @@ const ThreeDViewer = () => {
     return () => fabricCanvas.current.dispose();
   }, [canvasSize]);
 
-  // function getActiveScene() {
-  //   let sceneJson = containerRef.current.toJSON();
-  //   let jsonString = JSON.stringify(sceneJson);
-  //   console.log(jsonString);
-  // }
+  async function getActiveScene() {
+    try {
+      const response = await fetch("http://localhost:3030/convertSceneToText", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ sceneData: sceneRef.current.toJSON() }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to convert scene to JSON");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
 
   useEffect(() => {
     if (!fabricTexture) return;
@@ -652,8 +664,16 @@ const ThreeDViewer = () => {
                         activeObject.aCoords.bl.y
                       ),
                     };
-                    if ((activeObject.scaleX * activeObject.width <= minScaleAllowed || activeObject.scaleY * activeObject.height <= minScaleAllowed) &&
-                    (aCoords.tl.distanceFrom(aCoords.tr) / width < activeObject.scaleX || aCoords.tl.distanceFrom(aCoords.bl) / height < activeObject.scaleY)) {
+                    if (
+                      (activeObject.scaleX * activeObject.width <=
+                        minScaleAllowed ||
+                        activeObject.scaleY * activeObject.height <=
+                          minScaleAllowed) &&
+                      (aCoords.tl.distanceFrom(aCoords.tr) / width <
+                        activeObject.scaleX ||
+                        aCoords.tl.distanceFrom(aCoords.bl) / height <
+                          activeObject.scaleY)
+                    ) {
                       break;
                     }
                     activeObject.set({
@@ -694,8 +714,16 @@ const ThreeDViewer = () => {
                         activeObject.aCoords.bl.y + corner2DY
                       ),
                     };
-                    if ((activeObject.scaleX * activeObject.width <= minScaleAllowed || activeObject.scaleY * activeObject.height <= minScaleAllowed) &&
-                    (aCoords.tl.distanceFrom(aCoords.tr) / width < activeObject.scaleX || aCoords.tl.distanceFrom(aCoords.bl) / height < activeObject.scaleY)) {
+                    if (
+                      (activeObject.scaleX * activeObject.width <=
+                        minScaleAllowed ||
+                        activeObject.scaleY * activeObject.height <=
+                          minScaleAllowed) &&
+                      (aCoords.tl.distanceFrom(aCoords.tr) / width <
+                        activeObject.scaleX ||
+                        aCoords.tl.distanceFrom(aCoords.bl) / height <
+                          activeObject.scaleY)
+                    ) {
                       break;
                     }
 
@@ -737,8 +765,16 @@ const ThreeDViewer = () => {
                         activeObject.aCoords.bl.y + newDY
                       ),
                     };
-                    if ((activeObject.scaleX * activeObject.width <= minScaleAllowed || activeObject.scaleY * activeObject.height <= minScaleAllowed) &&
-                    (aCoords.tl.distanceFrom(aCoords.tr) / width < activeObject.scaleX || aCoords.tl.distanceFrom(aCoords.bl) / height < activeObject.scaleY)) {
+                    if (
+                      (activeObject.scaleX * activeObject.width <=
+                        minScaleAllowed ||
+                        activeObject.scaleY * activeObject.height <=
+                          minScaleAllowed) &&
+                      (aCoords.tl.distanceFrom(aCoords.tr) / width <
+                        activeObject.scaleX ||
+                        aCoords.tl.distanceFrom(aCoords.bl) / height <
+                          activeObject.scaleY)
+                    ) {
                       break;
                     }
 
@@ -780,8 +816,16 @@ const ThreeDViewer = () => {
                         activeObject.aCoords.bl.y + corner1DY
                       ),
                     };
-                    if ((activeObject.scaleX * activeObject.width <= minScaleAllowed || activeObject.scaleY * activeObject.height <= minScaleAllowed) &&
-                    (aCoords.tl.distanceFrom(aCoords.tr) / width < activeObject.scaleX || aCoords.tl.distanceFrom(aCoords.bl) / height < activeObject.scaleY)) {
+                    if (
+                      (activeObject.scaleX * activeObject.width <=
+                        minScaleAllowed ||
+                        activeObject.scaleY * activeObject.height <=
+                          minScaleAllowed) &&
+                      (aCoords.tl.distanceFrom(aCoords.tr) / width <
+                        activeObject.scaleX ||
+                        aCoords.tl.distanceFrom(aCoords.bl) / height <
+                          activeObject.scaleY)
+                    ) {
                       break;
                     }
 
@@ -817,8 +861,12 @@ const ThreeDViewer = () => {
                         activeObject.aCoords.bl.y + newDY
                       ),
                     };
-                    if ((activeObject.scaleY * activeObject.height <= minScaleAllowed) &&
-                    (aCoords.tl.distanceFrom(aCoords.bl) / height < activeObject.scaleY)) {
+                    if (
+                      activeObject.scaleY * activeObject.height <=
+                        minScaleAllowed &&
+                      aCoords.tl.distanceFrom(aCoords.bl) / height <
+                        activeObject.scaleY
+                    ) {
                       break;
                     }
 
@@ -854,8 +902,12 @@ const ThreeDViewer = () => {
                         activeObject.aCoords.bl.y
                       ),
                     };
-                    if ((activeObject.scaleY * activeObject.height <= minScaleAllowed) &&
-                    (aCoords.tl.distanceFrom(aCoords.bl) / height < activeObject.scaleY)) {
+                    if (
+                      activeObject.scaleY * activeObject.height <=
+                        minScaleAllowed &&
+                      aCoords.tl.distanceFrom(aCoords.bl) / height <
+                        activeObject.scaleY
+                    ) {
                       break;
                     }
 
@@ -873,7 +925,7 @@ const ThreeDViewer = () => {
                     newDX = cos * (deltaX * cos + deltaY * sin);
                     newDY = sin * (deltaX * cos + deltaY * sin);
 
-                    if(activeObject instanceof fabric.Image) {  
+                    if (activeObject instanceof fabric.Image) {
                       aCoords = {
                         tl: new fabric.Point(
                           activeObject.aCoords.tl.x,
@@ -892,13 +944,17 @@ const ThreeDViewer = () => {
                           activeObject.aCoords.bl.y
                         ),
                       };
-                      if ((activeObject.scaleX * activeObject.width <= minScaleAllowed) &&
-                      (aCoords.tl.distanceFrom(aCoords.tr) / width < activeObject.scaleX)) {
+                      if (
+                        activeObject.scaleX * activeObject.width <=
+                          minScaleAllowed &&
+                        aCoords.tl.distanceFrom(aCoords.tr) / width <
+                          activeObject.scaleX
+                      ) {
                         break;
                       }
-  
+
                       console.log(aCoords.tl, aCoords.br);
-  
+
                       activeObject.set({
                         left: aCoords.tl.lerp(aCoords.br).x,
                         top: aCoords.tl.lerp(aCoords.br).y,
@@ -909,9 +965,12 @@ const ThreeDViewer = () => {
                       });
                     } else {
                       const deltaVec = new fabric.Point(newDX, newDX);
-  
+
                       activeObject.set({
-                        width: activeObject.width + (deltaVec.distanceFrom(new fabric.Point(0,0)) * (newDX / Math.abs(newDX))),
+                        width:
+                          activeObject.width +
+                          deltaVec.distanceFrom(new fabric.Point(0, 0)) *
+                            (newDX / Math.abs(newDX)),
                       });
                     }
 
@@ -939,11 +998,15 @@ const ThreeDViewer = () => {
                           activeObject.aCoords.bl.y + newDY
                         ),
                       };
-                      if ((activeObject.scaleX * activeObject.width <= minScaleAllowed) &&
-                      (aCoords.tl.distanceFrom(aCoords.tr) / width < activeObject.scaleX)) {
+                      if (
+                        activeObject.scaleX * activeObject.width <=
+                          minScaleAllowed &&
+                        aCoords.tl.distanceFrom(aCoords.tr) / width <
+                          activeObject.scaleX
+                      ) {
                         break;
                       }
-  
+
                       activeObject.set({
                         left: aCoords.tl.lerp(aCoords.br).x,
                         top: aCoords.tl.lerp(aCoords.br).y,
@@ -954,12 +1017,14 @@ const ThreeDViewer = () => {
                       });
                     } else {
                       const deltaVec = new fabric.Point(newDX, newDX);
-  
+
                       activeObject.set({
-                        width: activeObject.width - (deltaVec.distanceFrom(new fabric.Point(0,0)) * (newDX / Math.abs(newDX))),
+                        width:
+                          activeObject.width -
+                          deltaVec.distanceFrom(new fabric.Point(0, 0)) *
+                            (newDX / Math.abs(newDX)),
                       });
                     }
-
 
                     break;
 
@@ -1574,7 +1639,7 @@ const ThreeDViewer = () => {
       <div className={styles.exportBtnNot}>
         <button
           onClick={() => {
-            // getActiveScene();
+            getActiveScene();
             calcularEImprimirAreasOcupadas();
             logAllObjectsFromAllCanvases();
             setPreview(!preview);
