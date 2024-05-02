@@ -50,14 +50,7 @@ const ColorEditor = forwardRef(({ setBGColor, closeTabs }, ref) => {
           </label>
         </div>
 
-        <div
-          style={{
-            marginTop: 75,
-            display: "flex",
-            justifyContent: "space-between",
-            gap: 10,
-          }}
-        >
+        <div className={styles.coresDisposalPrimeiraRow}>
           <button
             style={{ backgroundColor: "#feff00" }}
             className={styles.addCorBtn}
@@ -84,14 +77,7 @@ const ColorEditor = forwardRef(({ setBGColor, closeTabs }, ref) => {
             onClick={() => setBGColor("#90240c")}
           />
         </div>
-        <div
-          style={{
-            marginTop: 15,
-            display: "flex",
-            justifyContent: "space-between",
-            gap: 10,
-          }}
-        >
+        <div className={styles.coresDisposal}>
           <button
             style={{ backgroundColor: "#188434" }}
             className={styles.addCorBtn}
@@ -118,14 +104,7 @@ const ColorEditor = forwardRef(({ setBGColor, closeTabs }, ref) => {
             onClick={() => setBGColor("#600c14")}
           />
         </div>
-        <div
-          style={{
-            marginTop: 15,
-            display: "flex",
-            justifyContent: "space-between",
-            gap: 10,
-          }}
-        >
+        <div className={styles.coresDisposal}>
           <button
             style={{ backgroundColor: "#48cc3c" }}
             className={styles.addCorBtn}
@@ -152,14 +131,7 @@ const ColorEditor = forwardRef(({ setBGColor, closeTabs }, ref) => {
             onClick={() => setBGColor("#080c1c")}
           />
         </div>
-        <div
-          style={{
-            marginTop: 15,
-            display: "flex",
-            justifyContent: "space-between",
-            gap: 10,
-          }}
-        >
+        <div className={styles.coresDisposal}>
           <button
             style={{ backgroundColor: "#d02414" }}
             className={styles.addCorBtn}

@@ -3,874 +3,893 @@
 /* Continue adicionando regras @font-face para as demais fontes */
 
 /* Continue adicionando regras @font-face para as demais fontes conforme o padrão */
+@media only screen and (max-width: 10000px) {
+  .editZone {
+    position: fixed;
+    overflow-y: scroll;
+    padding: 25px;
+    background-color: #fff;
+    top: 110px;
+    right: -300px;
+    display: block;
+    opacity: 0;
+    box-shadow: 0 0 25px rgba(26, 26, 28, 0.025);
+    z-index: 10;
+    border-radius: 35px;
+    width: 311px;
+    scale: 0;
+  }
 
-.editZone {
-  position: fixed;
-  overflow-y: scroll;
-  padding: 25px;
-  background-color: #fff;
-  top: 110px;
-  right: -300px;
-  display: block;
-  opacity: 0;
-  box-shadow: 0 0 25px rgba(26, 26, 28, 0.025);
-  z-index: 10;
-  border-radius: 35px;
-  width: 311px;
-  scale: 0;
-}
+  .editZoneTlm {
+    display: none;
+  }
 
-.editZone::-webkit-scrollbar,
-.editZoneCor::-webkit-scrollbar,
-.editZoneText::-webkit-scrollbar,
-.editZoneImg::-webkit-scrollbar {
-  display: none;
-}
+  .editZone::-webkit-scrollbar,
+  .editZoneCor::-webkit-scrollbar,
+  .editZoneText::-webkit-scrollbar,
+  .editZoneImg::-webkit-scrollbar {
+    display: none;
+  }
 
-.editZoneCor,
-.editZoneText,
-.editZoneImg {
-  position: fixed;
-  overflow-y: scroll;
-  padding: 25px;
-  background-color: #fff;
-  top: 110px;
-  right: 50px;
-  transition: all 0.417s ease-in-out;
-  display: block;
-  opacity: 1;
-  box-shadow: 0 0 25px rgba(26, 26, 28, 0.025);
-  z-index: 10;
-  border-radius: 35px;
-  width: 311px;
-}
+  .editZoneCor,
+  .editZoneText,
+  .editZoneImg {
+    position: fixed;
+    overflow-y: scroll;
+    padding: 25px;
+    background-color: #fff;
+    top: 110px;
+    right: 50px;
+    transition: all 0.417s ease-in-out;
+    display: block;
+    opacity: 1;
+    box-shadow: 0 0 25px rgba(26, 26, 28, 0.025);
+    z-index: 10;
+    border-radius: 35px;
+    width: 311px;
+  }
 
-.editHeader {
-  margin-top: 65px;
-}
+  .coresDisposal,
+  .coresDisposalPrimeiraRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
 
-.fileUploadLabeal,
-.fileUploadLabealAdd,
-.fileUploadLabealBack {
-  display: inline-block;
-  width: 25px; /* ou qualquer tamanho que prefiras */
-  height: 25px; /* para torná-lo quadrado */
-  border-radius: 100px;
-  text-align: center;
-  line-height: 50px; /* para centralizar o '+' verticalmente */
-  background-color: #ddd;
-  cursor: pointer;
-  color: #000;
-  font-size: 12px;
-  transition: all 0.2s ease-in-out;
-  border: 1px solid transparent;
-}
+  .coresDisposal {
+    margin-top: 15px;
+  }
 
-.fileUploadLabeal:hover {
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
-  background-color: rgba(255, 0, 0, 0.3);
-}
+  .coresDisposalPrimeiraRow {
+    margin-top: 75px;
+  }
 
-.fileUploadLabealAdd:hover {
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
-  background-color: #00afefd6;
-}
+  .editHeader {
+    margin-top: 65px;
+  }
 
-.fileUploadLabealBack:hover {
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
-  background-color: #ffbf0090;
-}
+  .fileUploadLabeal,
+  .fileUploadLabealAdd,
+  .fileUploadLabealBack {
+    display: inline-block;
+    width: 25px; /* ou qualquer tamanho que prefiras */
+    height: 25px; /* para torná-lo quadrado */
+    border-radius: 100px;
+    text-align: center;
+    line-height: 50px; /* para centralizar o '+' verticalmente */
+    background-color: #ddd;
+    cursor: pointer;
+    color: #000;
+    font-size: 12px;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+  }
 
-.bottomBar {
-  position: fixed;
-  display: block;
-  margin: auto;
-  align-self: center;
-  width: 100%;
-  /* height: 20vh; */
-  background-color: #fff;
-  bottom: 0;
-  padding-top: 5px;
-  padding-bottom: 20px;
-}
+  .fileUploadLabeal:hover {
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
+    background-color: rgba(255, 0, 0, 0.3);
+  }
 
-.sideBar {
-  position: fixed;
-  display: block;
-  margin: auto;
-  align-self: center;
-  width: 20%;
-  left: 50px;
-  top: 150px;
-}
+  .fileUploadLabealAdd:hover {
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
+    background-color: #00afefd6;
+  }
 
-.sideBar button {
-  letter-spacing: -0.8px;
-  font-family: "Inter";
-  border: 0;
-  font-size: 15px;
-  padding: 0;
-}
+  .fileUploadLabealBack:hover {
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
+    background-color: #ffbf0090;
+  }
 
-.headerNomes,
-.footerNomes {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin: auto;
-  padding-top: 15px;
-}
+  .bottomBar {
+    position: fixed;
+    display: block;
+    margin: auto;
+    align-self: center;
+    width: 100%;
+    /* height: 20vh; */
+    background-color: #fff;
+    bottom: 0;
+    padding-top: 5px;
+    padding-bottom: 20px;
+  }
 
-.headerNomes {
-  width: 250px;
-  justify-content: space-between;
-}
+  .sideBar {
+    position: fixed;
+    display: block;
+    margin: auto;
+    align-self: center;
+    width: 20%;
+    left: 50px;
+    top: 150px;
+  }
 
-.footerNomes {
-  justify-content: center;
-  margin-bottom: -55px;
-  transition: all 0.3s ease-in-out;
-  opacity: 0;
-}
+  .sideBar button {
+    letter-spacing: -0.8px;
+    font-family: "Inter";
+    border: 0;
+    font-size: 15px;
+    padding: 0;
+  }
 
-.footerNomesVisible {
-  padding-bottom: 15px;
-  margin-bottom: 0px;
-  opacity: 1; /* Fully visible when hovered */
-}
+  .headerNomes,
+  .footerNomes {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: auto;
+    padding-top: 15px;
+  }
 
-.corBtn,
-.settingsBtn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50px;
-  border: 0px solid #8c8c8c;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
-  background-color: #f2f2f2;
-  justify-content: center;
-  align-self: center;
-}
+  .headerNomes {
+    width: 250px;
+    justify-content: space-between;
+  }
 
-.corBtnIcon {
-  padding: 5px;
-  border-radius: 100px;
-  border: 0px solid #8c8c8c;
-  transition: all 0.2s ease-in-out;
-  cursor: pointer;
-  background-color: #f2f2f2;
-  justify-content: center;
-  align-self: center;
-}
+  .footerNomes {
+    justify-content: center;
+    margin-bottom: -55px;
+    transition: all 0.3s ease-in-out;
+    opacity: 0;
+  }
 
-.corBtn:hover,
-.settingsBtn:hover {
-  width: 47px;
-  opacity: 0.8;
-}
+  .footerNomesVisible {
+    padding-bottom: 15px;
+    margin-bottom: 0px;
+    opacity: 1; /* Fully visible when hovered */
+  }
 
-.buttonArrows {
-  border: 0;
-  background-color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.4s ease-in-out;
-  border-radius: 100px;
-  width: 35px;
-  height: 35px;
-  color: #000;
-}
+  .corBtn,
+  .settingsBtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    border: 0px solid #8c8c8c;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    background-color: #f2f2f2;
+    justify-content: center;
+    align-self: center;
+  }
 
-.buttonArrows:hover {
-  margin-left: 5px;
-  margin-right: 5px;
-  background-color: rgba(155, 155, 155, 0.1);
-}
+  .corBtnIcon {
+    padding: 5px;
+    border-radius: 100px;
+    border: 0px solid #8c8c8c;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    background-color: #f2f2f2;
+    justify-content: center;
+    align-self: center;
+  }
 
-.nomeZonas {
-  font-size: 17px;
-  font-family: "Inter";
-  font-weight: 500;
-  letter-spacing: -0.6px;
-  text-align: center;
-  align-self: center;
-  color: #000;
-}
-.btnsFooterArea {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 35px;
-  gap: 15px;
-}
+  .corBtn:hover,
+  .settingsBtn:hover {
+    width: 47px;
+    opacity: 0.8;
+  }
 
-.removeColorBtn {
-}
+  .buttonArrows {
+    border: 0;
+    background-color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+    border-radius: 100px;
+    width: 35px;
+    height: 35px;
+    color: #000;
+  }
 
-.bottomWindow {
-  top: 0;
-  border-radius: 100px;
-  align-self: flex-end;
-  justify-content: flex-end;
-  display: flex;
-  z-index: 10000;
-}
+  .buttonArrows:hover {
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: rgba(155, 155, 155, 0.1);
+  }
 
-.saveBtn,
-.fecharBtn {
-  border: 0;
-  position: fixed;
-  margin-top: 345px;
-  z-index: 1000;
-  padding: 12px 20px 12px 20px;
-  font-family: "Inter";
-  font-weight: 500;
-  font-size: 15px;
-  border-radius: 100px;
-  letter-spacing: -0.8px;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0px -10px 15px rgba(0, 0, 200, 0.05);
-}
+  .nomeZonas {
+    font-size: 17px;
+    font-family: "Inter";
+    font-weight: 500;
+    letter-spacing: -0.6px;
+    text-align: center;
+    align-self: center;
+    color: #000;
+  }
+  .btnsFooterArea {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 35px;
+    gap: 15px;
+  }
 
-.saveBtn {
-  border: 1px solid #f2f2f2;
-  background: linear-gradient(to right, #f2f2f2, #f4f4f4);
-  color: #000;
-}
+  .removeColorBtn {
+  }
 
-.fecharBtn {
-  color: #000;
-  border: 1px solid #f2f2f2;
-  background-color: transparent;
-}
+  .bottomWindow {
+    top: 0;
+    border-radius: 100px;
+    align-self: flex-end;
+    justify-content: flex-end;
+    display: flex;
+    z-index: 10000;
+  }
 
-.saveBtn:hover,
-.fecharBtn:hover {
-  cursor: pointer;
-  padding-left: 27px;
-  padding-right: 27px;
-}
+  .saveBtn,
+  .fecharBtn {
+    border: 0;
+    position: fixed;
+    margin-top: 345px;
+    z-index: 1000;
+    padding: 12px 20px 12px 20px;
+    font-family: "Inter";
+    font-weight: 500;
+    font-size: 15px;
+    border-radius: 100px;
+    letter-spacing: -0.8px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px -10px 15px rgba(0, 0, 200, 0.05);
+  }
 
-.titleZone {
-  margin: 40px 50px;
-  position: fixed;
-  z-index: 10;
-}
+  .saveBtn {
+    border: 1px solid #f2f2f2;
+    background: linear-gradient(to right, #f2f2f2, #f4f4f4);
+    color: #000;
+  }
 
-.title {
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: -0.6px;
-  font-family: "Inter";
-}
+  .fecharBtn {
+    color: #000;
+    border: 1px solid #f2f2f2;
+    background-color: transparent;
+  }
 
-.titleStruct {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
+  .saveBtn:hover,
+  .fecharBtn:hover {
+    cursor: pointer;
+    padding-left: 27px;
+    padding-right: 27px;
+  }
 
-.desc {
-  /* background-color: #00aeef; */
-  color: #00aeef;
-  font-family: "Inter";
-  font-weight: 500;
-  border-radius: 100px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  border: 1px solid #00aeef;
-  font-size: 14px;
-  letter-spacing: -0.2px;
-}
+  .titleZone {
+    margin: 40px 50px;
+    position: fixed;
+    z-index: 10;
+  }
 
-.subtitle {
-  font-size: 12px;
-  color: #333;
-  font-family: "Inter";
-  letter-spacing: 0.3px;
-}
+  .title {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.6px;
+    font-family: "Inter";
+  }
 
-.trititle {
-  color: #333;
-  font-family: "Inter";
-  letter-spacing: 0.3px;
-  font-size: 12px;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 0px;
-}
+  .titleStruct {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
 
-.nameZone {
-  background-color: #eee;
-  width: 311.2px;
-  padding-left: 25px;
-  padding-right: 25px;
-  border-top-right-radius: 35px;
-  border-top-left-radius: 35px;
-  position: fixed;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: -25px;
-  margin-left: -25px;
-  padding-top: 15px;
-  padding-bottom: 15px;
-  z-index: 2;
-}
+  .desc {
+    /* background-color: #00aeef; */
+    color: #00aeef;
+    font-family: "Inter";
+    font-weight: 500;
+    border-radius: 100px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border: 1px solid #00aeef;
+    font-size: 14px;
+    letter-spacing: -0.2px;
+  }
 
-.editBtns {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: -15px;
-}
+  .subtitle {
+    font-size: 12px;
+    color: #333;
+    font-family: "Inter";
+    letter-spacing: 0.3px;
+  }
 
-.editBtns button {
-  width: 50px;
-  height: 50px;
-  font-size: 18px;
-  border-radius: 15px;
-  background-color: #f4f4f4;
-  border: 0;
-  align-self: center;
-  justify-content: center;
-  transition: all 0.3s ease ease-in-out;
-}
+  .trititle {
+    color: #333;
+    font-family: "Inter";
+    letter-spacing: 0.3px;
+    font-size: 12px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 0px;
+  }
 
-.editBtns button:hover {
-  cursor: pointer;
-  border: 1px solid #bfbfbf;
-  width: 50px;
-  height: 50px;
-}
+  .nameZone {
+    background-color: #eee;
+    width: 311.2px;
+    padding-left: 25px;
+    padding-right: 25px;
+    border-top-right-radius: 35px;
+    border-top-left-radius: 35px;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: -25px;
+    margin-left: -25px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    z-index: 2;
+  }
 
-.icon,
-.settingsIcon {
-  justify-content: center;
-  align-self: center;
-}
+  .editBtns {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: -15px;
+  }
 
-.editBtn  {
-  font-family: "Inter";
-  background-color: transparent;
-  transition: all 0.3s ease;
-  box-shadow: 0px 0px 10px #000;
-}
+  .editBtns button {
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+    border-radius: 15px;
+    background-color: #f4f4f4;
+    border: 0;
+    align-self: center;
+    justify-content: center;
+    transition: all 0.3s ease ease-in-out;
+  }
 
-.label {
-  color: #000;
-  border: 1px solid #333;
-  padding-top: 7px;
-  padding-bottom: 7px;
-  border-radius: 100px;
-  font-family: "Inter";
-  font-weight: 500;
-  letter-spacing: -0.3px;
-  font-size: 12px;
-  transition: all 0.3s ease;
-  width: 65px;
-  text-align: center;
-  cursor: pointer;
-}
+  .editBtns button:hover {
+    cursor: pointer;
+    border: 1px solid #bfbfbf;
+    width: 50px;
+    height: 50px;
+  }
 
-.uploadImgHiddenInput {
-  position: absolute;
-  width: 300px;
-  height: 55px;
-  opacity: 0;
-}
+  .icon,
+  .settingsIcon {
+    justify-content: center;
+    align-self: center;
+  }
 
-.uploadImgHiddenInput:hover {
-  cursor: pointer;
-}
+  .editBtn  {
+    font-family: "Inter";
+    background-color: transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0px 0px 10px #000;
+  }
 
-.divAreaEspecifica {
-  background-color: #fff;
-  border: 0;
-  border-bottom: 1px solid rgba(200, 200, 200, 0.15);
-  padding: 10px;
-  width: 100%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 15px;
-  transition: all 0.2s ease-in-out;
-}
+  .label {
+    color: #000;
+    border: 1px solid #333;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    border-radius: 100px;
+    font-family: "Inter";
+    font-weight: 500;
+    letter-spacing: -0.3px;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    width: 65px;
+    text-align: center;
+    cursor: pointer;
+  }
 
-.divAreaEspecifica:hover {
-  margin-left: 7px;
-}
+  .uploadImgHiddenInput {
+    position: absolute;
+    width: 300px;
+    height: 55px;
+    opacity: 0;
+  }
 
-.divIcon {
-  padding: 9px;
-  border-radius: 100px;
-  background-color: #f9f9f9;
-  width: 23px;
-  height: 23px;
-}
+  .uploadImgHiddenInput:hover {
+    cursor: pointer;
+  }
 
-.titleText {
-  font-size: 12px;
-  font-family: "Inter";
-  font-weight: 800;
-  text-align: left;
-  margin-bottom: -10px;
-  letter-spacing: 0.2px;
-  text-transform: uppercase;
-}
+  .divAreaEspecifica {
+    background-color: #fff;
+    border: 0;
+    border-bottom: 1px solid rgba(200, 200, 200, 0.15);
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    transition: all 0.2s ease-in-out;
+  }
 
-.infoText {
-  color: #333;
-  font-family: "Inter";
-  font-weight: 300;
-  font-size: 12px;
-  letter-spacing: 0.5px;
-  text-align: left;
-}
+  .divAreaEspecifica:hover {
+    margin-left: 7px;
+  }
 
-.hintText {
-  /* display: flex; */
-  align-items: center;
-  gap: 10px;
-  background-color: #e8e8e9;
-  border-radius: 35px;
-  padding-left: 15px;
-  padding-right: 15px;
-  position: absolute;
-  margin-top: 10px;
-  margin-left: 10px;
-  box-shadow: 0 0 50px rgba(0, 191, 255, 0.15);
-  z-index: 0;
-  height: 30px;
-  /* width: 190px; */
-}
+  .divIcon {
+    padding: 9px;
+    border-radius: 100px;
+    background-color: #f9f9f9;
+    width: 23px;
+    height: 23px;
+  }
 
-.input {
-  padding: 5px;
-  align-self: center;
-  border: 1px solid #e8e8e9;
-  text-align: center;
-  width: 40px;
-  border-radius: 100px;
-}
+  .titleText {
+    font-size: 12px;
+    font-family: "Inter";
+    font-weight: 800;
+    text-align: left;
+    margin-bottom: -10px;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+  }
 
-.labels,
-.numerosImagem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+  .infoText {
+    color: #333;
+    font-family: "Inter";
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-align: left;
+  }
 
-.labels th,
-.inputs td {
-  font-size: 12px;
-  color: #8c8c8c;
-  font-weight: 500;
-  letter-spacing: -0.4px;
-  margin-bottom: -10px;
-  align-self: center;
-  text-align: center;
-}
+  .hintText {
+    /* display: flex; */
+    align-items: center;
+    gap: 10px;
+    background-color: #e8e8e9;
+    border-radius: 35px;
+    padding-left: 15px;
+    padding-right: 15px;
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 10px;
+    box-shadow: 0 0 50px rgba(0, 191, 255, 0.15);
+    z-index: 0;
+    height: 30px;
+    /* width: 190px; */
+  }
 
-.inputs {
-  width: "100%";
-}
-/* a */
+  .input {
+    padding: 5px;
+    align-self: center;
+    border: 1px solid #e8e8e9;
+    text-align: center;
+    width: 40px;
+    border-radius: 100px;
+  }
 
-.cell {
-  border: 1px solid #f4f4f4; /* Fine border color */
-  padding: 25px;
-  font-family: "Inter";
-}
+  .labels,
+  .numerosImagem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-/* .exportBtn button {
+  .labels th,
+  .inputs td {
+    font-size: 12px;
+    color: #8c8c8c;
+    font-weight: 500;
+    letter-spacing: -0.4px;
+    margin-bottom: -10px;
+    align-self: center;
+    text-align: center;
+  }
+
+  .inputs {
+    width: "100%";
+  }
+  /* a */
+
+  .cell {
+    border: 1px solid #f4f4f4; /* Fine border color */
+    padding: 25px;
+    font-family: "Inter";
+  }
+
+  /* .exportBtn button {
   background: linear-gradient(to right, #00aeef, #00bbff);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 } */
 
-.priceBtnMain button {
-  background-color: #00bfff;
-  z-index: 100;
-  position: fixed;
-  top: 50px;
-  right: 50px;
-  color: #fff;
-  border-radius: 100px;
-  padding: 5px;
-  font-family: "Inter";
-  font-size: 14px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  transition: all 0.3s ease-in-out;
-  cursor: pointer;
-}
+  .priceBtnMain button {
+    background-color: #00bfff;
+    z-index: 100;
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    color: #fff;
+    border-radius: 100px;
+    padding: 5px;
+    font-family: "Inter";
+    font-size: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
 
-.exportBtnNot button {
-  background-color: #fff;
-  border: 0px solid #bfbfbf;
-  z-index: 100;
-  position: fixed;
-  top: 50px;
-  right: 50px;
-  color: #000;
-  border-radius: 100px;
-  padding: 5px;
-  font-family: "Inter";
-  font-size: 14px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  transition: all 0.3s ease-in-out;
-  cursor: pointer;
-}
+  .exportBtnNot button {
+    background-color: #fff;
+    border: 0px solid #bfbfbf;
+    z-index: 100;
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    color: #000;
+    border-radius: 100px;
+    padding: 5px;
+    font-family: "Inter";
+    font-size: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
 
-.exportBtn button {
-  position: fixed;
-  top: 50px;
-  right: 50px;
-  border-radius: 100px;
-  color: #fff;
-  padding: 5px;
-  font-family: "Inter";
-  font-size: 14px;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 15px;
-  padding-right: 15px;
-  border: 1px solid transparent;
-}
+  .exportBtn button {
+    position: fixed;
+    top: 50px;
+    right: 50px;
+    border-radius: 100px;
+    color: #fff;
+    padding: 5px;
+    font-family: "Inter";
+    font-size: 14px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 1px solid transparent;
+  }
 
-.exportBtnNot button:hover {
-  padding-left: 25px;
-  padding-right: 25px;
-  opacity: 0.8;
-}
+  .exportBtnNot button:hover {
+    padding-left: 25px;
+    padding-right: 25px;
+    opacity: 0.8;
+  }
 
-.canvasContainer {
-  position: fixed;
-  /* left: 0;
+  .canvasContainer {
+    position: fixed;
+    /* left: 0;
   right: 0; */
-  /* background-color: #00aeef; */
-  scale: 1.2;
-}
+    /* background-color: #00aeef; */
+    scale: 1.2;
+  }
 
-.canvasContainerBack {
-  position: fixed;
-  margin-top: 25px;
-  scale: 1.35;
-}
+  .canvasContainerBack {
+    position: fixed;
+    margin-top: 25px;
+    scale: 1.35;
+  }
 
-.canvasContainerMangaL {
-  position: fixed;
-  margin-top: 155px;
-  scale: 1;
-}
+  .canvasContainerMangaL {
+    position: fixed;
+    margin-top: 155px;
+    scale: 1;
+  }
 
-.canvasContainerMangaR {
-  position: fixed;
-  margin-top: 155px;
-  scale: 1;
-  transform: rotateZ(-7deg);
-}
+  .canvasContainerMangaR {
+    position: fixed;
+    margin-top: 155px;
+    scale: 1;
+    transform: rotateZ(-7deg);
+  }
 
-.canvasContainerCapuz {
-  position: fixed;
-  margin-top: -255px;
-  scale: 1;
-}
+  .canvasContainerCapuz {
+    position: fixed;
+    margin-top: -255px;
+    scale: 1;
+  }
 
-.canvas {
-  /* box-shadow: 0px 0px 25px rgba(255, 255, 255, 0.05); */
-  border-radius: 5px;
-  /* border: 3px solid #000; */
-  /* background-color: #0f0; */
-}
+  .canvas {
+    /* box-shadow: 0px 0px 25px rgba(255, 255, 255, 0.05); */
+    border-radius: 5px;
+    /* border: 3px solid #000; */
+    /* background-color: #0f0; */
+  }
 
-.canvasMesh {
-  box-shadow: 0px 0px 25px rgba(255, 255, 255, 0.05);
-  border-radius: 5px;
-  /* transform: rotateX(-20deg);
+  .canvasMesh {
+    box-shadow: 0px 0px 25px rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+    /* transform: rotateX(-20deg);
   border: 3px solid #000; */
-}
+  }
 
-.label {
-  font-family: "Inter";
-}
+  .label {
+    font-family: "Inter";
+  }
 
-/* Add this to your CSS file */
+  /* Add this to your CSS file */
 
-.loadingContainer {
-  height: 100vh;
-  width: 100%;
-  position: fixed;
-  z-index: 1000;
-  background-color: #f4f4f4;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
-  text-align: center;
-}
+  .loadingContainer {
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    z-index: 1000;
+    background-color: #f4f4f4;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    text-align: center;
+  }
 
-.loadingContainer p {
-  margin-top: 48vh;
-  color: #000;
-  font-family: "Inter";
-}
+  .loadingContainer p {
+    margin-top: 48vh;
+    color: #000;
+    font-family: "Inter";
+  }
 
-.inputText {
-  border: 0;
-  border-bottom: 0.5px solid #ccc;
-  width: 100%;
-  align-self: flex-end;
-  padding-bottom: 7px;
-  padding-top: 10px;
-  font-size: 14px;
-  color: #333;
-  font-family: "Inter";
-  letter-spacing: -0.8px;
-  resize: none;
-}
+  .inputText {
+    border: 0;
+    border-bottom: 0.5px solid #ccc;
+    width: 100%;
+    align-self: flex-end;
+    padding-bottom: 7px;
+    padding-top: 10px;
+    font-size: 14px;
+    color: #333;
+    font-family: "Inter";
+    letter-spacing: -0.8px;
+    resize: none;
+  }
 
-.inputText:focus {
-  outline: none;
-  border: 0;
-  border-bottom: 1px dotted #4a90e2; /* Replacing focus indication */
-}
+  .inputText:focus {
+    outline: none;
+    border: 0;
+    border-bottom: 1px dotted #4a90e2; /* Replacing focus indication */
+  }
 
-.alignBtns {
-  position: absolute;
-  bottom: 15px;
-  left: 25px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 10px;
-}
+  .alignBtns {
+    position: absolute;
+    bottom: 15px;
+    left: 25px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+  }
 
-.alignBtn {
-  border: 0;
-  background-color: #f2f2f2;
-  width: 40px;
-  height: 38px;
-  border-radius: 15px;
-  transition: all 0.3s ease-in-out;
-}
+  .alignBtn {
+    border: 0;
+    background-color: #f2f2f2;
+    width: 40px;
+    height: 38px;
+    border-radius: 15px;
+    transition: all 0.3s ease-in-out;
+  }
 
-.alignBtn:hover {
-  cursor: pointer;
-  border-radius: 5px;
-}
+  .alignBtn:hover {
+    cursor: pointer;
+    border-radius: 5px;
+  }
 
-.fontFamily {
-  position: absolute;
-  bottom: 75px;
-  left: 25px;
-  display: flex;
-  gap: 15px;
-}
+  .fontFamily {
+    position: absolute;
+    bottom: 75px;
+    left: 25px;
+    display: flex;
+    gap: 15px;
+  }
 
-.selectFonts {
-  width: 190px;
-  font-family: "Inter";
-  letter-spacing: -0.7px;
-  font-size: 14px;
-  -webkit-appearance: none; /* Removing default styling in Safari */
-  appearance: none;
-  height: 40px;
-}
-.inputSize {
-  width: 105px;
-  font-family: "Inter";
-  letter-spacing: -0.7px;
-  font-size: 14px;
-  -webkit-appearance: none; /* Removing default styling in Safari */
-  appearance: none;
-  height: 40px;
-}
+  .selectFonts {
+    width: 190px;
+    font-family: "Inter";
+    letter-spacing: -0.7px;
+    font-size: 14px;
+    -webkit-appearance: none; /* Removing default styling in Safari */
+    appearance: none;
+    height: 40px;
+  }
+  .inputSize {
+    width: 105px;
+    font-family: "Inter";
+    letter-spacing: -0.7px;
+    font-size: 14px;
+    -webkit-appearance: none; /* Removing default styling in Safari */
+    appearance: none;
+    height: 40px;
+  }
 
-.corInput {
-  width: 105px;
-  font-family: "Inter";
-  letter-spacing: -0.7px;
-  font-size: 14px;
-  margin-left: 5px;
-  -webkit-appearance: none; /* Removing default styling in Safari */
-  appearance: none;
-}
+  .corInput {
+    width: 105px;
+    font-family: "Inter";
+    letter-spacing: -0.7px;
+    font-size: 14px;
+    margin-left: 5px;
+    -webkit-appearance: none; /* Removing default styling in Safari */
+    appearance: none;
+  }
 
-.addCorBtn {
-  border: 0px;
-  width: 35px;
-  height: 35px;
-  border-radius: 100px;
-  border: 1px solid #f4f4f4;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
+  .addCorBtn {
+    border: 0px;
+    width: 35px;
+    height: 35px;
+    border-radius: 100px;
+    border: 1px solid #f4f4f4;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
 
-.addCorBtn:hover {
-  width: 45px;
-}
+  .addCorBtn:hover {
+    width: 45px;
+  }
 
-.zona {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+  .zona {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-.inputAtributos {
-  padding: 5px;
-  border: 0px;
-  border-bottom: 0.5px solid rgba(0, 0, 0, 0.5);
-  background-color: transparent;
-  width: 30px;
-  box-shadow: 0px;
-  outline: none;
-}
+  .inputAtributos {
+    padding: 5px;
+    border: 0px;
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.5);
+    background-color: transparent;
+    width: 30px;
+    box-shadow: 0px;
+    outline: none;
+  }
 
-.modelsZone {
-  position: fixed;
-  background-color: rgba(0, 0, 0, 0.2);
-  width: 100%;
-  height: 100vh;
-  bottom: 0px;
-  top: 0px;
-  z-index: 100;
-  align-self: center;
-  justify-content: center;
-  backdrop-filter: blur(5px);
-  transition: all 0.3s ease-in-out;
-}
+  .modelsZone {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: 100vh;
+    bottom: 0px;
+    top: 0px;
+    z-index: 100;
+    align-self: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease-in-out;
+  }
 
-.checkoutZone {
-  position: fixed;
-  background-color: rgba(0, 0, 0, 0.8);
-  width: 100%;
-  height: 100vh;
-  bottom: 0px;
-  top: 0px;
-  align-self: center;
-  justify-content: center;
-  backdrop-filter: blur(5px);
-  transition: all 0.3s ease-in-out;
-}
+  .checkoutZone {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100vh;
+    bottom: 0px;
+    top: 0px;
+    align-self: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease-in-out;
+  }
 
-.checkoutCor {
-  border-radius: 5px;
-}
+  .checkoutCor {
+    border-radius: 5px;
+  }
 
-.modelsList {
-  display: block;
-  margin: auto;
-  width: 50%;
-  border-radius: 25px;
-  justify-content: center;
-  margin-top: 20.1%;
-}
+  .modelsList {
+    display: block;
+    margin: auto;
+    width: 50%;
+    border-radius: 25px;
+    justify-content: center;
+    margin-top: 20.1%;
+  }
 
-.modelosBtns {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
+  .modelosBtns {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
 
-.modeloBtn {
-  border: 0px;
-  background-color: transparent;
-  transition: all 0.2s cubic-bezier(0.5, 0, 0, 1);
-}
+  .modeloBtn {
+    border: 0px;
+    background-color: transparent;
+    transition: all 0.2s cubic-bezier(0.5, 0, 0, 1);
+  }
 
-.modeloBtn:hover {
-  cursor: pointer;
-  transform: scale(1.161);
-}
+  .modeloBtn:hover {
+    cursor: pointer;
+    transform: scale(1.161);
+  }
 
-.modelosImgs {
-  border-radius: 15px;
-  transition: all 0.3s ease-in-out;
-}
+  .modelosImgs {
+    border-radius: 15px;
+    transition: all 0.3s ease-in-out;
+  }
 
-/* .modelosImgs:hover {
+  /* .modelosImgs:hover {
   box-shadow: 0 0 75px rgba(0, 161, 255, 0.2);
 } */
 
-.priceBtn {
-  padding-left: 15px;
-  padding-right: 15px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  border-radius: 25px;
-  background-color: #00bfff;
-  color: #fff;
-  font-family: "Inter";
-  letter-spacing: -0.8px;
-  border: 0;
-  align-self: center;
-  text-align: center;
-  display: block;
-  margin: auto;
-  transition: all 0.2s ease-in-out;
-  font-size: 15px;
-}
+  .priceBtn {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-radius: 25px;
+    background-color: #00bfff;
+    color: #fff;
+    font-family: "Inter";
+    letter-spacing: -0.8px;
+    border: 0;
+    align-self: center;
+    text-align: center;
+    display: block;
+    margin: auto;
+    transition: all 0.2s ease-in-out;
+    font-size: 15px;
+  }
 
-.priceBtn:hover {
-  cursor: pointer;
-  /* padding-right: 15px; */
-  padding-left: 25px;
-  padding-right: 25px;
-}
+  .priceBtn:hover {
+    cursor: pointer;
+    /* padding-right: 15px; */
+    padding-left: 25px;
+    padding-right: 25px;
+  }
 
-.tableEncomenda {
-  justify-content: space-between;
-  padding: 25px;
-  align-items: center;
-  align-self: center;
-  justify-content: center;
-  border-radius: 25px;
-  width: 100%;
-  align-self: center;
-}
+  .tableEncomenda {
+    justify-content: space-between;
+    padding: 25px;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    border-radius: 25px;
+    width: 100%;
+    align-self: center;
+  }
 
-.tableEncomenda td {
-  font-family: "Inter";
-  text-align: center;
-  letter-spacing: -0.6px;
-  text-transform: uppercase;
-}
+  .tableEncomenda td {
+    font-family: "Inter";
+    text-align: center;
+    letter-spacing: -0.6px;
+    text-transform: uppercase;
+  }
 
-.tableEncomenda th {
-  padding: 15px;
-  width: 0px;
-  color: #fff;
-  border-bottom: 1px solid #e8e8e9;
-  text-transform: uppercase;
-  font-size: 15px;
-  letter-spacing: -0.6px;
-  font-family: "Inter";
-}
+  .tableEncomenda th {
+    padding: 15px;
+    width: 0px;
+    color: #fff;
+    border-bottom: 1px solid #e8e8e9;
+    text-transform: uppercase;
+    font-size: 15px;
+    letter-spacing: -0.6px;
+    font-family: "Inter";
+  }
 
-.deleteButton {
-  margin-top: 80px;
-  background-color: transparent;
-  border: 0;
-  cursor: pointer;
-  transition: all 0.161s ease-in-out;
-}
+  .deleteButton {
+    margin-top: 80px;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: all 0.161s ease-in-out;
+  }
 
-.deleteButton:hover {
-  margin-top: 70px;
-  opacity: 0.8;
-}
+  .deleteButton:hover {
+    margin-top: 70px;
+    opacity: 0.8;
+  }
 
-/* .deleteButtonImage {
+  /* .deleteButtonImage {
   background-color: transparent;
   border: 0;
   display: flex;
@@ -889,19 +908,75 @@
   cursor: pointer;
 } */
 
-.deleteButtonImage {
-  background-color: transparent;
-  border: 0;
-  position: absolute;
-  right: 25px;
-  bottom: 25px;
-  transition: all 0.161s ease-in-out;
-  cursor: pointer;
+  .deleteButtonImage {
+    background-color: transparent;
+    border: 0;
+    position: absolute;
+    right: 25px;
+    bottom: 25px;
+    transition: all 0.161s ease-in-out;
+    cursor: pointer;
+  }
+
+  .deleteButtonImage:hover {
+    bottom: 20px;
+    opacity: 0.5;
+  }
 }
 
-.deleteButtonImage:hover {
-  bottom: 20px;
-  opacity: 0.5;
+@media only screen and (max-width: 715px) {
+  .editZone {
+    display: none;
+  }
+
+  .editZoneTlm {
+    position: fixed;
+    overflow-y: scroll;
+    padding: 20px;
+    background-color: #fff;
+    bottom: 0;
+    display: block;
+    opacity: 1;
+    box-shadow: 0 0 25px rgba(26, 26, 28, 0.025);
+    z-index: 10;
+    border-radius: 0px;
+    width: 100%;
+  }
+
+  .mainBtns {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    align-self: center;
+    justify-content: center;
+  }
+
+  .mainBtns button {
+    border: 0;
+    border-radius: 100px;
+    background-color: #f2f2f2;
+    padding: 7px;
+  }
+
+  .editZoneCor,
+  .editZoneText,
+  .editZoneImg {
+    position: fixed;
+    overflow-y: scroll;
+    padding: 25px;
+    background-color: #fff;
+    top: auto;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    transition: all 0.417s ease-in-out;
+    display: block;
+    opacity: 1;
+    box-shadow: 0 0 25px rgba(26, 26, 28, 0.025);
+    z-index: 10;
+    border-radius: 35px;
+    width: auto;
+  }
 }
 
 @font-face {

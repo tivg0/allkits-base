@@ -1330,161 +1330,176 @@ const ThreeDViewer = () => {
       </div>
 
       {editingComponent.current && (
-        <div ref={editZoneRef} className={styles.editZone}>
-          <div className={styles.nameZone}>
-            <button onClick={closeEditor} className={styles.fileUploadLabeal}>
-              <p
-                style={{
-                  marginTop: -16,
-                  justifyContent: "center",
-                  fontSize: 14.5,
-                  color: "#fff",
-                }}
-              >
-                &#10005;
-              </p>
-            </button>
-            <div>
-              <p className={styles.trititle}>
-                A Costumizar{" "}
-                <b className={styles.subtitle}>
-                  {getPartName(editingComponent.current.name)}
-                  {/* {editingComponent.current.name} */}
-                </b>
-              </p>
+        <>
+          <div ref={editZoneRef} className={styles.editZone}>
+            <div className={styles.nameZone}>
+              <button onClick={closeEditor} className={styles.fileUploadLabeal}>
+                <p
+                  style={{
+                    marginTop: -16,
+                    justifyContent: "center",
+                    fontSize: 14.5,
+                    color: "#fff",
+                  }}
+                >
+                  &#10005;
+                </p>
+              </button>
+              <div>
+                <p className={styles.trititle}>
+                  A Costumizar{" "}
+                  <b className={styles.subtitle}>
+                    {getPartName(editingComponent.current.name)}
+                    {/* {editingComponent.current.name} */}
+                  </b>
+                </p>
+              </div>
+
+              <button
+                className={styles.fileUploadLabeal}
+                style={{ opacity: 0 }}
+              />
             </div>
 
-            <button
-              className={styles.fileUploadLabeal}
-              style={{ opacity: 0 }}
-            />
-          </div>
-
-          <div className={styles.editHeader}>
-            <div>
-              {editingComponentHTML.includes("COR") ? (
-                <button
-                  onClick={colorEditorTab}
-                  className={styles.divAreaEspecifica}
-                  style={{ borderWidth: 0 }}
-                >
-                  <div className={styles.divIcon}>
-                    <NextImage
-                      src={colorIcon}
-                      width={20}
-                      height={20}
-                      alt="step"
-                    />
-                  </div>
-                  <div>
-                    <p className={styles.titleText}>Cor</p>
-                    <p className={styles.infoText}>
-                      Dá um toque final ao teu produto.
-                    </p>
-                  </div>
-                </button>
-              ) : (
-                <>
-                  {editingComponentHTML.includes("MIX") ? (
-                    <>
-                      <button
-                        onClick={imageEditorTab}
-                        className={styles.divAreaEspecifica}
-                      >
-                        {/* <input
+            <div className={styles.editHeader}>
+              <div>
+                {editingComponentHTML.includes("COR") ? (
+                  <button
+                    onClick={colorEditorTab}
+                    className={styles.divAreaEspecifica}
+                    style={{ borderWidth: 0 }}
+                  >
+                    <div className={styles.divIcon}>
+                      <NextImage
+                        src={colorIcon}
+                        width={20}
+                        height={20}
+                        alt="step"
+                      />
+                    </div>
+                    <div>
+                      <p className={styles.titleText}>Cor</p>
+                      <p className={styles.infoText}>
+                        Dá um toque final ao teu produto.
+                      </p>
+                    </div>
+                  </button>
+                ) : (
+                  <>
+                    {editingComponentHTML.includes("MIX") ? (
+                      <>
+                        <button
+                          onClick={imageEditorTab}
+                          className={styles.divAreaEspecifica}
+                        >
+                          {/* <input
                           type="file"
                           accept="image/*"
                           onClick={imageEditorTab}
                           //   onChange={handleImage}
                           className={styles.uploadImgHiddenInput}
                         /> */}
-                        <div className={styles.divIcon}>
-                          <NextImage
-                            src={galeryIcon}
-                            width={20}
-                            height={20}
-                            alt="step"
-                          />
-                        </div>
-                        <div>
-                          <p className={styles.titleText}>Imagem</p>
-                          <p className={styles.infoText}>
-                            Remover cores e alterar os atributos.
-                          </p>
-                        </div>
-                      </button>
-                      <button
-                        onClick={textEditorTab}
-                        className={styles.divAreaEspecifica}
+                          <div className={styles.divIcon}>
+                            <NextImage
+                              src={galeryIcon}
+                              width={20}
+                              height={20}
+                              alt="step"
+                            />
+                          </div>
+                          <div>
+                            <p className={styles.titleText}>Imagem</p>
+                            <p className={styles.infoText}>
+                              Remover cores e alterar os atributos.
+                            </p>
+                          </div>
+                        </button>
+                        <button
+                          onClick={textEditorTab}
+                          className={styles.divAreaEspecifica}
+                        >
+                          <div className={styles.divIcon}>
+                            <NextImage
+                              src={textIcon}
+                              width={20}
+                              height={20}
+                              alt="step"
+                            />
+                          </div>
+                          <div>
+                            <p className={styles.titleText}>Texto</p>
+                            <p className={styles.infoText}>
+                              Cor, fontes, tamanhos e alinhamentos.
+                            </p>
+                          </div>
+                        </button>
+                        <button
+                          onClick={colorEditorTab}
+                          className={styles.divAreaEspecifica}
+                          style={{ borderWidth: 0 }}
+                        >
+                          <div className={styles.divIcon}>
+                            <NextImage
+                              src={colorIcon}
+                              width={20}
+                              height={20}
+                              alt="step"
+                            />
+                          </div>
+                          <div>
+                            <p className={styles.titleText}>Cor</p>
+                            <p className={styles.infoText}>
+                              Dá um toque final ao teu produto.
+                            </p>
+                          </div>
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {editingComponentHTML.includes("IMP") && (
+                          <>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleImage}
+                              style={{
+                                padding: "50px",
+                                backgroundColor: "#234567",
+                                position: "absolute",
+                                top: "100px",
+                              }}
+                            />
+                          </>
+                        )}
+                      </>
+                    )}
+                    {editingComponentHTML.includes("NOT") && (
+                      <p
+                        style={{ marginTop: 75, textAlign: "center" }}
+                        className={styles.infoText}
                       >
-                        <div className={styles.divIcon}>
-                          <NextImage
-                            src={textIcon}
-                            width={20}
-                            height={20}
-                            alt="step"
-                          />
-                        </div>
-                        <div>
-                          <p className={styles.titleText}>Texto</p>
-                          <p className={styles.infoText}>
-                            Cor, fontes, tamanhos e alinhamentos.
-                          </p>
-                        </div>
-                      </button>
-                      <button
-                        onClick={colorEditorTab}
-                        className={styles.divAreaEspecifica}
-                        style={{ borderWidth: 0 }}
-                      >
-                        <div className={styles.divIcon}>
-                          <NextImage
-                            src={colorIcon}
-                            width={20}
-                            height={20}
-                            alt="step"
-                          />
-                        </div>
-                        <div>
-                          <p className={styles.titleText}>Cor</p>
-                          <p className={styles.infoText}>
-                            Dá um toque final ao teu produto.
-                          </p>
-                        </div>
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      {editingComponentHTML.includes("IMP") && (
-                        <>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImage}
-                            style={{
-                              padding: "50px",
-                              backgroundColor: "#234567",
-                              position: "absolute",
-                              top: "100px",
-                            }}
-                          />
-                        </>
-                      )}
-                    </>
-                  )}
-                  {editingComponentHTML.includes("NOT") && (
-                    <p
-                      style={{ marginTop: 75, textAlign: "center" }}
-                      className={styles.infoText}
-                    >
-                      Não é possível personalizar esta área
-                    </p>
-                  )}
-                </>
-              )}
+                        Não é possível personalizar esta área
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+          <div className={styles.editZoneTlm}>
+            <div className={styles.mainBtns}>
+              <button onClick={imageEditorTab}>
+                <NextImage src={galeryIcon} width={20} height={20} />
+              </button>
+              <button onClick={textEditorTab}>
+                <NextImage src={textIcon} width={20} height={20} />
+              </button>
+              <button onClick={colorEditorTab}>
+                <NextImage src={colorIcon} width={20} height={20} />
+              </button>
+            </div>
+          </div>
+        </>
       )}
       <div className={styles.priceBtnMain}>
         {preview && (
