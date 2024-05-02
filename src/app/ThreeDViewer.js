@@ -30,6 +30,7 @@ import ColorEditor from "./ColorEditor";
 import ImageEditor from "./ImageEditor";
 import TextEditor from "./TextEditor";
 import { fontList } from "./fonts";
+import { useRouter } from "next/navigation";
 
 const ThreeDViewer = () => {
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
@@ -43,7 +44,7 @@ const ThreeDViewer = () => {
   //limitar scales
   //tolerance proporcional a scale DONE
   //raycaster layers
-
+  const router = useRouter();
   //three variables-----------------------------------------------------------------------------------------------
   let editingComponent = useRef(null);
   const fabricCanvasRef = useRef(null);
@@ -186,6 +187,8 @@ const ThreeDViewer = () => {
   const [textAlign, setTextAlign] = useState("center");
   const [fontFamily, setFontFamily] = useState("Arial");
 
+  const [docId, setDocId] = useState("");
+
   //load fabric canvas--------------------------------------------------------------------------------------------
   useEffect(() => {
     fabricCanvas.current = new fabric.Canvas("fabric-canvas", {
@@ -216,6 +219,13 @@ const ThreeDViewer = () => {
       if (!response.ok) {
         throw new Error("Failed to convert scene to JSON");
       }
+
+      const data = await response.json(); // Parse JSON response
+      const id = data.docId; // Access the docId field
+
+      setDocId(id);
+
+      // You can do further processing with the docId here if needed
     } catch (error) {
       console.error("Error:", error);
     }
@@ -226,7 +236,7 @@ const ThreeDViewer = () => {
 
     //three set up-------------------------------------------------------------------------------------------------
     const scene = new THREE.Scene();
-    // sceneRef.current = scene; // Assign the created scene to the ref
+    sceneRef.current = scene; // Assign the created scene to the ref
 
     scene.background = new THREE.Color(0xf4f4f4);
     const camera = new THREE.PerspectiveCamera(
@@ -1829,6 +1839,11 @@ const ThreeDViewer = () => {
             >
               PREÇO TOTAL ESTIMADO (POR UN.)
             </p>
+            {docId != "" && (
+              <button onClick={() => router.push(`/visualize/${docId}`)}>
+                Abrir pré-visualização
+              </button>
+            )}
 
             <h1
               id="precoFinal"
