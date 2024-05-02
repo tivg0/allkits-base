@@ -201,18 +201,18 @@ const ThreeDViewer = () => {
     return () => fabricCanvas.current.dispose();
   }, [canvasSize]);
 
-  // function getActiveScene() {
-  //   let sceneJson = containerRef.current.toJSON();
-  //   let jsonString = JSON.stringify(sceneJson);
-  //   console.log(jsonString);
-  // }
+   function getActiveScene() {
+     let sceneJson = sceneRef.current.toJSON();
+     let jsonString = JSON.stringify(sceneJson);
+     console.log(jsonString);
+   }
 
   useEffect(() => {
     if (!fabricTexture) return;
 
     //three set up-------------------------------------------------------------------------------------------------
     const scene = new THREE.Scene();
-    // sceneRef.current = scene; // Assign the created scene to the ref
+    sceneRef.current = scene; // Assign the created scene to the ref
 
     scene.background = new THREE.Color(0xf4f4f4);
     const camera = new THREE.PerspectiveCamera(
@@ -491,6 +491,7 @@ const ThreeDViewer = () => {
           //não existe nenhum editing component ativo
         } else {
           editingComponent.current = intersections[0].object;
+          console.log(editingComponent.current);
           //console.log(editingComponent.current.name)
           if (!editingComponent.current.userData.canva) {
             //console.log('crating canva');
@@ -574,8 +575,8 @@ const ThreeDViewer = () => {
       updateTexture();
 
       if (editingComponent.current)
-        setEditingComponentHTML(editingComponent.current.userData.name);
-      else if (!editingComponent.current) setEditingComponentHTML("hoodInCOR");
+        setEditingComponentHTML(editingComponent.current.name);
+      else if (!editingComponent.current) setEditingComponentHTML(null);
     };
 
     const onMouseMove = (e) => {
@@ -650,14 +651,16 @@ const ThreeDViewer = () => {
                         activeObject.aCoords.bl.y
                       ),
                     };
-                    activeObject.set({
-                      left: aCoords.tl.lerp(aCoords.br).x,
-                      top: aCoords.tl.lerp(aCoords.br).y,
-                      scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
-                      scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
-                      originX: "center",
-                      originY: "center",
-                    });
+                    if (activeObject instanceof fabric.Image) {
+                      activeObject.set({
+                        left: aCoords.tl.lerp(aCoords.br).x,
+                        top: aCoords.tl.lerp(aCoords.br).y,
+                        scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
+                        scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
+                        originX: "center",
+                        originY: "center",
+                      });
+                    }
                     break;
 
                   case "tl":
@@ -689,14 +692,16 @@ const ThreeDViewer = () => {
                       ),
                     };
 
-                    activeObject.set({
-                      left: aCoords.tl.lerp(aCoords.br).x,
-                      top: aCoords.tl.lerp(aCoords.br).y,
-                      scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
-                      scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
-                      originX: "center",
-                      originY: "center",
-                    });
+                    if (activeObject instanceof fabric.Image) {
+                      activeObject.set({
+                        left: aCoords.tl.lerp(aCoords.br).x,
+                        top: aCoords.tl.lerp(aCoords.br).y,
+                        scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
+                        scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
+                        originX: "center",
+                        originY: "center",
+                      });
+                    }
                     break;
 
                   case "bl":
@@ -728,14 +733,16 @@ const ThreeDViewer = () => {
                       ),
                     };
 
-                    activeObject.set({
-                      left: aCoords.tl.lerp(aCoords.br).x,
-                      top: aCoords.tl.lerp(aCoords.br).y,
-                      scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
-                      scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
-                      originX: "center",
-                      originY: "center",
-                    });
+                    if (activeObject instanceof fabric.Image) {
+                      activeObject.set({
+                        left: aCoords.tl.lerp(aCoords.br).x,
+                        top: aCoords.tl.lerp(aCoords.br).y,
+                        scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
+                        scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
+                        originX: "center",
+                        originY: "center",
+                      });
+                    }
                     break;
 
                   case "br":
@@ -767,14 +774,16 @@ const ThreeDViewer = () => {
                       ),
                     };
 
-                    activeObject.set({
-                      left: aCoords.tl.lerp(aCoords.br).x,
-                      top: aCoords.tl.lerp(aCoords.br).y,
-                      scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
-                      scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
-                      originX: "center",
-                      originY: "center",
-                    });
+                    if (activeObject instanceof fabric.Image) {
+                      activeObject.set({
+                        left: aCoords.tl.lerp(aCoords.br).x,
+                        top: aCoords.tl.lerp(aCoords.br).y,
+                        scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
+                        scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
+                        originX: "center",
+                        originY: "center",
+                      });
+                    }
                     break;
 
                   case "mb":
@@ -800,14 +809,25 @@ const ThreeDViewer = () => {
                       ),
                     };
 
-                    activeObject.set({
-                      left: aCoords.tl.lerp(aCoords.br).x,
-                      top: aCoords.tl.lerp(aCoords.br).y,
-                      scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
-                      scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
-                      originX: "center",
-                      originY: "center",
-                    });
+                    if (activeObject instanceof fabric.Image) {
+                      activeObject.set({
+                        left: aCoords.tl.lerp(aCoords.br).x,
+                        top: aCoords.tl.lerp(aCoords.br).y,
+                        scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
+                        scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
+                        originX: "center",
+                        originY: "center",
+                      });
+                    } else {
+                      activeObject.set({
+                        top: aCoords.tl.lerp(aCoords.br).y,
+                        height: aCoords.tl.distanceFrom(aCoords.bl),
+                        scaleY: 1,
+                        paddingBottom: activeObject.padding + newDY,
+                        originX: "center",
+                        originY: "center",
+                      });
+                    }
                     break;
 
                   case "mt":
@@ -833,14 +853,16 @@ const ThreeDViewer = () => {
                       ),
                     };
 
-                    activeObject.set({
-                      left: aCoords.tl.lerp(aCoords.br).x,
-                      top: aCoords.tl.lerp(aCoords.br).y,
-                      scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
-                      scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
-                      originX: "center",
-                      originY: "center",
-                    });
+                    if (activeObject instanceof fabric.Image) {
+                      activeObject.set({
+                        left: aCoords.tl.lerp(aCoords.br).x,
+                        top: aCoords.tl.lerp(aCoords.br).y,
+                        scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
+                        scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
+                        originX: "center",
+                        originY: "center",
+                      });
+                    }
                     break;
 
                   case "mr":
@@ -866,14 +888,24 @@ const ThreeDViewer = () => {
                       ),
                     };
 
-                    activeObject.set({
-                      left: aCoords.tl.lerp(aCoords.br).x,
-                      top: aCoords.tl.lerp(aCoords.br).y,
-                      scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
-                      scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
-                      originX: "center",
-                      originY: "center",
-                    });
+                    if (activeObject instanceof fabric.Image) {
+                      activeObject.set({
+                        left: aCoords.tl.lerp(aCoords.br).x,
+                        top: aCoords.tl.lerp(aCoords.br).y,
+                        scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
+                        scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
+                        originX: "center",
+                        originY: "center",
+                      });
+                    } else {
+                      const deltaVec = new fabric.Point(newDX, newDX);
+  
+                      activeObject.set({
+                        width: activeObject.width + (deltaVec.distanceFrom(new fabric.Point(0,0)) * (newDX / Math.abs(newDX))),
+                      });
+                    }
+
+
 
                     break;
 
@@ -899,14 +931,16 @@ const ThreeDViewer = () => {
                       ),
                     };
 
-                    activeObject.set({
-                      left: aCoords.tl.lerp(aCoords.br).x,
-                      top: aCoords.tl.lerp(aCoords.br).y,
-                      scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
-                      scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
-                      originX: "center",
-                      originY: "center",
-                    });
+                    if (activeObject instanceof fabric.Image) {
+                      activeObject.set({
+                        left: aCoords.tl.lerp(aCoords.br).x,
+                        top: aCoords.tl.lerp(aCoords.br).y,
+                        scaleX: aCoords.tl.distanceFrom(aCoords.tr) / width,
+                        scaleY: aCoords.tl.distanceFrom(aCoords.bl) / height,
+                        originX: "center",
+                        originY: "center",
+                      });
+                    }
                     break;
 
                   case "mtr":
@@ -947,7 +981,7 @@ const ThreeDViewer = () => {
             if (fabricCanvas.current.getActiveObject()) {
               const obj = fabricCanvas.current.getActiveObject();
               fabricCanvas.current.getActiveObject().set({
-                cornerSize: (obj.width * obj.scaleX) / 10,
+                cornerSize: (obj.width * obj.scaleX + obj.height * obj.scaleY) / 10,
               });
             }
             fabricCanvas.current.renderAll();
@@ -1128,10 +1162,15 @@ const ThreeDViewer = () => {
       }
       textbox.set("fontFamily", "Arial");
 
-      textbox.setControlsVisibility({
+      /*textbox.setControlsVisibility({
         mt: false,
         mb: false,
-      });
+        tr: false,
+        tl: false,
+        br: false,
+        bl: false,
+        ml: false,
+      });*/
 
       // Add the textbox to the canvas
       canvas.add(textbox);
@@ -1207,6 +1246,8 @@ const ThreeDViewer = () => {
 
     console.log("active object selecionado", activeObject);
   }, [activeObject]);
+
+
 
   // Função para retroceder ao nome anterior
   const retrocederZona = () => {
@@ -1494,7 +1535,7 @@ const ThreeDViewer = () => {
       <div className={styles.exportBtnNot}>
         <button
           onClick={() => {
-            // getActiveScene();
+            getActiveScene();
             calcularEImprimirAreasOcupadas();
             logAllObjectsFromAllCanvases();
             setPreview(!preview);

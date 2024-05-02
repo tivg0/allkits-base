@@ -317,6 +317,28 @@ const ImageEditor = forwardRef(
       }
     };
 
+    const handleFlipH = () => {
+      if (fabricCanvas.current.getActiveObject()) {
+        const obj = fabricCanvas.current.getActiveObject();
+        obj.set({
+          flipX: !obj.flipX,
+        });
+        fabricCanvas.current.renderAll();
+        updateTexture();
+      }
+    }
+
+    const handleFlipV = () => {
+      if (fabricCanvas.current.getActiveObject()) {
+        const obj = fabricCanvas.current.getActiveObject();
+        obj.set({
+          flipY: !obj.flipY,
+        });
+        fabricCanvas.current.renderAll();
+        updateTexture();
+      }
+    }
+
     return (
       <>
         <div style={{ height: heightWindow }} className={styles.editZoneImg}>
@@ -381,6 +403,44 @@ const ImageEditor = forwardRef(
                         <p className={styles.titleText}>Remover Cor</p>
                         <p className={styles.infoText}>
                           Remove cores das tuas imagens.
+                        </p>
+                      </div>
+                    </button>
+                    <button
+                      className={styles.divAreaEspecifica}
+                      style={{ borderWidth: 0 }}
+                      onClick={handleFlipH}
+                    >
+                      <div className={styles.divIcon}>
+                        <img
+                          src={"./removeIcon.png"}
+                          style={{ width: 25, height: 25 }}
+                          alt="Description"
+                        />
+                      </div>
+                      <div>
+                        <p className={styles.titleText}>Inverter Horizontalmente</p>
+                        <p className={styles.infoText}>
+                          Espelha a imagem no eixo horizontal
+                        </p>
+                      </div>
+                    </button>
+                    <button
+                      className={styles.divAreaEspecifica}
+                      style={{ borderWidth: 0 }}
+                      onClick={handleFlipV}
+                    >
+                      <div className={styles.divIcon}>
+                        <img
+                          src={"./removeIcon.png"}
+                          style={{ width: 25, height: 25 }}
+                          alt="Description"
+                        />
+                      </div>
+                      <div>
+                        <p className={styles.titleText}>Inverter Vertical</p>
+                        <p className={styles.infoText}>
+                          Espelha a imagem no eixo vertical
                         </p>
                       </div>
                     </button>

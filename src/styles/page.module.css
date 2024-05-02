@@ -785,7 +785,7 @@
 .modeloBtn {
   border: 0px;
   background-color: transparent;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s cubic-bezier(.5,0,0,1);
 }
 
 .modeloBtn:hover {
