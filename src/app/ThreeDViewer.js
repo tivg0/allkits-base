@@ -1232,6 +1232,48 @@ const ThreeDViewer = () => {
     // Dispatch the event on the container
     containerRef.current.dispatchEvent(event);
   };
+  const backgroundMagic = useRef(null);
+  const modelosZone = useRef(null);
+  const modelos = useRef(null);
+  const titleModels = useRef(null);
+
+  const magicLoading = () => {
+    if (backgroundMagic.current) {
+      backgroundMagic.current.style.backgroundColor = "transparent";
+      backgroundMagic.current.style.backdropFilter = "blur(0px)";
+      backgroundMagic.current.style.transition = "all 1.6s ease-in-out";
+    }
+
+    // if (modelosZone) {
+    //   modelosZone.current.style.scale = "0";
+    //   modelosZone.current.style.transition = "all 1.6s ease-in-out";
+    // }
+
+    if (modelos) {
+      modelos.current.style.gap = "1000px";
+      modelos.current.style.transition = "all 1.6s ease-in-out";
+    }
+
+    if (titleModels) {
+      titleModels.current.style.marginTop = "-100%";
+      titleModels.current.style.transition = "all 1.6s ease-in-out";
+    }
+  };
+
+  const logAllObjectsFromAllCanvases = () => {
+    fabricCanvases.forEach((canvas, index) => {
+      if (!canvas) {
+        console.log(`No canvas found for index ${index}.`);
+        return;
+      }
+
+      const objects = canvas.getObjects();
+      console.log(`Logging all objects from canvas ${index + 1}:`);
+      objects.forEach((obj, objIndex) => {
+        console.log(`Canvas ${index + 1}, Object ${objIndex + 1}:`, obj);
+      });
+    });
+  };
 
   return (
     <>
@@ -1269,64 +1311,6 @@ const ThreeDViewer = () => {
             }}
           />
         </div>
-        {/* <div className={styles.bottomBar}>
-          <div>
-            <div className={styles.headerNomes}>
-              <button className={styles.buttonArrows} onClick={retrocederZona}>
-                &#8592;
-              </button>
-              <p className={styles.nomeZonas}>{objectNames[currentIndex]}</p>
-              <button className={styles.buttonArrows} onClick={avancarZona}>
-                &#8594;
-              </button>
-            </div>
-          </div>
-          <div
-            // className={`${styles.footerNomes} ${
-            //   isHovering ? styles.footerNomesVisible : ""
-            // }`}
-            className={styles.footerNomes}
-          >
-            <button
-              // onClick={goToMenu}
-              className={styles.settingsBtn}
-            >
-              <NextImage
-                className={styles.settingsIcon}
-                src={galeryIcon}
-                width={20}
-                height={20}
-                alt="step"
-              />
-            </button>
-            <button
-              // onClick={goToMenu}
-              style={{ fontSize: 16 }}
-              className={styles.settingsBtn}
-            >
-              <NextImage
-                className={styles.settingsIcon}
-                src={textIcon}
-                width={20}
-                height={20}
-                alt="step"
-              />
-            </button>
-            <button
-              // onClick={goToMenu}
-              style={{ display: "flex" }}
-              className={styles.settingsBtn}
-            >
-              <NextImage
-                className={styles.settingsIcon}
-                src={colorIcon}
-                width={20}
-                height={20}
-                alt="step"
-              />
-            </button>
-          </div>
-        </div> */}
       </div>
 
       {editingComponent.current && (
@@ -1496,6 +1480,7 @@ const ThreeDViewer = () => {
           onClick={() => {
             // getActiveScene();
             calcularEImprimirAreasOcupadas();
+            logAllObjectsFromAllCanvases();
             setPreview(!preview);
             setTimeout(() => {
               closeEditor();
@@ -1554,9 +1539,10 @@ const ThreeDViewer = () => {
         />
       )} */}
       {escolheBtn == false && (
-        <div className={styles.modelsZone}>
-          <div className={styles.modelsList}>
+        <div ref={backgroundMagic} className={styles.modelsZone}>
+          <div ref={modelosZone} className={styles.modelsList}>
             <h1
+              ref={titleModels}
               className={styles.title}
               style={{
                 textAlign: "center",
@@ -1567,104 +1553,101 @@ const ThreeDViewer = () => {
             >
               ESCOLHE O TEU MODELO
             </h1>
-            <div className={styles.modelosBtns}>
+            <div ref={modelos} className={styles.modelosBtns}>
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
-                  setModel("1");
-                  setIsLoading(true);
-                  setTutorial(true);
-                  setEscolheBtn(true);
+                  magicLoading();
                   setTimeout(() => {
                     simulateCenterClick();
+                    setEscolheBtn(true);
                   }, 1610);
+                  setModel("1");
+
+                  setTutorial(true);
                 }}
               >
                 <NextImage
                   src={model1}
                   className={styles.modelosImgs}
-                  width={200}
-                  height={200}
+                  width={150}
+                  height={150}
                 />
               </button>
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("2");
-                  setIsLoading(true);
-
-                  setTutorial(true);
-                  setEscolheBtn(true);
+                  magicLoading();
                   setTimeout(() => {
                     simulateCenterClick();
+                    setEscolheBtn(true);
                   }, 1610);
+                  setTutorial(true);
                 }}
               >
                 <NextImage
                   src={model2}
                   className={styles.modelosImgs}
-                  width={200}
-                  height={200}
+                  width={150}
+                  height={150}
                 />
               </button>
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("3");
-                  setIsLoading(true);
-
-                  setTutorial(true);
-                  setEscolheBtn(true);
+                  magicLoading();
                   setTimeout(() => {
                     simulateCenterClick();
+                    setEscolheBtn(true);
                   }, 1610);
+                  setTutorial(true);
                 }}
               >
                 <NextImage
                   src={model3}
                   className={styles.modelosImgs}
-                  width={200}
-                  height={200}
+                  width={150}
+                  height={150}
                 />
               </button>
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("4");
-                  setIsLoading(true);
-
-                  setTutorial(true);
-                  setEscolheBtn(true);
+                  magicLoading();
                   setTimeout(() => {
                     simulateCenterClick();
+                    setEscolheBtn(true);
                   }, 1610);
+                  setTutorial(true);
                 }}
               >
                 <NextImage
                   src={model4}
                   className={styles.modelosImgs}
-                  width={200}
-                  height={200}
+                  width={150}
+                  height={150}
                 />
               </button>
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
                   setModel("5");
-                  setIsLoading(true);
-
-                  setTutorial(true);
-                  setEscolheBtn(true);
+                  magicLoading();
                   setTimeout(() => {
                     simulateCenterClick();
+                    setEscolheBtn(true);
                   }, 1610);
+                  setTutorial(true);
                 }}
               >
                 <NextImage
                   src={model5}
                   className={styles.modelosImgs}
-                  width={200}
-                  height={200}
+                  width={150}
+                  height={150}
                 />
               </button>
             </div>
