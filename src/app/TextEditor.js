@@ -1,6 +1,9 @@
 import React, { useRef, useState, useEffect, forwardRef } from "react";
 import styles from "@/styles/page.module.css";
 import { fontList } from "./fonts";
+import deleteIcon from "@/imgs/binIcon.png";
+import NextImage from "next/image";
+
 const TextEditor = forwardRef(
   (
     {
@@ -38,20 +41,17 @@ const TextEditor = forwardRef(
       }
     }, [activeObject]);
 
-    // useEffect(() => {
-    //   handleDelete();
-    // }, [deleteBtn]);
-
-    // const handleDelete = () => {
-    //   // setDeleteBtn(!deleteBtn);
-    //   if (fabricCanvas.current && activeObject) {
-    //     fabricCanvas.current.remove(activeObject);
-    //     fabricCanvas.current.discardActiveObject(); // Remove a seleção atual
-    //     fabricCanvas.current.requestRenderAll(); // Atualiza o canvas
-    //     // closeTabs(); // Fecha as abas de edição se necessário
-    //     updateTexture(); // Atualiza a textura para refletir as mudanças
-    //   }
-    // };
+    const handleDelete = () => {
+      setDeleteBtn(!deleteBtn);
+      if (fabricCanvas.current && activeObject) {
+        fabricCanvas.current.remove(activeObject);
+        fabricCanvas.current.discardActiveObject(); // Remove a seleção atual
+        fabricCanvas.current.renderAll(); // Atualiza o canvas
+        // closeTabs(); // Fecha as abas de edição se necessário
+        updateTexture(); // Atualiza a textura para refletir as mudanças
+        closeTabs();
+      }
+    };
 
     // const handleTextChange = (newText, targetCanvasId) => {
     //   setText(newText); // Update the text state
@@ -83,7 +83,9 @@ const TextEditor = forwardRef(
       updateTexture(); // Update the texture to reflect the changes
     };
 
-    const handleSizeChange = (newSize) => {
+    const handleSizeChange = (e) => {
+      const newSize = e.target.value;
+
       // Check which canvas is currently being targeted and if there's an active object selected
       if (fabricCanvas.current && activeObject) {
         // Update text for the active object in fabricCanvas
@@ -203,7 +205,9 @@ const TextEditor = forwardRef(
                   onChange={handleTextChange}
                 />
 
-                <button className={styles.deleteButton}>Excluir Texto</button>
+                <button onClick={handleDelete} className={styles.deleteButton}>
+                  <NextImage src={deleteIcon} width={25} height={25} />
+                </button>
                 <div className={styles.fontFamily}>
                   <div>
                     <p
@@ -255,9 +259,10 @@ const TextEditor = forwardRef(
                         letterSpacing: -0.8,
                         marginBottom: 5,
                         fontFamily: "Inter",
+                        marginLeft: 5,
                       }}
                     >
-                      Tamanho
+                      Cor do texto
                     </p>
                     <div>
                       <select
@@ -269,25 +274,39 @@ const TextEditor = forwardRef(
                           borderRadius: 100,
                         }}
                         className={styles.inputSize}
-                        value={fontSize} // Ensure the selected value is controlled by the state
+                        value={fillColor} // Control the selected value with the state
                         onChange={(e) => {
-                          const newSize = parseInt(e.target.value, 10);
-                          handleSizeChange(newSize);
-
+                          const newFill = e.target.value;
+                          handleFill(newFill);
                           updateTexture(); // Aplica a nova fonte ao objeto ativo
                         }}
                       >
-                        <option defaultValue value="15">
-                          15
-                        </option>
-                        {/* Ensure this matches the state's initial value */}
-                        <option value="50">50</option>
-                        <option value="75">75</option>
-                        <option value="100">100</option>
+                        <option value="#feff00">Amerelo Claro</option>
+                        <option value="#88bcec">Azul</option>
+                        <option value="#f8c404">Amarelo</option>
+                        <option value="#000000">Preto</option>
+                        <option value="#90240c">Castanho Avermelhado</option>
+
+                        <option value="#90240c">Verde</option>
+                        <option value="#f0540c">Vermelho Claro</option>
+                        <option value="#1004d4">Azul Escuro</option>
+                        <option value="#08a4d4">Azul Água</option>
+                        <option value="#600c14">Castanho</option>
+
+                        <option value="#48cc3c">Verde Claro</option>
+                        <option value="#d8d49c">Dourado-Bege</option>
+                        <option value="#c8c4c4">Cinza</option>
+                        <option value="#082c0c">Verde Escuro</option>
+                        <option value="#080c1c">Azul-Preto</option>
+
+                        <option value="#d02414">Vermelho</option>
+                        <option value="#68147c">Violeta</option>
+                        <option value="#ffffff">Branco</option>
                       </select>
                     </div>
                   </div>
                 </div>
+                <br></br>
                 <div className={styles.alignBtns}>
                   <button
                     onClick={() => {
@@ -335,42 +354,26 @@ const TextEditor = forwardRef(
                       alt="Description"
                     />
                   </button>
-                  <div>
+                  <div style={{ marginLeft: 10 }}>
                     <p
                       style={{
                         color: "#666",
                         fontSize: 13,
                         letterSpacing: -0.8,
-                        marginBottom: 5,
+                        marginBottom: 0,
                         fontFamily: "Inter",
-                        marginLeft: 5,
                       }}
                     >
-                      Cor do texto
+                      Tamanho
                     </p>
                     <div>
-                      <select
-                        style={{
-                          backgroundColor: "#f2f2f2",
-                          border: 0,
-                          paddingLeft: 10,
-                          padding: 7,
-                          borderRadius: 100,
-                        }}
-                        className={styles.inputSize}
-                        value={fillColor} // Control the selected value with the state
-                        onChange={(e) => {
-                          const newFill = e.target.value;
-                          handleFill(newFill);
-                          updateTexture(); // Aplica a nova fonte ao objeto ativo
-                        }}
-                      >
-                        <option value="#000000">Preto</option>
-                        <option value="#ffffff">Branco</option>
-                        <option value="#ffff00">Amerelo</option>
-                        <option value="#ff0000">Vermelho</option>
-                        <option value="#00bfff">Azul</option>
-                      </select>
+                      <input
+                        className={styles.inputText}
+                        style={{ width: 90 }}
+                        value={fontSize}
+                        // value={text} // Display text from the active object
+                        onChange={handleSizeChange}
+                      />
                     </div>
                   </div>
                 </div>

@@ -21,11 +21,11 @@ import styles from "@/styles/page.module.css";
 import galeryIcon from "../imgs/galeryBlack.png";
 import textIcon from "@/imgs/textIcon.png";
 import colorIcon from "@/imgs/colorIcon.webp";
-import model1 from "@/imgs/fotoTeste.png";
-import model2 from "@/imgs/fotoTeste.png";
-import model3 from "@/imgs/fotoTeste.png";
-import model4 from "@/imgs/fotoTeste.png";
-import model5 from "@/imgs/fotoTeste.png";
+import model5 from "@/imgs/1foto.png";
+import model3 from "@/imgs/2foto.png";
+import model1 from "@/imgs/3foto.png";
+import model4 from "@/imgs/4foto.png";
+import model2 from "@/imgs/5foto.png";
 import ColorEditor from "./ColorEditor";
 import ImageEditor from "./ImageEditor";
 import TextEditor from "./TextEditor";
@@ -299,11 +299,6 @@ const ThreeDViewer = () => {
       const activeObject = canvas.getActiveObject();
       setActiveObject(activeObject);
 
-      if (activeObject && activeObject.type == "image") {
-        const imageSrc = activeObject.getSrc();
-        setImageSrc(imageSrc); // Seta a URL da fonte da imagem no estado
-      }
-
       initialMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       initialMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
       let intersections = getIntersections(
@@ -326,6 +321,20 @@ const ThreeDViewer = () => {
       //caso existam interseções
       if (intersections.length > 0) {
         openTabs();
+
+        // if (activeObject && activeObject.type == "image") {
+        //   const imageSrc = activeObject.getSrc();
+        //   setImageSrc(imageSrc); // Seta a URL da fonte da imagem no estado
+        //   setTimeout(() => {
+        //     setTextEditor(false);
+        //     setImageEditor(true);
+        //   }, 1610);
+        // } else if (activeObject && activeObject.type == "textbox") {
+        //   setTimeout(() => {
+        //     setImageEditor(false);
+        //     setTextEditor(true);
+        //   }, 1610);
+        // }
 
         // console.log("intercetou", intersections[0].object.name);
         // editingComponent.current = intersections[0].object;
@@ -1106,7 +1115,7 @@ const ThreeDViewer = () => {
         textAlign: textAlign, // Adjust as needed
         editable: false, // Set to true to allow editing
         borderColor: "transparent",
-        cornerColor: "rgba(0, 0, 0, 0.2)",
+        cornerColor: "rgba(0, 0, 0, 0.4)",
         padding: 5,
         transparentCorners: false,
         // cornerSize: (scale * 0.65 * fabricImage.scaleX) / 10,
@@ -1180,8 +1189,14 @@ const ThreeDViewer = () => {
 
   // Image source effect
   useEffect(() => {
-    if (activeObject && activeObject.type === "image") {
-      setImageSrc(activeObject.getSrc());
+    if (activeObject && activeObject.type == "image") {
+      const imageSrc = activeObject.getSrc();
+      setImageSrc(imageSrc); // Seta a URL da fonte da imagem no estado
+      setTextEditor(false);
+      setImageEditor(true);
+    } else if (activeObject && activeObject.type == "textbox") {
+      setImageEditor(false);
+      setTextEditor(true);
     }
 
     if (fabricCanvas.current) {
@@ -1256,6 +1271,7 @@ const ThreeDViewer = () => {
 
     if (titleModels) {
       titleModels.current.style.marginTop = "-100%";
+      titleModels.current.style.opacity = "0";
       titleModels.current.style.transition = "all 1.6s ease-in-out";
     }
   };
@@ -1546,7 +1562,7 @@ const ThreeDViewer = () => {
               className={styles.title}
               style={{
                 textAlign: "center",
-                marginBottom: 15,
+                marginBottom: 25,
                 fontSize: 15,
                 color: "#fff",
               }}
@@ -1562,32 +1578,13 @@ const ThreeDViewer = () => {
                     simulateCenterClick();
                     setEscolheBtn(true);
                   }, 1610);
-                  setModel("1");
+                  setModel("5");
 
                   setTutorial(true);
                 }}
               >
                 <NextImage
-                  src={model1}
-                  className={styles.modelosImgs}
-                  width={150}
-                  height={150}
-                />
-              </button>
-              <button
-                className={styles.modeloBtn}
-                onClick={() => {
-                  setModel("2");
-                  magicLoading();
-                  setTimeout(() => {
-                    simulateCenterClick();
-                    setEscolheBtn(true);
-                  }, 1610);
-                  setTutorial(true);
-                }}
-              >
-                <NextImage
-                  src={model2}
+                  src={model5}
                   className={styles.modelosImgs}
                   width={150}
                   height={150}
@@ -1615,6 +1612,25 @@ const ThreeDViewer = () => {
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
+                  setModel("1");
+                  magicLoading();
+                  setTimeout(() => {
+                    simulateCenterClick();
+                    setEscolheBtn(true);
+                  }, 1610);
+                  setTutorial(true);
+                }}
+              >
+                <NextImage
+                  src={model1}
+                  className={styles.modelosImgs}
+                  width={150}
+                  height={150}
+                />
+              </button>
+              <button
+                className={styles.modeloBtn}
+                onClick={() => {
                   setModel("4");
                   magicLoading();
                   setTimeout(() => {
@@ -1634,7 +1650,7 @@ const ThreeDViewer = () => {
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
-                  setModel("5");
+                  setModel("2");
                   magicLoading();
                   setTimeout(() => {
                     simulateCenterClick();
@@ -1644,7 +1660,7 @@ const ThreeDViewer = () => {
                 }}
               >
                 <NextImage
-                  src={model5}
+                  src={model2}
                   className={styles.modelosImgs}
                   width={150}
                   height={150}

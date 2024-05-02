@@ -6,7 +6,8 @@ import React, {
   useState,
 } from "react";
 import styles from "../styles/page.module.css";
-
+import deleteIcon from "@/imgs/binIcon.png";
+import NextImage from "next/image";
 const ImageEditor = forwardRef(
   (
     {
@@ -36,6 +37,7 @@ const ImageEditor = forwardRef(
     const [fontHint, setFontHint] = useState(12);
     const [displayHint, setDisplayHint] = useState("flex");
     const [escolheBtn, setEscolheBtn] = useState(false);
+    const [deleteBtn, setDeleteBtn] = useState(false);
 
     const removeBgImgCanva = (newImg) => {
       const canvas = fabricCanvas.current;
@@ -147,7 +149,8 @@ const ImageEditor = forwardRef(
             cornerSize: (scale * 0.65 * fabricImage.scaleX) / 10,
             cornerStyle: "circle",
             transparentCorners: false,
-            cornerColor: "rgb(255,0,0)",
+            cornerColor: "rgba(0,0,0,0.4)",
+            borderColor: "transparent",
           });
           fabricCanvas.current.add(fabricImage);
           fabricCanvas.current.renderAll();
@@ -216,7 +219,7 @@ const ImageEditor = forwardRef(
 
     useEffect(() => {
       loadImageOnCanvas();
-      if (activeObject) setRemoveBtn(true);
+      if (activeObject && activeObject.type == "image") setRemoveBtn(true);
     }, [activeObject]);
 
     const loadImageOnCanvas = () => {
@@ -302,6 +305,18 @@ const ImageEditor = forwardRef(
       setPicker(false);
     };
 
+    const handleDelete = () => {
+      setDeleteBtn(!deleteBtn);
+      if (fabricCanvas.current && activeObject) {
+        fabricCanvas.current.remove(activeObject);
+        fabricCanvas.current.discardActiveObject(); // Remove a seleção atual
+        fabricCanvas.current.renderAll(); // Atualiza o canvas
+        // closeTabs(); // Fecha as abas de edição se necessário
+        updateTexture(); // Atualiza a textura para refletir as mudanças
+        closeTabs();
+      }
+    };
+
     return (
       <>
         <div style={{ height: heightWindow }} className={styles.editZoneImg}>
@@ -371,6 +386,14 @@ const ImageEditor = forwardRef(
                     </button>
                   </div>
                 )}
+                <button
+                  onClick={handleDelete}
+                  className={styles.deleteButtonImage}
+                >
+                  <NextImage src={deleteIcon} width={16} height={16} />
+
+                  <p>Apagar Imagem</p>
+                </button>
               </>
             ) : (
               <div>

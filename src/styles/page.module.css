@@ -640,7 +640,8 @@
 
 .inputText:focus {
   outline: none;
-  border: 0px solid #4a90e2; /* Replacing focus indication */
+  border: 0;
+  border-bottom: 1px dotted #4a90e2; /* Replacing focus indication */
 }
 
 .alignBtns {
@@ -669,7 +670,7 @@
 
 .fontFamily {
   position: absolute;
-  bottom: 69px;
+  bottom: 75px;
   left: 25px;
   display: flex;
   gap: 15px;
@@ -691,6 +692,7 @@
   font-size: 14px;
   -webkit-appearance: none; /* Removing default styling in Safari */
   appearance: none;
+  height: 40px;
 }
 
 .corInput {
@@ -777,7 +779,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0px;
+  gap: 5px;
 }
 
 .modeloBtn {
@@ -853,6 +855,44 @@
   font-size: 15px;
   letter-spacing: -0.6px;
   font-family: "Inter";
+}
+
+.deleteButton {
+  margin-top: 80px;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: all 0.161s ease-in-out;
+}
+
+.deleteButton:hover {
+  margin-top: 70px;
+  opacity: 0.8;
+}
+
+.deleteButtonImage {
+  background-color: transparent;
+  border: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: -0.6px;
+  font-size: 13px;
+  color: #f00;
+  width: 124px;
+  position: absolute;
+  margin: auto;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  align-self: center;
+  transition: all 0.161s ease-in-out;
+  cursor: pointer;
+}
+
+.deleteButtonImage:hover {
+  bottom: 20px;
+  opacity: 0.5;
 }
 
 @font-face {
