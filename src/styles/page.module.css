@@ -49,18 +49,14 @@
     width: 311px;
   }
 
-  .coresDisposal,
-  .coresDisposalPrimeiraRow {
+  .coresDisposal {
     display: flex;
     justify-content: space-between;
     gap: 10px;
-  }
-
-  .coresDisposal {
     margin-top: 15px;
   }
 
-  .coresDisposalPrimeiraRow {
+  .coresDisposalTlm {
     margin-top: 75px;
   }
 
@@ -98,6 +94,10 @@
   .fileUploadLabealBack:hover {
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
     background-color: #ffbf0090;
+  }
+
+  .menuPicker {
+    margin-top: 65px;
   }
 
   .bottomBar {
@@ -958,11 +958,39 @@
     padding: 7px;
   }
 
+  .nameZone {
+    background-color: #eee;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    border-top-right-radius: 35px;
+    border-top-left-radius: 35px;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: -25px;
+    margin-left: -25px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    z-index: 2;
+  }
+
+  .fileUploadLabealBack {
+    margin-left: 25px;
+    margin-right: -25px;
+  }
+
+  .fileUploadLabealAdd {
+    margin-right: 25px;
+    margin-left: -25px;
+  }
+
   .editZoneCor,
-  .editZoneText,
   .editZoneImg {
     position: fixed;
-    overflow-y: scroll;
+    overflow-y: hidden;
+    overflow-x: scroll;
     padding: 25px;
     background-color: #fff;
     top: auto;
@@ -976,6 +1004,25 @@
     z-index: 10;
     border-radius: 35px;
     width: auto;
+  }
+
+  .editZoneCor {
+    max-height: 120px;
+  }
+
+  .editZoneImg {
+    max-height: 250px;
+  }
+
+  .coresDisposalTlm {
+    display: flex;
+    margin-top: 60px;
+  }
+
+  .coresDisposal {
+    margin-right: 25px;
+    margin-bottom: 25px;
+    gap: 25px;
   }
 }
 

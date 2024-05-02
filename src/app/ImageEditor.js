@@ -383,7 +383,7 @@ const ImageEditor = forwardRef(
         activeObjectMangaR != null ||
         activeObjectHoodOut != null ? ( */}
 
-          <div style={{ marginTop: 65 }}>
+          <div className={styles.menuPicker}>
             {removeBtn ? (
               <>
                 {!picker && (
