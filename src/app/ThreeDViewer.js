@@ -48,6 +48,8 @@ const ThreeDViewer = () => {
   let editingComponent = useRef(null);
   const fabricCanvasRef = useRef(null);
   const containerRef = useRef();
+  const sceneRef = useRef(null); // Create a ref for the scene
+
   const raycaster = new THREE.Raycaster();
   let initialMouse = new THREE.Vector2();
   let currentMouse = new THREE.Vector2();
@@ -199,11 +201,19 @@ const ThreeDViewer = () => {
     return () => fabricCanvas.current.dispose();
   }, [canvasSize]);
 
+  // function getActiveScene() {
+  //   let sceneJson = containerRef.current.toJSON();
+  //   let jsonString = JSON.stringify(sceneJson);
+  //   console.log(jsonString);
+  // }
+
   useEffect(() => {
     if (!fabricTexture) return;
 
     //three set up-------------------------------------------------------------------------------------------------
     const scene = new THREE.Scene();
+    // sceneRef.current = scene; // Assign the created scene to the ref
+
     scene.background = new THREE.Color(0xf4f4f4);
     const camera = new THREE.PerspectiveCamera(
       35,
@@ -1064,19 +1074,11 @@ const ThreeDViewer = () => {
   };
 
   const colorEditorTab = () => {
-    if (colorEditor) {
-      setColorEditor(false);
-    } else {
-      setColorEditor(true);
-    }
+    setColorEditor(!colorEditor);
   };
 
   const imageEditorTab = () => {
-    if (imageEditor) {
-      setImageEditor(false);
-    } else {
-      setImageEditor(true);
-    }
+    setImageEditor(!imageEditor);
   };
 
   const textEditorTab = () => {
@@ -1492,6 +1494,7 @@ const ThreeDViewer = () => {
       <div className={styles.exportBtnNot}>
         <button
           onClick={() => {
+            // getActiveScene();
             calcularEImprimirAreasOcupadas();
             setPreview(!preview);
             setTimeout(() => {
