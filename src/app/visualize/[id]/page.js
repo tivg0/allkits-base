@@ -11,15 +11,18 @@ function Page() {
 
   const fetchScene = async () => {
     try {
-      const response = await fetch("http://localhost:3030/getScene", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          uid: params.id,
-        }),
-      });
+      const response = await fetch(
+        "https://allkits-server.onrender.com/getScene",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            uid: params.id,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch scene");
