@@ -785,7 +785,7 @@
 .modeloBtn {
   border: 0px;
   background-color: transparent;
-  transition: all 0.2s cubic-bezier(.5,0,0,1);
+  transition: all 0.2s cubic-bezier(0.5, 0, 0, 1);
 }
 
 .modeloBtn:hover {
@@ -870,15 +870,14 @@
   opacity: 0.8;
 }
 
-.deleteButtonImage {
+/* .deleteButtonImage {
   background-color: transparent;
   border: 0;
   display: flex;
   align-items: center;
   gap: 5px;
   letter-spacing: -0.6px;
-  font-size: 13px;
-  color: #f00;
+  font-size: 15px;
   width: 124px;
   position: absolute;
   margin: auto;
@@ -886,6 +885,16 @@
   left: 0;
   right: 0;
   align-self: center;
+  transition: all 0.161s ease-in-out;
+  cursor: pointer;
+} */
+
+.deleteButtonImage {
+  background-color: transparent;
+  border: 0;
+  position: absolute;
+  right: 25px;
+  bottom: 25px;
   transition: all 0.161s ease-in-out;
   cursor: pointer;
 }

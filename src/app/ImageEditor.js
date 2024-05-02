@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import styles from "../styles/page.module.css";
 import deleteIcon from "@/imgs/binIcon.png";
+import mirrorIcon from "@/imgs/mirrorIcon.png";
 import NextImage from "next/image";
 const ImageEditor = forwardRef(
   (
@@ -326,7 +327,7 @@ const ImageEditor = forwardRef(
         fabricCanvas.current.renderAll();
         updateTexture();
       }
-    }
+    };
 
     const handleFlipV = () => {
       if (fabricCanvas.current.getActiveObject()) {
@@ -337,7 +338,7 @@ const ImageEditor = forwardRef(
         fabricCanvas.current.renderAll();
         updateTexture();
       }
-    }
+    };
 
     return (
       <>
@@ -396,7 +397,7 @@ const ImageEditor = forwardRef(
                         <img
                           src={"./removeIcon.png"}
                           style={{ width: 25, height: 25 }}
-                          alt="Description"
+                          alt="step"
                         />
                       </div>
                       <div>
@@ -412,20 +413,21 @@ const ImageEditor = forwardRef(
                       onClick={handleFlipH}
                     >
                       <div className={styles.divIcon}>
-                        <img
-                          src={"./removeIcon.png"}
-                          style={{ width: 25, height: 25 }}
-                          alt="Description"
+                        <NextImage
+                          src={mirrorIcon}
+                          width={25}
+                          height={25}
+                          alt="step"
                         />
                       </div>
                       <div>
-                        <p className={styles.titleText}>Inverter Horizontalmente</p>
+                        <p className={styles.titleText}>Espelhar Imagem</p>
                         <p className={styles.infoText}>
-                          Espelha a imagem no eixo horizontal
+                          Vê a tua imagem espelhada
                         </p>
                       </div>
                     </button>
-                    <button
+                    {/* <button
                       className={styles.divAreaEspecifica}
                       style={{ borderWidth: 0 }}
                       onClick={handleFlipV}
@@ -443,16 +445,16 @@ const ImageEditor = forwardRef(
                           Espelha a imagem no eixo vertical
                         </p>
                       </div>
-                    </button>
+                    </button> */}
                   </div>
                 )}
                 <button
                   onClick={handleDelete}
                   className={styles.deleteButtonImage}
                 >
-                  <NextImage src={deleteIcon} width={16} height={16} />
+                  <NextImage src={deleteIcon} width={25} height={25} />
 
-                  <p>Apagar Imagem</p>
+                  {/* <p>Apagar Imagem</p> */}
                 </button>
               </>
             ) : (
