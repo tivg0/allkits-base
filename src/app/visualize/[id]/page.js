@@ -2,12 +2,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useParams } from "next/navigation";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 function Page() {
   const params = useParams();
   const containerRef = useRef(null);
   const [sceneData, setSceneData] = useState(null);
   const [loading, setLoading] = useState(true); // Loading state
+  let orbit;
 
   const fetchScene = async () => {
     try {
@@ -74,10 +76,26 @@ function Page() {
 
         containerRef.current.appendChild(renderer.domElement);
 
+        orbit = new OrbitControls(camera, renderer.domElement);
+        orbit.target.set(0, 0, 0);
+        orbit.enableDamping = true;
+        orbit.dampingFactor = 0.161;
+        orbit.screenSpacePanning = false;
+        orbit.maxPolarAngle = Math.PI / 1.61; // nao deixa ir o user ver por baixo do hoodie, so o suficiente
+        orbit.mouseButtons = {
+          LEFT: THREE.MOUSE.ROTATE,
+          MIDDLE: THREE.MOUSE.DOLLY,
+          RIGHT: null,
+        };
+        orbit.enabled = true;
+        orbit.minDistance = 16.1;
+        orbit.maxDistance = 35;
+
         // Animation loop
         const animate = () => {
           requestAnimationFrame(animate);
           renderer.render(scene, camera);
+          orbit.update();
         };
         animate();
 

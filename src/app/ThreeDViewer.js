@@ -938,25 +938,27 @@ const ThreeDViewer = () => {
                     newDX = cos * (deltaX * cos + deltaY * sin);
                     newDY = sin * (deltaX * cos + deltaY * sin);
 
+                    aCoords = {
+                      tl: new fabric.Point(
+                        activeObject.aCoords.tl.x,
+                        activeObject.aCoords.tl.y
+                      ),
+                      tr: new fabric.Point(
+                        activeObject.aCoords.tr.x + newDX,
+                        activeObject.aCoords.tr.y + newDY
+                      ),
+                      br: new fabric.Point(
+                        activeObject.aCoords.br.x + newDX,
+                        activeObject.aCoords.br.y + newDY
+                      ),
+                      bl: new fabric.Point(
+                        activeObject.aCoords.bl.x,
+                        activeObject.aCoords.bl.y
+                      ),
+                    };
+
                     if (activeObject instanceof fabric.Image) {
-                      aCoords = {
-                        tl: new fabric.Point(
-                          activeObject.aCoords.tl.x,
-                          activeObject.aCoords.tl.y
-                        ),
-                        tr: new fabric.Point(
-                          activeObject.aCoords.tr.x + newDX,
-                          activeObject.aCoords.tr.y + newDY
-                        ),
-                        br: new fabric.Point(
-                          activeObject.aCoords.br.x + newDX,
-                          activeObject.aCoords.br.y + newDY
-                        ),
-                        bl: new fabric.Point(
-                          activeObject.aCoords.bl.x,
-                          activeObject.aCoords.bl.y
-                        ),
-                      };
+
                       if (
                         activeObject.scaleX * activeObject.width <=
                           minScaleAllowed &&
@@ -977,13 +979,10 @@ const ThreeDViewer = () => {
                         originY: "center",
                       });
                     } else {
-                      const deltaVec = new fabric.Point(newDX, newDX);
-
                       activeObject.set({
-                        width:
-                          activeObject.width +
-                          deltaVec.distanceFrom(new fabric.Point(0, 0)) *
-                            (newDX / Math.abs(newDX)),
+                        width: aCoords.tl.distanceFrom(aCoords.tr),
+                        originX: "center",
+                        originY: "center",
                       });
                     }
 
@@ -992,25 +991,28 @@ const ThreeDViewer = () => {
                   case "ml":
                     newDX = cos * (deltaX * cos + deltaY * sin);
                     newDY = sin * (deltaX * cos + deltaY * sin);
+                    
+                    aCoords = {
+                      tl: new fabric.Point(
+                        activeObject.aCoords.tl.x + newDX,
+                        activeObject.aCoords.tl.y + newDY
+                      ),
+                      tr: new fabric.Point(
+                        activeObject.aCoords.tr.x,
+                        activeObject.aCoords.tr.y
+                      ),
+                      br: new fabric.Point(
+                        activeObject.aCoords.br.x,
+                        activeObject.aCoords.br.y
+                      ),
+                      bl: new fabric.Point(
+                        activeObject.aCoords.bl.x + newDX,
+                        activeObject.aCoords.bl.y + newDY
+                      ),
+                    };
+
                     if (activeObject instanceof fabric.Image) {
-                      aCoords = {
-                        tl: new fabric.Point(
-                          activeObject.aCoords.tl.x + newDX,
-                          activeObject.aCoords.tl.y + newDY
-                        ),
-                        tr: new fabric.Point(
-                          activeObject.aCoords.tr.x,
-                          activeObject.aCoords.tr.y
-                        ),
-                        br: new fabric.Point(
-                          activeObject.aCoords.br.x,
-                          activeObject.aCoords.br.y
-                        ),
-                        bl: new fabric.Point(
-                          activeObject.aCoords.bl.x + newDX,
-                          activeObject.aCoords.bl.y + newDY
-                        ),
-                      };
+
                       if (
                         activeObject.scaleX * activeObject.width <=
                           minScaleAllowed &&
@@ -1029,13 +1031,10 @@ const ThreeDViewer = () => {
                         originY: "center",
                       });
                     } else {
-                      const deltaVec = new fabric.Point(newDX, newDX);
-
                       activeObject.set({
-                        width:
-                          activeObject.width -
-                          deltaVec.distanceFrom(new fabric.Point(0, 0)) *
-                            (newDX / Math.abs(newDX)),
+                        width: aCoords.tl.distanceFrom(aCoords.tr),
+                        originX: "center",
+                        originY: "center",
                       });
                     }
 
