@@ -958,7 +958,6 @@ const ThreeDViewer = () => {
                     };
 
                     if (activeObject instanceof fabric.Image) {
-
                       if (
                         activeObject.scaleX * activeObject.width <=
                           minScaleAllowed &&
@@ -991,7 +990,7 @@ const ThreeDViewer = () => {
                   case "ml":
                     newDX = cos * (deltaX * cos + deltaY * sin);
                     newDY = sin * (deltaX * cos + deltaY * sin);
-                    
+
                     aCoords = {
                       tl: new fabric.Point(
                         activeObject.aCoords.tl.x + newDX,
@@ -1012,7 +1011,6 @@ const ThreeDViewer = () => {
                     };
 
                     if (activeObject instanceof fabric.Image) {
-
                       if (
                         activeObject.scaleX * activeObject.width <=
                           minScaleAllowed &&
@@ -1651,7 +1649,9 @@ const ThreeDViewer = () => {
       <div className={styles.exportBtnNot}>
         <button
           onClick={() => {
-            getActiveScene();
+            setTimeout(() => {
+              getActiveScene();
+            }, 500);
             calcularEImprimirAreasOcupadas();
             logAllObjectsFromAllCanvases();
             setPreview(!preview);
