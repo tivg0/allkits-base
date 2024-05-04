@@ -50,23 +50,21 @@ const ImageEditor = forwardRef(
           angle: activeObject.angle,
           scaleX: activeObject.scaleX,
           scaleY: activeObject.scaleY,
+          originX: "center", // Definindo o ponto de origem como centro
+          originY: "center", // Definindo o ponto de origem como centro
         };
 
-        fabric.Image.fromURL(newImg, (newImg) => {
-          //console.log(editingComponent.current.name);
-          // Scale the new image to match the size of the previous image
-          const scale = Math.min(
-            fabricCanvas.current.width / newImg.width,
-            fabricCanvas.current.height / newImg.height
-          );
-          // Set the position of the new image to match the previous image
-          newImg.set({
+        fabric.Image.fromURL(newImg, (newImgObj) => {
+          // Aplica a escala original diretamente
+          newImgObj.set({
             ...originalProps,
-            scaleX: scale * 0.85,
-            scaleY: scale * 0.85,
+            width: newImgObj.width,
+            height: newImgObj.height,
+            scaleX: originalProps.scaleX,
+            scaleY: originalProps.scaleY,
             borderColor: "#00bfff",
             cornerSize: 15,
-            cornerColor: "#00bfff", // size of the control corners
+            cornerColor: "rgba(0, 0, 0, 0.2)", // size of the control corners
             transparentCorners: false,
             cornerStyle: "circle",
           });
@@ -74,8 +72,8 @@ const ImageEditor = forwardRef(
           // Remove the first image
           canvas.remove(activeObject);
           // Add the new image in place of the first one
-          canvas.add(newImg);
-          canvas.requestRenderAll();
+          canvas.add(newImgObj);
+          canvas.renderAll();
           updateTexture();
         });
       }

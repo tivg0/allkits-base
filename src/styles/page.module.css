@@ -807,9 +807,10 @@
     transition: all 0.2s cubic-bezier(0.5, 0, 0, 1);
   }
 
-  .modeloBtn:hover {
-    cursor: pointer;
-    transform: scale(1.161);
+  .modelosBtns.moving .modeloBtn {
+    filter: blur(
+      2px
+    ); /* Adiciona o desfoque de movimento quando o contêiner está se movendo */
   }
 
   .modelosImgs {
@@ -817,9 +818,42 @@
     transition: all 0.3s ease-in-out;
   }
 
-  /* .modelosImgs:hover {
-  box-shadow: 0 0 75px rgba(0, 161, 255, 0.2);
-} */
+  .modelosImgs:hover {
+    scale: 1.161;
+    cursor: pointer;
+  }
+
+  .btnPreviewLink,
+  .btnBuildLink {
+    border: 0;
+    background-color: transparent;
+    border-radius: 35px;
+    font-family: "Inter";
+    letter-spacing: -0.6px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    color: rgba(191, 191, 191, 1);
+    align-self: center;
+    justify-content: center;
+    margin: auto;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .btnPreviewLink:hover {
+    opacity: 0.8;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .btnBuildLink:hover {
+    cursor: progress;
+  }
 
   .priceBtn {
     padding-left: 15px;

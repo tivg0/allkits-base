@@ -21,6 +21,8 @@ import styles from "@/styles/page.module.css";
 import galeryIcon from "../imgs/galeryBlack.png";
 import textIcon from "@/imgs/textIcon.png";
 import colorIcon from "@/imgs/colorIcon.webp";
+import shareIcon from "@/imgs/iconShare.png";
+import buildingIcon from "@/imgs/buildingIcon.png";
 import model5 from "@/imgs/1foto.png";
 import model3 from "@/imgs/2foto.png";
 import model1 from "@/imgs/3foto.png";
@@ -170,7 +172,7 @@ const ThreeDViewer = () => {
     if (fabricTexture) fabricTexture.needsUpdate = true;
   };
 
-  const [precoFinal, setPrecoFinal] = useState("10.00"); // Preço inicial de 10€ como string para fácil manipulação na renderização
+  const [precoFinal, setPrecoFinal] = useState("13.25"); // Preço inicial de 10€ como string para fácil manipulação na renderização
   const [precoAnimado, setPrecoAnimado] = useState("0.00"); // Estado para controlar o valor animado do preço
 
   const setupCanvases = () => {
@@ -1139,7 +1141,7 @@ const ThreeDViewer = () => {
 
   // //calcular area imprimida
   const calcularEImprimirAreasOcupadas = () => {
-    let precoTotal = 10; // Preço base de 10€
+    let precoTotal = 13.25; // Preço base de 10€
     fabricCanvases.forEach((canvas) => {
       const areaTotalCanvas = canvas.width * canvas.height; // área em cm²
       canvas.getObjects().forEach((obj) => {
@@ -1649,9 +1651,9 @@ const ThreeDViewer = () => {
       <div className={styles.exportBtnNot}>
         <button
           onClick={() => {
-            setTimeout(() => {
-              getActiveScene();
-            }, 500);
+            // setTimeout(() => {
+            getActiveScene();
+            // }, 500);
             calcularEImprimirAreasOcupadas();
             logAllObjectsFromAllCanvases();
             setPreview(!preview);
@@ -1841,11 +1843,6 @@ const ThreeDViewer = () => {
             >
               PREÇO TOTAL ESTIMADO (POR UN.)
             </p>
-            {docId != "" && (
-              <button onClick={() => router.push(`/visualize/${docId}`)}>
-                Abrir pré-visualização
-              </button>
-            )}
 
             <h1
               id="precoFinal"
@@ -1863,6 +1860,21 @@ const ThreeDViewer = () => {
               €{precoAnimado}
             </h1>
           </div>
+          {docId != "" ? (
+            <button
+              className={styles.btnPreviewLink}
+              onClick={() => router.push(`/visualize/${docId}`)}
+              // target={"_blank"}
+            >
+              <NextImage src={shareIcon} width={20} height={20} />
+              <p>Copiar e ir para o teu link de pré-visualização</p>
+            </button>
+          ) : (
+            <button className={styles.btnBuildLink}>
+              <NextImage src={buildingIcon} width={20} height={20} />
+              <p>A criar o teu link de pré-visualização</p>
+            </button>
+          )}
         </div>
       )}
     </>
