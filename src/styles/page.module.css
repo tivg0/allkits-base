@@ -1021,7 +1021,8 @@
   }
 
   .editZoneCor,
-  .editZoneImg {
+  .editZoneImg,
+  .editZoneText {
     position: fixed;
     overflow-y: hidden;
     overflow-x: scroll;
