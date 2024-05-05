@@ -1401,11 +1401,6 @@ const ThreeDViewer = () => {
       backgroundMagic.current.style.transition = "all 1.6s ease-in-out";
     }
 
-    // if (modelosZone) {
-    //   modelosZone.current.style.scale = "0";
-    //   modelosZone.current.style.transition = "all 1.6s ease-in-out";
-    // }
-
     if (modelos) {
       modelos.current.style.gap = "1000px";
       modelos.current.style.transition = "all 1.6s ease-in-out";

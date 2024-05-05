@@ -62,8 +62,8 @@ const ImageEditor = forwardRef(
             height: newImgObj.height,
             scaleX: originalProps.scaleX,
             scaleY: originalProps.scaleY,
-            borderColor: "#00bfff",
             cornerSize: 15,
+            borderColor: "transparent",
             cornerColor: "rgba(0, 0, 0, 0.2)", // size of the control corners
             transparentCorners: false,
             cornerStyle: "circle",
@@ -227,8 +227,10 @@ const ImageEditor = forwardRef(
       const img = imgRef.current;
       img.src = imageSrc;
       img.onload = () => {
+        setWindowCanvas(img.width);
+
         // Set the canvas width to 300px
-        const canvasWidth = 311;
+        const canvasWidth = img.width;
         // Calculate the height to maintain the aspect ratio
         const aspectRatio = img.height / img.width;
         const canvasHeight = canvasWidth * aspectRatio;
@@ -238,6 +240,7 @@ const ImageEditor = forwardRef(
         canvas.height = canvasHeight;
 
         // Draw the image scaled to the canvas size
+
         ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
       };
     };
@@ -296,7 +299,7 @@ const ImageEditor = forwardRef(
       setAtributos(false);
       loadImageOnCanvas();
       setHeightWindow(450);
-      setWindowCanvas(311);
+      // setWindowCanvas(311);
     };
 
     const handleAtributos = () => {
@@ -570,10 +573,10 @@ const ImageEditor = forwardRef(
                   display: "block",
                   cursor: "crosshair",
                   borderRadius: 15,
-                  width: "90%",
+                  width: "100%",
                   border: "1px solid transparent",
                   justifyContent: "center",
-                  margin: "5%",
+                  // margin: "5%",
                 }}
               />
             </div>
