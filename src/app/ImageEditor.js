@@ -28,7 +28,6 @@ const ImageEditor = forwardRef(
     const [imgTest, setimgTeste] = useState(null);
     const [picker, setPicker] = useState(false);
     const [removeBtn, setRemoveBtn] = useState(false);
-    const [atributos, setAtributos] = useState(false);
     const [heightWindow, setHeightWindow] = useState(292);
     const [windowCanvas, setWindowCanvas] = useState(0);
     const [opacityHint, setOpacityHint] = useState(1);
@@ -39,6 +38,7 @@ const ImageEditor = forwardRef(
     const [displayHint, setDisplayHint] = useState("flex");
     const [escolheBtn, setEscolheBtn] = useState(false);
     const [deleteBtn, setDeleteBtn] = useState(false);
+    const [showCanvas, setShowCanvas] = useState(false);
 
     const removeBgImgCanva = (newImg) => {
       const canvas = fabricCanvas.current;
@@ -50,12 +50,19 @@ const ImageEditor = forwardRef(
           angle: activeObject.angle,
           scaleX: activeObject.scaleX,
           scaleY: activeObject.scaleY,
-          originX: "center", // Definindo o ponto de origem como centro
-          originY: "center", // Definindo o ponto de origem como centro
+          originX: "center",
+          originY: "center",
         };
 
+        // Verifica se já existe uma imagem substituta e remove-a antes de adicionar uma nova
+        const existingImage = canvas
+          .getObjects()
+          .find((obj) => obj.type === "image" && obj !== activeObject);
+        if (existingImage) {
+          canvas.remove(existingImage);
+        }
+
         fabric.Image.fromURL(newImg, (newImgObj) => {
-          // Aplica a escala original diretamente
           newImgObj.set({
             ...originalProps,
             width: newImgObj.width,
@@ -64,15 +71,14 @@ const ImageEditor = forwardRef(
             scaleY: originalProps.scaleY,
             cornerSize: 15,
             borderColor: "transparent",
-            cornerColor: "rgba(0, 0, 0, 0.2)", // size of the control corners
+            cornerColor: "rgba(0, 0, 0, 0.2)",
             transparentCorners: false,
             cornerStyle: "circle",
           });
 
-          // Remove the first image
-          canvas.remove(activeObject);
-          // Add the new image in place of the first one
-          canvas.add(newImgObj);
+          canvas.remove(activeObject); // Remove a imagem antiga
+          canvas.add(newImgObj); // Adiciona a nova imagem
+          canvas.setActiveObject(newImgObj); // Define a nova imagem como objeto ativo
           canvas.renderAll();
           updateTexture();
         });
@@ -223,34 +229,39 @@ const ImageEditor = forwardRef(
 
     const loadImageOnCanvas = () => {
       const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
-      const img = imgRef.current;
-      img.src = imageSrc;
-      img.onload = () => {
-        setWindowCanvas(img.width);
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        const img = imgRef.current;
+        img.src = imageSrc;
+        img.onload = () => {
+          setWindowCanvas(311);
+          const canvasWidth = img.width;
+          const aspectRatio = img.height / img.width;
+          const canvasHeight = canvasWidth * aspectRatio;
 
-        // Set the canvas width to 300px
-        const canvasWidth = img.width;
-        // Calculate the height to maintain the aspect ratio
-        const aspectRatio = img.height / img.width;
-        const canvasHeight = canvasWidth * aspectRatio;
+          canvas.width = canvasWidth;
+          canvas.height = canvasHeight;
 
-        // Set the canvas dimensions
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
-
-        // Draw the image scaled to the canvas size
-
-        ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
-      };
+          ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+        };
+      }
     };
+
+    useEffect(() => {
+      if (showCanvas) {
+        loadImageOnCanvas();
+      }
+    }, [showCanvas, imageSrc]); // Garanta que ele seja chamado novamente se `showCanvas` ou `imageSrc` mudar
 
     const pickColor = (event) => {
       const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
       const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+      const scaleX = imgRef.current.naturalWidth / rect.width; // Proporção de escala em X
+      const scaleY = imgRef.current.naturalHeight / rect.height; // Proporção de escala em Y
+      const x = (event.clientX - rect.left) * scaleX; // Coordenada X ajustada
+      const y = (event.clientY - rect.top) * scaleY; // Coordenada Y ajustada
+
+      const ctx = canvas.getContext("2d");
       const pixel = ctx.getImageData(x, y, 1, 1).data;
       setColorToRemove(`${pixel[0]},${pixel[1]},${pixel[2]}`);
     };
@@ -296,15 +307,9 @@ const ImageEditor = forwardRef(
 
     const handleRemoverCor = () => {
       setPicker(true);
-      setAtributos(false);
+      setShowCanvas(true); // Ativa a visibilidade do canvas
       loadImageOnCanvas();
       setHeightWindow(450);
-      // setWindowCanvas(311);
-    };
-
-    const handleAtributos = () => {
-      setAtributos(true);
-      setPicker(false);
     };
 
     const handleDelete = () => {
@@ -345,7 +350,13 @@ const ImageEditor = forwardRef(
       <>
         <div style={{ height: heightWindow }} className={styles.editZoneImg}>
           <div className={styles.nameZone}>
-            <button className={styles.fileUploadLabealBack} onClick={closeTabs}>
+            <button
+              className={styles.fileUploadLabealBack}
+              onClick={() => {
+                closeTabs();
+                setPicker(false);
+              }}
+            >
               <p
                 style={{
                   marginTop: -15,
@@ -555,31 +566,32 @@ const ImageEditor = forwardRef(
               </div>
             ) : null}
 
-            <div
-              style={{
-                width: windowCanvas,
-                justifyContent: "center",
-                backgroundColor: "#f9f9f9",
-                borderRadius: 10,
-                border: "1px solid transparent",
-                boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
-                marginTop: 10,
-              }}
-            >
-              <canvas
-                ref={canvasRef}
-                onClick={pickColor}
+            {showCanvas && (
+              <div
                 style={{
-                  display: "block",
-                  cursor: "crosshair",
-                  borderRadius: 15,
-                  width: "100%",
-                  border: "1px solid transparent",
+                  width: windowCanvas,
                   justifyContent: "center",
-                  // margin: "5%",
+                  backgroundColor: "#f9f9f9",
+                  borderRadius: 10,
+                  border: "1px solid transparent",
+                  boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
+                  marginTop: 10,
                 }}
-              />
-            </div>
+              >
+                <canvas
+                  ref={canvasRef}
+                  onClick={pickColor}
+                  style={{
+                    cursor: "crosshair",
+                    borderRadius: 15,
+                    width: "100%",
+                    border: "1px solid transparent",
+                    justifyContent: "center",
+                    display: showCanvas ? "block" : "none",
+                  }}
+                />
+              </div>
+            )}
           </div>
           {/* ) : (
           <div
