@@ -1420,10 +1420,20 @@ const ThreeDViewer = () => {
         return;
       }
 
+      // Logar a cor de fundo do canvas
+      console.log(
+        `Canvas ${index + 1}: Background Color - ${canvas.backgroundColor}`
+      );
+
       const objects = canvas.getObjects();
-      console.log(`Logging all objects from canvas ${index + 1}:`);
+      // console.log(`Logging all objects from canvas ${index + 1}:`);
       objects.forEach((obj, objIndex) => {
-        console.log(`Canvas ${index + 1}, Object ${objIndex + 1}:`, obj);
+        // Assume que 'fill' é a propriedade para cor do objeto
+        let color = obj.fill ? obj.fill : "No color set";
+        console.log(
+          `Canvas ${index + 1}, Object ${objIndex + 1}: Object -`,
+          obj
+        );
       });
     });
   };
