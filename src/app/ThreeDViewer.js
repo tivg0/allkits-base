@@ -1660,7 +1660,7 @@ const ThreeDViewer = () => {
             getActiveScene();
             // }, 500);
             calcularEImprimirAreasOcupadas();
-            logAllObjectsFromAllCanvases();
+            // logAllObjectsFromAllCanvases();
             setPreview(!preview);
             setTimeout(() => {
               closeEditor();
