@@ -20,7 +20,7 @@ const Home = () => {
       </Head>
       <div className={styles.titleZone}>
         <div className={styles.titleStruct}>
-          {/*<Image src={logo} width={80} height={35} />*/}
+          <Image src={logo} width={80} height={35} />
           <p className={styles.desc}>Simulator</p>
         </div>
         <p
