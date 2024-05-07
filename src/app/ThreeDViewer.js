@@ -323,13 +323,19 @@ const ThreeDViewer = () => {
     }
 
     //functions------------------------------------------------------------------------------------------------------
-    const onMouseDown = (e) => {
+    const handleInteractionStart = (e) => {
+      // Determine the input type and extract coordinates accordingly
+      const isTouchEvent = e.type.includes("touch");
+      const x = isTouchEvent ? e.touches[0].clientX : e.clientX;
+      const y = isTouchEvent ? e.touches[0].clientY : e.clientY;
+
       const canvas = fabricCanvas.current;
       const activeObject = canvas.getActiveObject();
       setActiveObject(activeObject);
 
-      initialMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-      initialMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      // Calculate normalized device coordinates
+      initialMouse.x = (x / window.innerWidth) * 2 - 1;
+      initialMouse.y = -(y / window.innerHeight) * 2 + 1;
       let intersections = getIntersections(
         raycaster,
         camera,
@@ -602,16 +608,25 @@ const ThreeDViewer = () => {
       fabricCanvas.current.renderAll();
       updateTexture();
 
+      containerRef.current.addEventListener(
+        "mousedown",
+        handleInteractionStart
+      );
+      containerRef.current.addEventListener(
+        "touchstart",
+        handleInteractionStart
+      );
+
       if (editingComponent.current)
         setEditingComponentHTML(editingComponent.current.userData.name);
       else if (!editingComponent.current) setEditingComponentHTML("hoodInCOR");
     };
 
-    const onMouseMove = (e) => {
+    const handleMove = (x, y) => {
       if (isDragging) {
         //se não estiver a orbitar e estiver a arrastar
-        currentMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-        currentMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        currentMouse.x = (x / window.innerWidth) * 2 - 1;
+        currentMouse.y = -(y / window.innerHeight) * 2 + 1;
         let intersection = null;
         if (editingComponent.current)
           intersection = getIntersection(
@@ -1088,6 +1103,16 @@ const ThreeDViewer = () => {
       } else return;
     };
 
+    const onMouseMove = (e) => {
+      handleMove(e.clientX, e.clientY);
+    };
+
+    const onTouchMove = (e) => {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    };
+
     const onMouseUp = (e) => {
       isDragging = false;
       orbit.enabled = true;
@@ -1112,9 +1137,17 @@ const ThreeDViewer = () => {
     animate();
 
     //listeners------------------------------------------------------------------------------------------------------
+    const container = containerRef.current;
+
     window.addEventListener("resize", onWindowResize);
-    containerRef.current.addEventListener("mousedown", onMouseDown);
-    containerRef.current.addEventListener("mousemove", onMouseMove);
+    container.addEventListener("mousedown", handleInteractionStart);
+    container.addEventListener("touchstart", handleInteractionStart);
+
+    container.addEventListener("mousemove", onMouseMove);
+    container.addEventListener("touchmove", onTouchMove);
+
+    // containerRef.current.addEventListener("mousedown", onMouseDown);
+    // containerRef.current.addEventListener("mousemove", onMouseMove);
     containerRef.current.addEventListener("mouseup", onMouseUp);
     fabricCanvas.current.on("object:modified", updateTexture);
     fabricCanvas.current.on("object:scaling", updateTexture);
@@ -1127,8 +1160,14 @@ const ThreeDViewer = () => {
       renderer.dispose();
       window.removeEventListener("resize", onWindowResize);
       if (containerRef.current) {
-        containerRef.current.removeEventListener("mousedown", onMouseDown);
-        containerRef.current.removeEventListener("mousemove", onMouseMove);
+        // containerRef.current.removeEventListener("mousedown", onMouseDown);
+        container.removeEventListener("mousedown", handleInteractionStart);
+        container.removeEventListener("touchstart", handleInteractionStart);
+
+        container.removeEventListener("mousemove", onMouseMove);
+        container.removeEventListener("touchmove", onTouchMove);
+
+        // containerRef.current.removeEventListener("mousemove", onMouseMove);
         containerRef.current.removeEventListener("mouseup", onMouseUp);
       }
       fabricCanvas.current.off("object:modified", updateTexture);
