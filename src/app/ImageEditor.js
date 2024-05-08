@@ -530,7 +530,7 @@ const ImageEditor = forwardRef(
                     opacity: 0,
                   }}
                 />
-                <div className={styles.noText}>
+                <div className={styles.noImage}>
                   <p className={styles.trititle}>
                     Selecione uma imagem para começar
                   </p>

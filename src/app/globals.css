@@ -3,3 +3,18 @@ textarea,
 select {
   -webkit-text-size-adjust: 100%; /* Prevent font scaling in WebKit browsers */
 }
+
+input:focus,
+select:focus,
+textarea:focus {
+  font-size: 16px;
+}
+
+/* styles/globals.css */
+body {
+  -webkit-user-select: none; /* Safari and Chrome syntax */
+  -moz-user-select: none; /* Firefox syntax */
+  -ms-user-select: none; /* Internet Explorer/Edge syntax */
+  user-select: none; /* Standard syntax */
+  -webkit-text-size-adjust: 100%; /* Prevent font scaling in WebKit browsers */
+}
