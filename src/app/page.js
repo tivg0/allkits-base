@@ -14,8 +14,8 @@ const Home = () => {
   return (
     <div>
       <Head>
-        <title>3D Sweat Design Simulator</title>
-        <meta name="description" content="Your 3D Sweat Design Simulator" />
+        <title>Allkits Simulator</title>
+        {/* <meta name="description" content="Your 3D Sweat Design Simulator" /> */}
         <link rel="icon" href="/favicon.ico" />
         <meta
           name="viewport"
@@ -29,15 +29,15 @@ const Home = () => {
         </div>
         <p
           style={{
-            color: "#333",
+            color: "#8c8c8c",
             textAlign: "left",
             fontSize: 12,
             letterSpacing: -0.5,
-            marginTop: 0,
+            marginTop: -5,
           }}
           className={styles.subtitle}
         >
-          STEP, Lda. Hoodie 3D Models
+          Powered by STEP
         </p>
       </div>
 
