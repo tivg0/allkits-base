@@ -1784,7 +1784,7 @@ const ThreeDViewer = () => {
             closeTabs();
           }}
           style={{
-            right: preview ? 260 : 50,
+            right: preview ? 260 : window.innerWidth < 750 ? 25 : 50,
             color: preview ? "#fff" : "#000",
             backgroundColor: preview ? "transparent" : "#fff",
           }}

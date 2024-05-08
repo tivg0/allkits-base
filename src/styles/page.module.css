@@ -999,6 +999,52 @@
 }
 
 @media only screen and (max-width: 715px) {
+  /* navbar com titulo e botoes e logo */
+
+  .titleZone {
+    margin: 20px 30px;
+    position: fixed;
+    z-index: 10;
+  }
+
+  .exportBtnNot button {
+    top: 30px;
+  }
+
+  /* select model para tlm */
+
+  .modelsList {
+    display: block;
+    width: 100%;
+    border-radius: 25px;
+    justify-content: flex-start;
+    margin-top: 50%;
+  }
+
+  .modelosBtns::-webkit-scrollbar {
+    display: none;
+  }
+
+  .modelosBtns {
+    display: flex;
+    align-items: center;
+    padding-left: 50vw;
+    padding-right: 50vw;
+    justify-content: flex-start;
+    gap: 5px;
+    overflow-x: auto;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .modeloBtn {
+    flex: 0 0 auto;
+    scroll-snap-align: center; /* Centraliza o botão durante o snap */
+  }
+
+  /* janela de edicao */
+
   .editZone {
     display: none;
   }
@@ -1155,10 +1201,6 @@
 
   /* image editor */
 
-  /* .menuPicker {
-    margin-top: 0px;
-  } */
-
   .editImageMain {
     display: none;
   }
@@ -1176,36 +1218,6 @@
     justify-content: center;
     gap: 5px;
     transition: all 0.2s ease-in-out;
-  }
-
-  .modelsList {
-    display: block;
-    width: 100%;
-    border-radius: 25px;
-    justify-content: flex-start;
-    margin-top: 50%;
-  }
-
-  .modelosBtns::-webkit-scrollbar {
-    display: none;
-  }
-
-  .modelosBtns {
-    display: flex;
-    align-items: center;
-    padding-left: 50vw;
-    padding-right: 50vw;
-    justify-content: flex-start;
-    gap: 5px;
-    overflow-x: auto;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    scroll-snap-type: x mandatory;
-  }
-
-  .modeloBtn {
-    flex: 0 0 auto;
-    scroll-snap-align: center; /* Centraliza o botão durante o snap */
   }
 }
 
