@@ -100,6 +100,14 @@
     margin-top: 65px;
   }
 
+  .editImageMain {
+    display: block;
+  }
+
+  .editImageMainMobile {
+    display: none;
+  }
+
   .bottomBar {
     position: fixed;
     display: block;
@@ -227,12 +235,11 @@
   }
 
   .bottomWindow {
-    top: 0;
-    border-radius: 100px;
-    align-self: flex-end;
-    justify-content: flex-end;
-    display: flex;
-    z-index: 10000;
+    margin-top: 75px;
+  }
+
+  .textHeader {
+    display: block;
   }
 
   .saveBtn,
@@ -646,8 +653,8 @@
   .inputText {
     border: 0;
     border-bottom: 0.5px solid #ccc;
-    width: 100%;
-    align-self: flex-end;
+    width: 102px;
+    justify-content: flex-end;
     padding-bottom: 7px;
     padding-top: 10px;
     font-size: 14px;
@@ -663,14 +670,27 @@
     border-bottom: 1px dotted #4a90e2; /* Replacing focus indication */
   }
 
+  .alinhamento_Tamanho {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .inputMain {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+
   .alignBtns {
-    position: absolute;
+    /* position: absolute;
     bottom: 15px;
     left: 25px;
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 10px;
+    gap: 10px; */
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
   }
 
   .alignBtn {
@@ -688,10 +708,8 @@
   }
 
   .fontFamily {
-    position: absolute;
-    bottom: 75px;
-    left: 25px;
     display: flex;
+    margin-top: 50px;
     gap: 15px;
   }
 
@@ -700,18 +718,29 @@
     font-family: "Inter";
     letter-spacing: -0.7px;
     font-size: 14px;
-    -webkit-appearance: none; /* Removing default styling in Safari */
+    -webkit-appearance: none;
     appearance: none;
     height: 40px;
+    background-color: #f2f2f2;
+    border: 0;
+    padding-left: 10px;
+    padding: 5px;
+    border-radius: 100px;
   }
+
   .inputSize {
     width: 105px;
     font-family: "Inter";
     letter-spacing: -0.7px;
     font-size: 14px;
-    -webkit-appearance: none; /* Removing default styling in Safari */
+    -webkit-appearance: none;
     appearance: none;
     height: 40px;
+    background-color: #f2f2f2;
+    border: 0;
+    padding-left: 10px;
+    padding: 7px;
+    border-radius: 100px;
   }
 
   .corInput {
@@ -911,15 +940,15 @@
   }
 
   .deleteButton {
-    margin-top: 80px;
     background-color: transparent;
     border: 0;
     cursor: pointer;
     transition: all 0.161s ease-in-out;
+    transform: rotate(0deg);
   }
 
   .deleteButton:hover {
-    margin-top: 70px;
+    transform: rotate(16.1deg);
     opacity: 0.8;
   }
 
@@ -1049,6 +1078,15 @@
     max-height: 250px;
   }
 
+  .editZoneText {
+    max-height: 170px;
+    padding-right: 0px;
+  }
+
+  .deleteButton {
+    margin-right: 15px;
+  }
+
   .coresDisposalTlm {
     display: flex;
     margin-top: 60px;
@@ -1058,6 +1096,68 @@
     margin-right: 25px;
     margin-bottom: 25px;
     gap: 25px;
+  }
+
+  /* text editor */
+
+  .bottomWindow {
+    margin-top: 55px;
+  }
+
+  .textHeader {
+    display: flex;
+    overflow-x: auto;
+    gap: 135px;
+    margin-top: 5px;
+    padding-bottom: 10px;
+  }
+
+  .fontFamily {
+    width: 190px;
+    margin-top: 0;
+  }
+
+  .inputMain {
+    margin-left: -25px;
+    margin-right: 25px;
+  }
+
+  .inputText {
+    border: 0;
+    border-bottom: 0.5px solid #ccc;
+    width: 50px;
+    padding-bottom: 7px;
+    padding-top: 10px;
+    font-size: 14px;
+    color: #333;
+    font-family: "Inter";
+    letter-spacing: -0.8px;
+    resize: none;
+  }
+
+  /* image editor */
+
+  /* .menuPicker {
+    margin-top: 0px;
+  } */
+
+  .editImageMain {
+    display: none;
+  }
+
+  .editImageMainMobile {
+    display: flex;
+    justify-content: center;
+  }
+
+  .divAreaEspecifica {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.2s ease-in-out;
   }
 }
 

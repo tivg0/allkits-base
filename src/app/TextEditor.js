@@ -189,25 +189,30 @@ const TextEditor = forwardRef(
           {activeObject ? (
             <>
               <div className={styles.bottomWindow}>
-                <div style={{ marginTop: 115 }}></div>
-                {/* <input
-                  placeholder="Escreva o seu texto"
-                  className={styles.inputText}
-                  onChange={(e) =>
-                    handleTextChange(e.target.value, targetCanvasId)
-                  } // Update text based on input changes
-                /> */}
-                <input
-                  placeholder="Escreva o seu texto"
-                  className={styles.inputText}
-                  value={text}
-                  // value={text} // Display text from the active object
-                  onChange={handleTextChange}
-                />
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 5,
+                    justifyContent: "space-between",
+                  }}
+                  className={styles.input_Trash}
+                >
+                  <input
+                    placeholder="Escreva o seu texto"
+                    className={styles.inputText}
+                    style={{ width: "90%" }}
+                    value={text}
+                    // value={text} // Display text from the active object
+                    onChange={handleTextChange}
+                  />
 
-                <button onClick={handleDelete} className={styles.deleteButton}>
-                  <NextImage src={deleteIcon} width={25} height={25} />
-                </button>
+                  <button
+                    onClick={handleDelete}
+                    className={styles.deleteButton}
+                  >
+                    <NextImage src={deleteIcon} width={25} height={25} />
+                  </button>
+                </div>
 
                 <div className={styles.textHeader}>
                   <div className={styles.fontFamily}>
@@ -225,13 +230,6 @@ const TextEditor = forwardRef(
                       </p>
                       <div>
                         <select
-                          style={{
-                            backgroundColor: "#f2f2f2",
-                            border: 0,
-                            paddingLeft: 10,
-                            padding: 7,
-                            borderRadius: 100,
-                          }}
                           className={styles.selectFonts}
                           value={fontFamily}
                           onChange={(e) => {
@@ -268,13 +266,6 @@ const TextEditor = forwardRef(
                       </p>
                       <div>
                         <select
-                          style={{
-                            backgroundColor: "#f2f2f2",
-                            border: 0,
-                            paddingLeft: 10,
-                            padding: 7,
-                            borderRadius: 100,
-                          }}
                           className={styles.inputSize}
                           value={fillColor} // Control the selected value with the state
                           onChange={(e) => {
@@ -308,60 +299,78 @@ const TextEditor = forwardRef(
                       </div>
                     </div>
                   </div>
-                  <div className={styles.alignBtns}>
-                    <button
-                      onClick={() => {
-                        const newAlign = "left";
-                        handleTextAlign(newAlign);
-                      }}
-                      className={styles.alignBtn}
-                    >
-                      <img
-                        src={"./textIconalign.png"}
-                        style={{ width: 20, height: 20, marginTop: 4 }}
-                        alt="Description"
-                      />
-                    </button>
-                    <button
-                      onClick={() => {
-                        const newAlign = "center";
-                        handleTextAlign(newAlign);
-                      }}
-                      className={styles.alignBtn}
-                    >
-                      <img
-                        src={"./textIconalign.png"}
-                        style={{ width: 20, height: 20, marginTop: 4 }}
-                        alt="Description"
-                      />
-                    </button>
-                    <button
-                      onClick={() => {
-                        const newAlign = "right";
-                        handleTextAlign(newAlign);
-                      }}
-                      className={styles.alignBtn}
-                    >
-                      <img
-                        src={"./textIconalign.png"}
-                        style={{ width: 20, height: 20, marginTop: 4 }}
-                        alt="Description"
-                      />
-                    </button>
-                    <button style={{ opacity: 0 }} className={styles.alignBtn}>
-                      <img
-                        src={"./textIconalign.png"}
-                        style={{ width: 20, height: 20, marginTop: 4 }}
-                        alt="Description"
-                      />
-                    </button>
-                    <div style={{ marginLeft: 10 }}>
+                  <div className={styles.alinhamento_Tamanho}>
+                    <div>
                       <p
                         style={{
                           color: "#666",
                           fontSize: 13,
                           letterSpacing: -0.8,
-                          marginBottom: 0,
+                          marginBottom: 5,
+                          fontFamily: "Inter",
+                        }}
+                      >
+                        Alinhamento
+                      </p>
+                      <div className={styles.alignBtns}>
+                        <button
+                          onClick={() => {
+                            const newAlign = "left";
+                            handleTextAlign(newAlign);
+                          }}
+                          className={styles.alignBtn}
+                        >
+                          <img
+                            src={"./textIconalign.png"}
+                            style={{ width: 20, height: 20, marginTop: 4 }}
+                            alt="Description"
+                          />
+                        </button>
+                        <button
+                          onClick={() => {
+                            const newAlign = "center";
+                            handleTextAlign(newAlign);
+                          }}
+                          className={styles.alignBtn}
+                        >
+                          <img
+                            src={"./textIconalign.png"}
+                            style={{ width: 20, height: 20, marginTop: 4 }}
+                            alt="Description"
+                          />
+                        </button>
+                        <button
+                          onClick={() => {
+                            const newAlign = "right";
+                            handleTextAlign(newAlign);
+                          }}
+                          className={styles.alignBtn}
+                        >
+                          <img
+                            src={"./textIconalign.png"}
+                            style={{ width: 20, height: 20, marginTop: 4 }}
+                            alt="Description"
+                          />
+                        </button>
+                        <button
+                          style={{ opacity: 0 }}
+                          className={styles.alignBtn}
+                        >
+                          <img
+                            src={"./textIconalign.png"}
+                            style={{ width: 20, height: 20, marginTop: 4 }}
+                            alt="Description"
+                          />
+                        </button>
+                      </div>
+                    </div>
+                    <div className={styles.inputMain}>
+                      <p
+                        style={{
+                          color: "#666",
+                          fontSize: 13,
+                          letterSpacing: -0.8,
+                          marginBottom: 5,
                           fontFamily: "Inter",
                         }}
                       >
@@ -370,7 +379,7 @@ const TextEditor = forwardRef(
                       <div>
                         <input
                           className={styles.inputText}
-                          style={{ width: 90 }}
+                          // style={{ width: 90 }}
                           value={fontSize}
                           // value={text} // Display text from the active object
                           onChange={handleSizeChange}
@@ -384,7 +393,7 @@ const TextEditor = forwardRef(
           ) : (
             <div
               style={{
-                marginTop: 165,
+                marginTop: 120,
                 alignSelf: "center",
               }}
             >

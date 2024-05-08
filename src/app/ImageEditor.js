@@ -399,75 +399,104 @@ const ImageEditor = forwardRef(
             {removeBtn ? (
               <>
                 {!picker && (
-                  <div>
-                    <button
-                      className={styles.divAreaEspecifica}
-                      style={{ borderWidth: 0 }}
-                      onClick={handleRemoverCor}
-                    >
-                      <div className={styles.divIcon}>
-                        <img
-                          src={"./removeIcon.png"}
-                          style={{ width: 25, height: 25 }}
-                          alt="step"
-                        />
-                      </div>
+                  <>
+                    <div className={styles.editImageMain}>
                       <div>
-                        <p className={styles.titleText}>Remover Cor</p>
-                        <p className={styles.infoText}>
-                          Remove cores das tuas imagens.
-                        </p>
+                        <button
+                          className={styles.divAreaEspecifica}
+                          style={{ borderWidth: 0 }}
+                          onClick={handleRemoverCor}
+                        >
+                          <div className={styles.divIcon}>
+                            <img
+                              src={"./removeIcon.png"}
+                              style={{ width: 25, height: 25 }}
+                              alt="step"
+                            />
+                          </div>
+                          <div>
+                            <p className={styles.titleText}>Remover Cor</p>
+                            <p className={styles.infoText}>
+                              Remove cores das tuas imagens.
+                            </p>
+                          </div>
+                        </button>
+                        <button
+                          className={styles.divAreaEspecifica}
+                          style={{ borderWidth: 0 }}
+                          onClick={handleFlipH}
+                        >
+                          <div className={styles.divIcon}>
+                            <NextImage
+                              src={mirrorIcon}
+                              width={25}
+                              height={25}
+                              alt="step"
+                            />
+                          </div>
+                          <div>
+                            <p className={styles.titleText}>Espelhar Imagem</p>
+                            <p className={styles.infoText}>
+                              Vê a tua imagem espelhada
+                            </p>
+                          </div>
+                        </button>
                       </div>
-                    </button>
-                    <button
-                      className={styles.divAreaEspecifica}
-                      style={{ borderWidth: 0 }}
-                      onClick={handleFlipH}
-                    >
-                      <div className={styles.divIcon}>
-                        <NextImage
-                          src={mirrorIcon}
-                          width={25}
-                          height={25}
-                          alt="step"
-                        />
-                      </div>
-                      <div>
-                        <p className={styles.titleText}>Espelhar Imagem</p>
-                        <p className={styles.infoText}>
-                          Vê a tua imagem espelhada
-                        </p>
-                      </div>
-                    </button>
-                    {/* <button
-                      className={styles.divAreaEspecifica}
-                      style={{ borderWidth: 0 }}
-                      onClick={handleFlipV}
-                    >
-                      <div className={styles.divIcon}>
-                        <img
-                          src={"./removeIcon.png"}
-                          style={{ width: 25, height: 25 }}
-                          alt="Description"
-                        />
-                      </div>
-                      <div>
-                        <p className={styles.titleText}>Inverter Vertical</p>
-                        <p className={styles.infoText}>
-                          Espelha a imagem no eixo vertical
-                        </p>
-                      </div>
-                    </button> */}
-                  </div>
-                )}
-                <button
-                  onClick={handleDelete}
-                  className={styles.deleteButtonImage}
-                >
-                  <NextImage src={deleteIcon} width={25} height={25} />
+                      <button
+                        onClick={handleDelete}
+                        className={styles.deleteButtonImage}
+                      >
+                        <NextImage src={deleteIcon} width={25} height={25} />
 
-                  {/* <p>Apagar Imagem</p> */}
-                </button>
+                        {/* <p>Apagar Imagem</p> */}
+                      </button>
+                    </div>
+
+                    <div className={styles.editImageMainMobile}>
+                      <button
+                        className={styles.divAreaEspecifica}
+                        style={{ borderWidth: 0 }}
+                        onClick={handleRemoverCor}
+                      >
+                        <div className={styles.divIcon}>
+                          <img
+                            src={"./removeIcon.png"}
+                            style={{ width: 25, height: 25 }}
+                            alt="step"
+                          />
+                        </div>
+                      </button>
+                      <button
+                        className={styles.divAreaEspecifica}
+                        style={{ borderWidth: 0 }}
+                        onClick={handleFlipH}
+                      >
+                        <div className={styles.divIcon}>
+                          <NextImage
+                            src={mirrorIcon}
+                            width={25}
+                            height={25}
+                            alt="step"
+                          />
+                        </div>
+                      </button>
+                      <button
+                        className={styles.divAreaEspecifica}
+                        style={{ borderWidth: 0 }}
+                        onClick={handleDelete}
+                      >
+                        <div className={styles.divIcon}>
+                          <NextImage
+                            src={deleteIcon}
+                            width={25}
+                            height={25}
+                            alt="step"
+                          />
+                        </div>
+                      </button>
+                    </div>
+                  </>
+                )}
               </>
             ) : (
               <div>
