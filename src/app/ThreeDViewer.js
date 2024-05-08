@@ -356,7 +356,10 @@ const ThreeDViewer = () => {
       //caso existam interseções
       if (intersections.length > 0) {
         openTabs();
-
+        if (!isDragging) {
+          isDragging = true; // Start dragging only if it's a new interaction
+          // selectAndHandleObject(intersections);
+        }
         // if (activeObject && activeObject.type == "image") {
         //   const imageSrc = activeObject.getSrc();
         //   setImageSrc(imageSrc); // Seta a URL da fonte da imagem no estado
@@ -583,6 +586,12 @@ const ThreeDViewer = () => {
           closeEditor();
         }, 200);
         closeTabs();
+        if (isDragging) {
+          isDragging = false;
+          isHandleSelected = false;
+          selectedHandle = null;
+          setEditingComponentHTML(null); // or any other reset function
+        }
 
         if (editingComponent.current) {
           orbit.enabled = true;
@@ -1104,7 +1113,13 @@ const ThreeDViewer = () => {
     };
 
     const onMouseMove = (e) => {
-      handleMove(e.clientX, e.clientY);
+      if (!isDragging) return;
+
+      const x = e.clientX;
+      const y = e.clientY;
+      currentMouse.x = (x / window.innerWidth) * 2 - 1;
+      currentMouse.y = -(y / window.innerHeight) * 2 + 1;
+      handleMove(x, y);
     };
 
     const onTouchMove = (e) => {
@@ -1114,10 +1129,14 @@ const ThreeDViewer = () => {
     };
 
     const onMouseUp = (e) => {
-      isDragging = false;
-      orbit.enabled = true;
-      isHandleSelected = false;
-      selectedHandle = null;
+      if (isDragging) {
+        isDragging = false;
+        orbit.enabled = true;
+        isHandleSelected = false;
+        selectedHandle = null;
+        // Reset any interaction specifics here
+        updateTexture(); // Refresh view to finalize interaction
+      }
     };
 
     function onWindowResize() {
@@ -1141,14 +1160,14 @@ const ThreeDViewer = () => {
 
     window.addEventListener("resize", onWindowResize);
     container.addEventListener("mousedown", handleInteractionStart);
-    container.addEventListener("touchstart", handleInteractionStart);
-
     container.addEventListener("mousemove", onMouseMove);
-    container.addEventListener("touchmove", onTouchMove);
+    container.addEventListener("mouseup", onMouseUp);
+    container.addEventListener("touchstart", handleInteractionStart, {
+      passive: true,
+    });
+    container.addEventListener("touchmove", onTouchMove, { passive: true });
+    container.addEventListener("touchend", onMouseUp, { passive: true });
 
-    // containerRef.current.addEventListener("mousedown", onMouseDown);
-    // containerRef.current.addEventListener("mousemove", onMouseMove);
-    containerRef.current.addEventListener("mouseup", onMouseUp);
     fabricCanvas.current.on("object:modified", updateTexture);
     fabricCanvas.current.on("object:scaling", updateTexture);
     fabricCanvas.current.on("object:moving", updateTexture);
@@ -1160,15 +1179,12 @@ const ThreeDViewer = () => {
       renderer.dispose();
       window.removeEventListener("resize", onWindowResize);
       if (containerRef.current) {
-        // containerRef.current.removeEventListener("mousedown", onMouseDown);
         container.removeEventListener("mousedown", handleInteractionStart);
-        container.removeEventListener("touchstart", handleInteractionStart);
-
         container.removeEventListener("mousemove", onMouseMove);
+        container.removeEventListener("mouseup", onMouseUp);
+        container.removeEventListener("touchstart", handleInteractionStart);
         container.removeEventListener("touchmove", onTouchMove);
-
-        // containerRef.current.removeEventListener("mousemove", onMouseMove);
-        containerRef.current.removeEventListener("mouseup", onMouseUp);
+        container.removeEventListener("touchend", onMouseUp);
       }
       fabricCanvas.current.off("object:modified", updateTexture);
       fabricCanvas.current.off("object:scaling", updateTexture);
