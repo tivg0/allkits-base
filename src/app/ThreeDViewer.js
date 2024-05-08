@@ -1749,25 +1749,25 @@ const ThreeDViewer = () => {
               </div>
             </div>
           </div>
-          <div className={styles.editZoneTlm}>
-            <div className={styles.mainBtns}>
-              <button onClick={imageEditorTab}>
-                <NextImage src={galeryIcon} width={20} height={20} />
-              </button>
-              <button onClick={textEditorTab}>
-                <NextImage src={textIcon} width={20} height={20} />
-              </button>
-              <button onClick={colorEditorTab}>
-                <NextImage src={colorIcon} width={20} height={20} />
-              </button>
+          {!preview && (
+            <div className={styles.editZoneTlm}>
+              <div className={styles.mainBtns}>
+                <button onClick={imageEditorTab}>
+                  <NextImage src={galeryIcon} width={20} height={20} />
+                </button>
+                <button onClick={textEditorTab}>
+                  <NextImage src={textIcon} width={20} height={20} />
+                </button>
+                <button onClick={colorEditorTab}>
+                  <NextImage src={colorIcon} width={20} height={20} />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
       <div className={styles.priceBtnMain}>
-        {preview && (
-          <button className={styles.priceBtn}>Continuar para check-out</button>
-        )}
+        {preview && <button className={styles.priceBtn}>Continuar</button>}
       </div>
       <div className={styles.exportBtnNot}>
         <button
@@ -1784,12 +1784,37 @@ const ThreeDViewer = () => {
             closeTabs();
           }}
           style={{
-            right: preview ? 260 : window.innerWidth < 750 ? 25 : 50,
+            right: preview
+              ? window.innerWidth < 750
+                ? 105
+                : 165
+              : window.innerWidth < 750
+              ? 25
+              : 50,
             color: preview ? "#fff" : "#000",
             backgroundColor: preview ? "transparent" : "#fff",
           }}
         >
-          {preview ? "Voltar à Personalização" : "Concluído"}
+          {preview ? (
+            window.innerWidth < 450 ? (
+              <p
+                style={{
+                  marginTop: -7.5,
+                  backgroundColor: "rgba(0, 0, 0 ,0.3)",
+                  padding: 10,
+                  borderRadius: 100,
+                  paddingLeft: 15,
+                  paddingRight: 15,
+                }}
+              >
+                &#8592;
+              </p>
+            ) : (
+              "Voltar à Personalização"
+            )
+          ) : (
+            "Concluído"
+          )}
         </button>
       </div>
 
@@ -1996,6 +2021,11 @@ const ThreeDViewer = () => {
               <p>A criar o teu link de pré-visualização</p>
             </button>
           )}
+          <div className={styles.inputsForm}>
+            <input className={styles.inputForm} placeholder="Nome" />
+            <input className={styles.inputForm} placeholder="Email" />
+            <input className={styles.inputForm} placeholder="Phone" />
+          </div>
         </div>
       )}
     </>

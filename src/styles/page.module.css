@@ -998,9 +998,44 @@
     bottom: 20px;
     opacity: 0.5;
   }
+
+  .inputsForm {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    justify-content: center;
+    position: fixed;
+    bottom: 16.1%;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  .inputForm {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 100px;
+    border: 0;
+    color: #fff;
+    font-family: "Inter";
+    letter-spacing: -0.6px;
+    font-size: 14px;
+  }
 }
 
 @media only screen and (max-width: 715px) {
+  .checkoutZone {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100vh;
+    bottom: 0px;
+    top: 0px;
+    align-self: center;
+    justify-content: center;
+    backdrop-filter: blur(25px);
+    transition: all 0.3s ease-in-out;
+  }
   /* navbar com titulo e botoes e logo */
 
   .titleZone {
@@ -1224,6 +1259,60 @@
     justify-content: center;
     gap: 5px;
     transition: all 0.2s ease-in-out;
+  }
+
+  /* menu de preco */
+
+  .inputsForm {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    overflow-x: auto;
+    justify-content: flex-start;
+    position: fixed;
+    bottom: 16.1%;
+    left: 0;
+    right: 0;
+    margin: auto;
+    scroll-snap-type: x mandatory;
+    padding-left: 50vw;
+    padding-right: 50vw;
+  }
+
+  .inputsForm::-webkit-scrollbar {
+    display: none;
+  }
+
+  .inputForm {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 100px;
+    border: 0;
+    color: #fff;
+    font-family: "Inter";
+    letter-spacing: -0.6px;
+    font-size: 14px;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+  }
+
+  .priceBtnMain button {
+    background-color: #00bfff;
+    z-index: 100;
+    position: fixed;
+    top: 35px;
+    right: 25px;
+    color: #fff;
+    border-radius: 100px;
+    padding: 5px;
+    font-family: "Inter";
+    font-size: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
   }
 }
 
