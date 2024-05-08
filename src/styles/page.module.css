@@ -1177,6 +1177,36 @@
     gap: 5px;
     transition: all 0.2s ease-in-out;
   }
+
+  .modelsList {
+    display: block;
+    width: 100%;
+    border-radius: 25px;
+    justify-content: flex-start;
+    margin-top: 50%;
+  }
+
+  .modelosBtns::-webkit-scrollbar {
+    display: none;
+  }
+
+  .modelosBtns {
+    display: flex;
+    align-items: center;
+    padding-left: 50vw;
+    padding-right: 50vw;
+    justify-content: flex-start;
+    gap: 5px;
+    overflow-x: auto;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .modeloBtn {
+    flex: 0 0 auto;
+    scroll-snap-align: center; /* Centraliza o botão durante o snap */
+  }
 }
 
 @font-face {
