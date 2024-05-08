@@ -28,7 +28,10 @@ const ImageEditor = forwardRef(
     const [imgTest, setimgTeste] = useState(null);
     const [picker, setPicker] = useState(false);
     const [removeBtn, setRemoveBtn] = useState(false);
-    const [heightWindow, setHeightWindow] = useState(292);
+
+    const initialHeight = window.innerWidth <= 750 ? 120 : 292;
+    const [heightWindow, setHeightWindow] = useState(initialHeight);
+
     const [windowCanvas, setWindowCanvas] = useState(0);
     const [opacityHint, setOpacityHint] = useState(1);
     const [opacityHintText, setOpacityHintText] = useState(1);
@@ -346,6 +349,21 @@ const ImageEditor = forwardRef(
       }
     };
 
+    const adjustHeight = () => {
+      const newHeight = window.innerWidth <= 750 ? 150 : 292;
+      setHeightWindow(newHeight);
+    };
+
+    useEffect(() => {
+      // Adiciona o event listener ao montar
+      window.addEventListener("resize", adjustHeight);
+
+      // Limpa o event listener ao desmontar
+      return () => {
+        window.removeEventListener("resize", adjustHeight);
+      };
+    }, []); // Array de dependências vazio para rodar apenas uma vez
+
     return (
       <>
         <div style={{ height: heightWindow }} className={styles.editZoneImg}>
@@ -512,12 +530,7 @@ const ImageEditor = forwardRef(
                     opacity: 0,
                   }}
                 />
-                <div
-                  style={{
-                    marginTop: 165,
-                    alignSelf: "center",
-                  }}
-                >
+                <div className={styles.noText}>
                   <p className={styles.trititle}>
                     Selecione uma imagem para começar
                   </p>
@@ -564,7 +577,7 @@ const ImageEditor = forwardRef(
                 <button
                   style={{
                     backgroundColor: "#fff",
-                    boxShadow: "0px 0px 35px rgba(0, 0, 0, 0.25)",
+                    boxShadow: "0px 0px 35px rgba(0, 0, 0, 0.05)",
                   }}
                   className={styles.fecharBtn}
                   onClick={removeColor}
@@ -605,6 +618,7 @@ const ImageEditor = forwardRef(
                   border: "1px solid transparent",
                   boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
                   marginTop: 10,
+                  marginBottom: 55,
                 }}
               >
                 <canvas

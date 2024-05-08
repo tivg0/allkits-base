@@ -188,7 +188,7 @@ const TextEditor = forwardRef(
 
           {activeObject ? (
             <>
-              <div className={styles.bottomWindow}>
+              <div className={styles.bottomWindowText}>
                 <div
                   style={{
                     display: "flex",
@@ -391,12 +391,7 @@ const TextEditor = forwardRef(
               </div>
             </>
           ) : (
-            <div
-              style={{
-                marginTop: 120,
-                alignSelf: "center",
-              }}
-            >
+            <div className={styles.noText}>
               <p className={styles.trititle}>Adicione texto para começar</p>
             </div>
           )}
