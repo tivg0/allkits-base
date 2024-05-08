@@ -33,6 +33,9 @@ import ImageEditor from "./ImageEditor";
 import TextEditor from "./TextEditor";
 import { fontList } from "./fonts";
 import { useRouter } from "next/navigation";
+import { getPartName } from "@/utils/getPartName";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
+import { storage } from "@/firebase";
 
 const ThreeDViewer = () => {
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
@@ -114,22 +117,6 @@ const ThreeDViewer = () => {
   const [activeObject, setActiveObject] = useState(null);
 
   //nomes certos dos objetos
-  const getPartName = (filename) => {
-    if (filename.startsWith("bodyF")) return "Frente";
-    if (filename.startsWith("bodyB")) return "Trás";
-    if (filename.startsWith("mangaL")) return "Manga Esquerda";
-    if (filename.startsWith("mangaR")) return "Manga Direita";
-    if (filename.startsWith("hoodOut")) return "Capuz";
-    if (filename.startsWith("hoodIn")) return "Forro";
-    if (filename.startsWith("agulhetas")) return "Agulhetas";
-    if (filename.startsWith("pocket")) return "Bolso";
-    if (filename.startsWith("argolas")) return "Argolas";
-    if (filename.startsWith("corda")) return "Cordas";
-    if (filename.startsWith("elasticoC")) return "Elástico Central";
-    if (filename.startsWith("elasticoL")) return "Elástico Esquerdo";
-    if (filename.startsWith("elasticoR")) return "Elástico Direito";
-    return "Parte Desconhecida"; // Default case
-  };
 
   function setBGColor(hexColor) {
     const color = hexColor.trim(); // Clean the input
@@ -197,6 +184,9 @@ const ThreeDViewer = () => {
       width: canvasSize,
       height: canvasSize,
       backgroundColor: "#fff",
+      part: editingComponent.current
+        ? editingComponent.current.name
+        : "bodyFMIX",
     });
     // setFabricCanvases((prevCanvases) => [...prevCanvases, newCanvas]);
 
@@ -486,6 +476,7 @@ const ThreeDViewer = () => {
                 width: canvasSize,
                 height: canvasSize,
                 backgroundColor: "#ffffff",
+                part: editingComponent.current.name,
               });
               setFabricCanvases((prevCanvases) => [...prevCanvases, ownCanva]);
 
@@ -539,6 +530,9 @@ const ThreeDViewer = () => {
               //     intersections[0].object.material.color
               //   ), //toHexString(intersections[0].object.material.color)
               backgroundColor: "#ffffff",
+              part: editingComponent.current
+                ? editingComponent.current.name
+                : "bodyFMIX",
             });
             setFabricCanvases((prevCanvases) => [...prevCanvases, ownCanva]);
 
@@ -1468,29 +1462,96 @@ const ThreeDViewer = () => {
     }
   };
 
-  const logAllObjectsFromAllCanvases = () => {
-    fabricCanvases.forEach((canvas, index) => {
+  const logAllObjectsFromAllCanvases = async () => {
+    const customizationData = [];
+
+    for (const canvas of fabricCanvases) {
       if (!canvas) {
-        console.log(`No canvas found for index ${index}.`);
-        return;
+        continue;
       }
 
-      // Logar a cor de fundo do canvas
-      console.log(
-        `Canvas ${index + 1}: Background Color - ${canvas.backgroundColor}`
+      const objects = canvas.getObjects();
+
+      const component = {
+        part: getPartName(canvas.part),
+        color: canvas.backgroundColor,
+        images: [],
+        texts: [],
+      };
+
+      for (const obj of objects) {
+        if (
+          obj.type === "image" &&
+          obj._element &&
+          obj._element.src.startsWith("data:image")
+        ) {
+          // Object is an image and is in base64 format
+          const imageData = obj._element.src.split(";base64,").pop();
+          const imageName = `image_${Date.now()}.png`; // Generate a unique name for the image
+          const imagePath = `images/${imageName}`; // Specify the directory path
+          const imageRef = ref(storage, imagePath);
+
+          try {
+            // Upload image to Firebase Storage
+            await uploadString(imageRef, imageData, "base64");
+
+            // Get the download URL for the uploaded image
+            const downloadURL = await getDownloadURL(imageRef);
+
+            // Push the download URL to the images array in the component
+            component.images.push(downloadURL);
+          } catch (error) {
+            console.error("Error uploading image:", error);
+          }
+        } else if (obj.type === "textbox") {
+          component.texts.push({
+            text: obj.text,
+            fontFamily: obj.fontFamily,
+            color: obj.fill,
+          });
+        }
+      }
+
+      customizationData.push(component);
+    }
+
+    // Send data to Firebase or wherever needed
+    sendData(customizationData);
+
+    return customizationData;
+  };
+
+  const sendData = async (data) => {
+    const clientData = {
+      name: "José Texugo",
+      email: "zetexu@gmail.comilao",
+      phone: "912666333",
+    };
+
+    // Merge clientData with the incoming data
+    const mergedData = { data, clientData };
+
+    try {
+      const response = await fetch(
+        "https://allkits-server.onrender.com/sendEmail",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(mergedData),
+        }
       );
 
-      const objects = canvas.getObjects();
-      // console.log(`Logging all objects from canvas ${index + 1}:`);
-      objects.forEach((obj, objIndex) => {
-        // Assume que 'fill' é a propriedade para cor do objeto
-        let color = obj.fill ? obj.fill : "No color set";
-        console.log(
-          `Canvas ${index + 1}, Object ${objIndex + 1}: Object -`,
-          obj
-        );
-      });
-    });
+      if (!response.ok) {
+        throw new Error("Failed to send data");
+      }
+
+      const responseData = await response.text();
+      console.log(responseData); // Output: Success
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -1715,7 +1776,7 @@ const ThreeDViewer = () => {
             getActiveScene();
             // }, 500);
             calcularEImprimirAreasOcupadas();
-            // logAllObjectsFromAllCanvases();
+            logAllObjectsFromAllCanvases();
             setPreview(!preview);
             setTimeout(() => {
               closeEditor();
