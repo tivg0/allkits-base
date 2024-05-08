@@ -1786,7 +1786,7 @@ const ThreeDViewer = () => {
           style={{
             right: preview
               ? window.innerWidth < 750
-                ? 105
+                ? 110
                 : 165
               : window.innerWidth < 750
               ? 25
@@ -1799,12 +1799,12 @@ const ThreeDViewer = () => {
             window.innerWidth < 450 ? (
               <p
                 style={{
-                  marginTop: -7.5,
-                  backgroundColor: "rgba(0, 0, 0 ,0.3)",
-                  padding: 10,
-                  borderRadius: 100,
-                  paddingLeft: 15,
-                  paddingRight: 15,
+                  marginTop: 0,
+                  // backgroundColor: "rgba(0, 0, 0 ,0.3)",
+                  // padding: 10,
+                  // borderRadius: 100,
+                  // paddingLeft: 15,
+                  // paddingRight: 15,
                 }}
               >
                 &#8592;
