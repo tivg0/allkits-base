@@ -14,6 +14,7 @@ import {
   calculateAngle,
   toHexString,
   handleImage,
+  hdri,
 } from "./utils";
 import { color } from "three/examples/jsm/nodes/shadernode/ShaderNode";
 import NextImage from "next/image";
@@ -75,6 +76,10 @@ const ThreeDViewer = () => {
   const [canvasSize, setCanvasSize] = useState(480); // Default to larger size
 
   const [fabricCanvases, setFabricCanvases] = useState([]);
+
+  const [parentName, setParentName] = useState('');;
+
+  let filename;
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent;
@@ -178,6 +183,9 @@ const ThreeDViewer = () => {
 
   const [docId, setDocId] = useState("");
 
+  let hdriRef = useRef(null);
+
+
   //load fabric canvas--------------------------------------------------------------------------------------------
   useEffect(() => {
     fabricCanvas.current = new fabric.Canvas("fabric-canvas", {
@@ -195,10 +203,36 @@ const ThreeDViewer = () => {
     texture.offset.y = 1;
     setFabricTexture(texture);
 
+    const hdriTexture = hdri('/country_club_4k.exr');
+    hdriRef.current = hdriTexture;
+
     return () => fabricCanvas.current.dispose();
   }, [canvasSize]);
 
   async function getActiveScene() {
+   
+    let groupToExport;
+
+    sceneRef.current.children.forEach(child => {
+      if (child instanceof THREE.Group) {
+        groupToExport = child;
+      }
+    });
+
+    console.log(groupToExport);
+
+    let objectToExport = {};
+
+    groupToExport.children.forEach(child => {
+      objectToExport[`${child.name}`] =  child.userData.canva ? JSON.stringify(child.userData.canva) : null;
+    })
+
+    objectToExport["file"] = filename;
+
+    console.log(JSON.stringify({ sceneData: objectToExport }));
+
+    //const objectString = objectToExport.toJSON();
+
     try {
       const response = await fetch(
         "https://allkits-server.onrender.com/convertSceneToText",
@@ -207,7 +241,7 @@ const ThreeDViewer = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ sceneData: sceneRef.current.toJSON() }),
+          body: JSON.stringify({ sceneData: objectToExport }),
         }
       );
 
@@ -224,6 +258,8 @@ const ThreeDViewer = () => {
     } catch (error) {
       console.error("Error:", error);
     }
+
+    //console.log(fabricCanvases[0])
   }
 
   useEffect(() => {
@@ -253,6 +289,8 @@ const ThreeDViewer = () => {
     const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
     scene.add(hemisphereLight);
 
+    if (hdriRef.current) scene.environment = hdriRef.current; scene.environmentIntensity = 0.2;
+
     const directionalLight = new THREE.DirectionalLight(0xf4f4f4, 1.5); // luz para se ver à frente
     const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1.5); // luz para se ver à frente
     directionalLight.position.set(90, 45, -45);
@@ -263,9 +301,11 @@ const ThreeDViewer = () => {
     scene.add(directionalLight);
     scene.add(directionalLight2);
 
+
+
     const url =
       model == 1
-        ? "/hoodieTest.glb"
+        ? "/mugFinal.glb"
         : model == 2
         ? "/1.glb"
         : model == 3
@@ -276,8 +316,11 @@ const ThreeDViewer = () => {
         ? "./4.glb"
         : null;
 
+        filename = url;
+
     if (model == 1 || model == 2 || model == 3 || model == 4 || model == 5)
       loadGLBModel(url, scene, setIsLoading, setObjectNames);
+    console.log(scene);
 
     orbit = new OrbitControls(camera, renderer.domElement);
     orbit.target.set(0, 0, 0);
@@ -332,6 +375,8 @@ const ThreeDViewer = () => {
         scene,
         initialMouse
       );
+
+      console.log(intersections)
 
       if (
         editingComponent.current &&
@@ -576,6 +621,7 @@ const ThreeDViewer = () => {
         //caso não existam interseções
       } else {
         setEditingComponentHTML(null);
+        setParentName(null);
         setTimeout(() => {
           closeEditor();
         }, 200);
@@ -585,6 +631,7 @@ const ThreeDViewer = () => {
           isHandleSelected = false;
           selectedHandle = null;
           setEditingComponentHTML(null); // or any other reset function
+          setParentName(null);
         }
 
         if (editingComponent.current) {
@@ -621,8 +668,13 @@ const ThreeDViewer = () => {
       );
 
       if (editingComponent.current)
-        setEditingComponentHTML(editingComponent.current.userData.name);
-      else if (!editingComponent.current) setEditingComponentHTML("hoodInCOR");
+      {
+        setEditingComponentHTML(editingComponent.current.name);
+        console.log(editingComponent.current.parent.name)
+        setParentName(editingComponent.current.parent.name);
+      }
+      else setEditingComponentHTML("hoodInCOR");
+      setParentName("hoodInCor");
     };
 
     const handleMove = (x, y) => {
@@ -1358,6 +1410,8 @@ const ThreeDViewer = () => {
   useEffect(() => {
     const canvas = fabricCanvasRef.current;
     if (!canvas) return;
+
+    console.log('yoyoyoyoyo')
 
     const updateActiveObject = () => {
       const activeObj = canvas.getActiveObject();

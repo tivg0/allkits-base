@@ -3,13 +3,17 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { useParams } from "next/navigation";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { copyCanvas, copyCanvasVisualize, loadGLBModel } from "@/app/utils";
+import { string } from "three/examples/jsm/nodes/shadernode/ShaderNode";
 
 function Page() {
   const params = useParams();
   const containerRef = useRef(null);
   const [sceneData, setSceneData] = useState(null);
   const [loading, setLoading] = useState(true); // Loading state
+  const [objectNames, setObjectNames] = useState([]);
   let orbit;
+  const [textures, setTextures] = useState({});
 
   const fetchScene = async () => {
     try {
@@ -44,6 +48,10 @@ function Page() {
         const data = await fetchScene();
         setSceneData(data);
         setLoading(false); // Set loading to false when scene is fetched
+        console.log(data);
+        
+        //data.forEach({})
+
       } catch (error) {
         console.error("Error loading scene:", error);
       }
@@ -56,9 +64,10 @@ function Page() {
     if (sceneData) {
       try {
         const scene = new THREE.Scene();
-        const loader = new THREE.ObjectLoader();
+        /*const loader = new THREE.ObjectLoader();
         const loadedScene = loader.parse(sceneData);
-        scene.add(loadedScene);
+        scene.add(loadedScene);*/
+
 
         const camera = new THREE.PerspectiveCamera(
           35,
@@ -68,6 +77,7 @@ function Page() {
         );
         camera.position.z = 25;
         camera.position.y = -5;
+        scene.add(camera);
 
         const renderer = new THREE.WebGLRenderer({ alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -75,6 +85,25 @@ function Page() {
         renderer.setPixelRatio(2); // increase pixel density
 
         containerRef.current.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+        scene.add(ambientLight);
+        const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
+        scene.add(hemisphereLight);
+    
+        const directionalLight = new THREE.DirectionalLight(0xf4f4f4, 1.5); // luz para se ver à frente
+        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1.5); // luz para se ver à frente
+        directionalLight.position.set(90, 45, -45);
+        directionalLight2.position.set(-45, 90, 90);
+        directionalLight.castShadow = true;
+        directionalLight2.castShadow = true;
+    
+        scene.add(directionalLight);
+        scene.add(directionalLight2);
+
+        loadGLBModel('/hoodieTest.glb', scene, setLoading, setObjectNames);
+
+        
 
         orbit = new OrbitControls(camera, renderer.domElement);
         orbit.target.set(0, 0, 0);
@@ -98,6 +127,7 @@ function Page() {
           orbit.update();
         };
         animate();
+        
 
         return () => {
           renderer.domElement.remove();

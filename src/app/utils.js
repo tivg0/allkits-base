@@ -3,6 +3,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { fabric } from "fabric";
 import TWEEN from "@tweenjs/tween.js";
 import { TextureLoader } from "three";
+import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader';
+
 
 const loadGLBModel = (path, scenario, setIsLoading, onNamesLoaded) => {
   const loader = new GLTFLoader();
@@ -21,8 +23,8 @@ const loadGLBModel = (path, scenario, setIsLoading, onNamesLoaded) => {
       gltf.scene.position.set(0, -1, 0);
       gltf.scene.traverse(function (child) {
         if (child.isMesh) {
-          child.material.normalMap = normalMap;
-          child.material.roughnessMap = roughnessMap;
+          //child.material.normalMap = normalMap;
+          //child.material.roughnessMap = roughnessMap;
           child.material.needsUpdate = true;
           child.castShadow = true;
           child.receiveShadow = true;
@@ -42,7 +44,7 @@ const loadGLBModel = (path, scenario, setIsLoading, onNamesLoaded) => {
         })
         .start();
 
-      setIsLoading(false);
+       if (setIsLoading) setIsLoading(false);
 
       if (onNamesLoaded) {
         onNamesLoaded(objectNames); // Chama o callback passando o array de nomes
@@ -132,6 +134,14 @@ function copyCanvas(origin, destination) {
   });
 }
 
+function copyCanvasVisualize(origin, destination) {
+  destination.clear();
+  destination.backgroundColor = origin.background;
+  origin.objects.forEach(function (i) {
+    destination.add(i);
+  });
+}
+
 const updateTexture = (fabricTexture) => {
   if (fabricTexture) fabricTexture.needsUpdate = true;
 };
@@ -212,6 +222,26 @@ function toHexString(color) {
   return `#${redHex}${greenHex}${blueHex}`;
 }
 
+
+
+function hdri (hdri) {
+
+  new EXRLoader()
+   .load(hdri, function (texture) {
+    const pmremGenerator = new THREE.PMREMGenerator(new THREE.WebGLRenderer({ alpha: true}));
+    const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+    
+    texture.dispose();
+    pmremGenerator.dispose();
+    return envMap;
+   });
+
+   
+
+   
+}
+
+
 export {
   loadGLBModel,
   getIntersections,
@@ -222,4 +252,6 @@ export {
   handleImage,
   calculateAngle,
   toHexString,
+  copyCanvasVisualize,
+  hdri
 };
