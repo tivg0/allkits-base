@@ -381,6 +381,7 @@ const TextEditor = forwardRef(
                           className={styles.inputText}
                           // style={{ width: 90 }}
                           value={fontSize}
+                          inputMode={"numeric"}
                           // value={text} // Display text from the active object
                           onChange={handleSizeChange}
                         />

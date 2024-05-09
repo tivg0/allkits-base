@@ -3,12 +3,12 @@ textarea,
 select {
   -webkit-text-size-adjust: 100%; /* Prevent font scaling in WebKit browsers */
   transition: all 0.3s ease-in-out;
+  font-size: 16px;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  font-size: 16px;
   outline: none;
 }
 

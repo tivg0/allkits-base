@@ -611,7 +611,8 @@ const ImageEditor = forwardRef(
             {showCanvas && (
               <div
                 style={{
-                  width: windowCanvas,
+                  width: window.innerWidth > 750 ? windowCanvas : "100%",
+                  alignContent: "center",
                   justifyContent: "center",
                   backgroundColor: "#f9f9f9",
                   borderRadius: 10,

@@ -677,7 +677,7 @@
   }
 
   .inputText:focus {
-    font-size: 16px;
+    font-size: 14px;
     outline: none;
     border: 0;
     border-bottom: 1px dotted #4a90e2; /* Replacing focus indication */
@@ -1233,7 +1233,7 @@
     width: 50px;
     padding-bottom: 7px;
     padding-top: 10px;
-    font-size: 14px;
+    font-size: 16px;
     color: #333;
     font-family: "Inter";
     letter-spacing: -0.8px;
@@ -1291,7 +1291,7 @@
     color: #fff;
     font-family: "Inter";
     letter-spacing: -0.6px;
-    font-size: 14px;
+    font-size: 16px;
     flex: 0 0 auto;
     scroll-snap-align: center;
   }
@@ -1313,6 +1313,11 @@
     padding-right: 20px;
     transition: all 0.3s ease-in-out;
     cursor: pointer;
+  }
+
+  .fecharBtn {
+    width: auto;
+    right: 25px;
   }
 }
 
