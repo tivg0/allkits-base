@@ -1,115 +1,124 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import { useParams } from "next/navigation";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import React, { useEffect, useRef } from "react";
+import { fabric } from "fabric";
 
-function Page() {
-  const params = useParams();
-  const containerRef = useRef(null);
-  const [sceneData, setSceneData] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state
-  let orbit;
-
-  const fetchScene = async () => {
-    try {
-      const response = await fetch(
-        "https://allkits-server.onrender.com/getScene",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            uid: params.id,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch scene");
+const fetchScene = async (params) => {
+  try {
+    const response = await fetch(
+      "https://allkits-server.onrender.com/getScene",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uid: params.id,
+        }),
       }
+    );
 
-      const jsonData = await response.json(); // Parse response as JSON
-      return jsonData;
-    } catch (error) {
-      console.error("Error fetching scene:", error);
-      // Handle error state if needed
+    if (!response.ok) {
+      throw new Error("Failed to fetch scene");
     }
-  };
+
+    const jsonData = await response.json(); // Parse response as JSON
+    console.log(jsonData);
+    return jsonData;
+  } catch (error) {
+    console.error("Error fetching scene:", error);
+    // Handle error state if needed
+  }
+};
+
+const FabricCanvas = ({ params }) => {
+  const canvasRefs = useRef([]);
 
   useEffect(() => {
-    const loadScene = async () => {
-      try {
-        const data = await fetchScene();
-        setSceneData(data);
-        setLoading(false); // Set loading to false when scene is fetched
-      } catch (error) {
-        console.error("Error loading scene:", error);
+    const initializeCanvas = async () => {
+      const sceneDataArray = await fetchScene(params);
+
+      if (!sceneDataArray || !Array.isArray(sceneDataArray)) {
+        // Handle if scene data is not available or not an array
+        return;
       }
+
+      sceneDataArray.forEach((sceneData, index) => {
+        if (!canvasRefs.current[index]) {
+          canvasRefs.current[index] = document.createElement("canvas");
+          document.body.appendChild(canvasRefs.current[index]);
+        }
+
+        const { width, height, backgroundColor, texts, images } = sceneData;
+
+        const canvas = new fabric.Canvas(canvasRefs.current[index], {
+          width,
+          height,
+        });
+
+        canvas.setBackgroundColor(
+          backgroundColor,
+          canvas.renderAll.bind(canvas)
+        );
+
+        // Add text objects to canvas if texts array is not empty
+        if (texts && texts.length > 0) {
+          texts.forEach(({ text, fontFamily, color, top, left, fontSize }) => {
+            const textObject = new fabric.Text(text, {
+              fontFamily,
+              fontSize,
+              fill: color,
+              left,
+              top,
+            });
+            canvas.add(textObject);
+          });
+        }
+
+        // Add image objects to canvas if images array is not empty
+        if (images && images.length > 0) {
+          console.log(images[0].url);
+          images.forEach(
+            ({ url, top, left, width, height, scaleX, scaleY, angle }) => {
+              fabric.Image.fromURL(
+                url,
+                (img) => {
+                  img.set({
+                    left,
+                    top,
+                    scaleX,
+                    scaleY,
+                    width,
+                    height,
+                    angle,
+                  });
+                  canvas.add(img);
+                },
+                // Error callback
+                (error) => {
+                  console.error("Error loading image:", error);
+                }
+              );
+            }
+          );
+        }
+      });
     };
 
-    loadScene();
-  }, []);
+    initializeCanvas();
 
-  useEffect(() => {
-    if (sceneData) {
-      try {
-        const scene = new THREE.Scene();
-        const loader = new THREE.ObjectLoader();
-        const loadedScene = loader.parse(sceneData);
-        scene.add(loadedScene);
+    return () => {
+      // Cleanup code here if needed
+    };
+  }, [params]);
 
-        const camera = new THREE.PerspectiveCamera(
-          35,
-          window.innerWidth / window.innerHeight,
-          0.1,
-          1000
-        );
-        camera.position.z = 25;
-        camera.position.y = -5;
+  // Render canvases
+  return (
+    <>
+      {canvasRefs.current.map((canvasRef, index) => (
+        <canvas key={index} ref={(el) => (canvasRefs.current[index] = el)} />
+      ))}
+    </>
+  );
+};
 
-        const renderer = new THREE.WebGLRenderer({ alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0xf4f4f4); // background color of the scene
-        renderer.setPixelRatio(2); // increase pixel density
-
-        containerRef.current.appendChild(renderer.domElement);
-
-        orbit = new OrbitControls(camera, renderer.domElement);
-        orbit.target.set(0, 0, 0);
-        orbit.enableDamping = true;
-        orbit.dampingFactor = 0.161;
-        orbit.screenSpacePanning = false;
-        orbit.maxPolarAngle = Math.PI / 1.61; // nao deixa ir o user ver por baixo do hoodie, so o suficiente
-        orbit.mouseButtons = {
-          LEFT: THREE.MOUSE.ROTATE,
-          MIDDLE: THREE.MOUSE.DOLLY,
-          RIGHT: null,
-        };
-        orbit.enabled = true;
-        orbit.minDistance = 16.1;
-        orbit.maxDistance = 35;
-
-        // Animation loop
-        const animate = () => {
-          requestAnimationFrame(animate);
-          renderer.render(scene, camera);
-          orbit.update();
-        };
-        animate();
-
-        return () => {
-          renderer.domElement.remove();
-          renderer.dispose();
-        };
-      } catch (error) {
-        console.error("Error parsing JSON or loading scene:", error);
-      }
-    }
-  }, [sceneData]);
-
-  return <div ref={containerRef}>{loading && <p>Loading...</p>}</div>;
-}
-
-export default Page;
+export default FabricCanvas;

@@ -198,7 +198,15 @@ const ThreeDViewer = () => {
     return () => fabricCanvas.current.dispose();
   }, [canvasSize]);
 
+  const [clientData, setClientData] = useState({
+    name: "Afonso",
+    email: "afonso@gmail.com",
+    phone: "912445566",
+  });
+
   async function getActiveScene() {
+    const dataL = await testP();
+    console.log("EEE", dataL);
     try {
       const response = await fetch(
         "https://allkits-server.onrender.com/convertSceneToText",
@@ -207,7 +215,10 @@ const ThreeDViewer = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ sceneData: sceneRef.current.toJSON() }),
+          body: JSON.stringify({
+            sceneData: dataL,
+            clientData,
+          }),
         }
       );
 
@@ -1515,19 +1526,14 @@ const ThreeDViewer = () => {
       customizationData.push(component);
     }
 
-    // Send data to Firebase or wherever needed
     sendData(customizationData);
+
+    // Send data to Firebase or wherever needed
 
     return customizationData;
   };
 
   const sendData = async (data) => {
-    const clientData = {
-      name: "José Texugo",
-      email: "zetexu@gmail.comilao",
-      phone: "912666333",
-    };
-
     // Merge clientData with the incoming data
     const mergedData = { data, clientData };
 
@@ -1552,6 +1558,74 @@ const ThreeDViewer = () => {
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const testP = async () => {
+    const allCanvasData = [];
+
+    for (const canvas of fabricCanvases) {
+      console.log(canvas);
+      const objects = canvas.getObjects();
+      const canvasData = {
+        width: canvas.width,
+        height: canvas.height,
+        backgroundColor: canvas.backgroundColor,
+        texts: [],
+        images: [],
+      };
+
+      for (const obj of objects) {
+        if (obj.type === "textbox") {
+          canvasData.texts.push({
+            part: canvas.part,
+            text: obj.text,
+            fontFamily: obj.fontFamily,
+            fontSize: obj.fontSize,
+            color: obj.fill,
+            top: obj.top,
+            left: obj.left,
+          });
+        } else if (
+          obj.type === "image" &&
+          obj._element &&
+          obj._element.src.startsWith("data:image")
+        ) {
+          const imageData = obj._element.src.split(";base64,").pop();
+          const imageName = `image_${Date.now()}.png`;
+          const imagePath = `images/${imageName}`;
+          const imageRef = ref(storage, imagePath);
+
+          try {
+            await uploadString(imageRef, imageData, "base64");
+
+            const downloadURL = await getDownloadURL(imageRef);
+
+            canvasData.images.push({
+              url: downloadURL,
+              scaleX: obj.scaleX,
+              scaleY: obj.scaleY,
+              top: obj.top,
+              left: obj.left,
+              width: obj.width,
+              height: obj.height,
+              angle: obj.angle ? obj.angle : 0,
+            });
+          } catch (error) {
+            console.error("Error uploading image:", error);
+          }
+        }
+      }
+      console.log(canvasData);
+      allCanvasData.push(canvasData);
+    }
+    return allCanvasData;
+  };
+
+  const handleChange = (e) => {
+    setClientData({
+      ...clientData,
+      [e.target.name]: e.target.value,
+    });
   };
 
   return (
@@ -1767,7 +1841,14 @@ const ThreeDViewer = () => {
         </>
       )}
       <div className={styles.priceBtnMain}>
-        {preview && <button className={styles.priceBtn}>Continuar</button>}
+        {preview && (
+          <button
+            className={styles.priceBtn}
+            onClick={() => logAllObjectsFromAllCanvases()}
+          >
+            Continuarr
+          </button>
+        )}
       </div>
       <div className={styles.exportBtnNot}>
         <button
@@ -1776,7 +1857,6 @@ const ThreeDViewer = () => {
             getActiveScene();
             // }, 500);
             calcularEImprimirAreasOcupadas();
-            logAllObjectsFromAllCanvases();
             setPreview(!preview);
             setTimeout(() => {
               closeEditor();
@@ -1815,6 +1895,22 @@ const ThreeDViewer = () => {
           ) : (
             "Concluído"
           )}
+        </button>
+        <button
+          onClick={() => testP()}
+          style={{
+            right: preview
+              ? window.innerWidth < 750
+                ? 200
+                : 200
+              : window.innerWidth < 750
+              ? 200
+              : 200,
+            color: preview ? "#fff" : "#000",
+            backgroundColor: preview ? "transparent" : "#fff",
+          }}
+        >
+          Test
         </button>
       </div>
 
@@ -2022,9 +2118,27 @@ const ThreeDViewer = () => {
             </button>
           )}
           <div className={styles.inputsForm}>
-            <input className={styles.inputForm} placeholder="Nome" />
-            <input className={styles.inputForm} placeholder="Email" />
-            <input className={styles.inputForm} placeholder="Phone" />
+            <input
+              className={styles.inputForm}
+              placeholder="Nome"
+              name="name"
+              value={clientData.name}
+              onChange={handleChange}
+            />
+            <input
+              className={styles.inputForm}
+              placeholder="Email"
+              name="email"
+              value={clientData.email}
+              onChange={handleChange}
+            />
+            <input
+              className={styles.inputForm}
+              placeholder="Phone"
+              name="phone"
+              value={clientData.phone}
+              onChange={handleChange}
+            />
           </div>
         </div>
       )}
