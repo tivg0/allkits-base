@@ -73,7 +73,7 @@ const ThreeDViewer = () => {
   const [tutorial, setTutorial] = useState(false);
 
   const [canvasSize, setCanvasSize] = useState(480); // Default to larger size
-  const [variavelAjuste, setVariavelAjuste] = useState(15.67);
+  const [variavelAjuste, setVariavelAjuste] = useState(23.67); //9732cm^2 totais de area || area do canvas 230400cm2
 
   const [fabricCanvases, setFabricCanvases] = useState([]);
 
@@ -1209,7 +1209,7 @@ const ThreeDViewer = () => {
 
   // //calcular area imprimida
   const calcularEImprimirAreasOcupadas = () => {
-    let precoTotal = 10.0; // Preço base de 13.25€
+    let precoTotal = 13.25; // Preço base de 13.25€
 
     fabricCanvases.forEach((canvas) => {
       const areaTotalCanvas = canvas.width * canvas.height; // área total do canvas em cm²
@@ -1337,6 +1337,14 @@ const ThreeDViewer = () => {
         textbox.set("fontFamily", font);
       }
       textbox.set("fontFamily", "Arial");
+
+      // textbox.on("scaling", function (e) {
+      //   const obj = this;
+      //   const maxWidth = obj.originalWidth + 15; // 15px more than original width
+      //   const maxHeight = obj.originalHeight + 15; // 15px more than original height
+      //   obj.scaleX = Math.min(obj.scaleX, maxWidth / obj.originalWidth);
+      //   obj.scaleY = Math.min(obj.scaleY, maxHeight / obj.originalHeight);
+      // });
 
       /*textbox.setControlsVisibility({
         mt: false,
