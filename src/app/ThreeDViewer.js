@@ -368,6 +368,8 @@ const ThreeDViewer = () => {
       if (intersections.length > 0) {
         openTabs();
 
+        let obj = fabricCanvas.current.getActiveObject();
+
         // if (activeObject && activeObject.type == "image") {
         //   const imageSrc = activeObject.getSrc();
         //   setImageSrc(imageSrc); // Seta a URL da fonte da imagem no estado
@@ -433,6 +435,7 @@ const ThreeDViewer = () => {
             let obj = fabricCanvas.current.getActiveObject();
 
             if (obj) {
+              setActiveObject(obj);
               let tolerance = (obj.scaleX * obj.width) / 10;
               rotated = obj.angle;
               for (let i in obj.oCoords) {
