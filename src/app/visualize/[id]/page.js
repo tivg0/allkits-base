@@ -4,6 +4,7 @@ import { fabric } from "fabric";
 import NextImage from "next/image";
 import styles from "../../../styles/page.module.css";
 import logoStep from "../../../../public/logoStepTransparent.png";
+import copyIcon from "../../../../public/copy.png";
 
 const fetchScene = async (params) => {
   try {
@@ -117,9 +118,12 @@ const FabricCanvas = ({ params }) => {
   // Render canvases
   return (
     <>
-      <p className={styles.copiaText}>
-        Copia o link para poderes partilhar a tua obra!
-      </p>
+      <button className={styles.copiaTextMain}>
+        <NextImage src={copyIcon} width={17} height={17} />
+        <p className={styles.copiaText}>
+          Copia o link para poderes partilhar a tua obra!
+        </p>
+      </button>
       {canvasRefs.current.map((canvasRef, index) => (
         <canvas key={index} ref={(el) => (canvasRefs.current[index] = el)} />
       ))}

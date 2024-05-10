@@ -1023,24 +1023,42 @@
   }
 
   /* texto copiar link */
-  .copiaText {
+
+  .copiaTextMain {
     align-self: center;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-radius: 5px;
-    background-color: rgba(200, 200, 200, 0.15);
-    width: 500px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-radius: 100px;
+    background-color: rgba(255, 255, 255, 0.5);
     justify-content: center;
-    display: block;
+    display: flex;
+    width: 350px;
+    align-items: center;
     margin: auto;
+    gap: 7px;
+    margin-top: 45px;
+    box-shadow: 0 0 75px rgba(90, 161, 255, 0.35);
+    border: 0;
+    cursor: pointer;
+    transition: all 0.3s;
+    transition-timing-function: cubic-bezier(0.3, 0.7, 0.3, 0.5);
+  }
+
+  .copiaTextMain:hover {
+    width: 400px;
+    box-shadow: 0 0 75px rgba(90, 161, 255, 0);
+    background-color: transparent;
+    opacity: 0.8;
+  }
+
+  .copiaText {
     color: #333;
     font-family: "Inter";
-    letter-spacing: -0.6px;
+    letter-spacing: -0.8px;
     font-size: 14px;
     text-align: center;
-    margin-top: 45px;
   }
 
   .poweredTextMain {
