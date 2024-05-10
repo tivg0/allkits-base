@@ -301,6 +301,10 @@ const ThreeDViewer = () => {
       MIDDLE: THREE.MOUSE.DOLLY,
       RIGHT: null,
     };
+    orbit.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: null,
+    };
     orbit.enabled = true;
     orbit.minDistance = 16.1;
     orbit.maxDistance = 35;

@@ -1021,9 +1021,75 @@
     letter-spacing: -0.6px;
     font-size: 14px;
   }
+
+  /* texto copiar link */
+  .copiaText {
+    align-self: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    background-color: rgba(200, 200, 200, 0.15);
+    width: 500px;
+    justify-content: center;
+    display: block;
+    margin: auto;
+    color: #333;
+    font-family: "Inter";
+    letter-spacing: -0.6px;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 45px;
+  }
+
+  .poweredTextMain {
+    position: fixed;
+    bottom: 55px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .poweredTextMainHeader {
+    position: fixed;
+    left: 50px;
+    margin-top: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .poweredText {
+    align-self: center;
+    justify-content: center;
+    color: #bfbfbf;
+    font-family: "Inter";
+    letter-spacing: -0.6px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .poweredLogo {
+    width: 75px;
+    height: 30px;
+  }
 }
 
 @media only screen and (max-width: 715px) {
+  .poweredTextMainHeader {
+    position: fixed;
+    left: 17px;
+    margin-top: -22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scale: 0.84;
+  }
+
   .checkoutZone {
     position: fixed;
     background-color: rgba(0, 0, 0, 0.8);

@@ -2,9 +2,10 @@
 import Head from "next/head";
 import ThreeDViewer from "./ThreeDViewer";
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import NextImage from "next/image";
 import styles from "../styles/page.module.css";
 import logo from "../imgs/logoAllkits.png";
+import logoStep from "../../public/logoStepTransparent.png";
 import ImageEditor from "./ImageEditor";
 
 const Home = () => {
@@ -25,21 +26,18 @@ const Home = () => {
       </Head>
       <div className={styles.titleZone}>
         <div className={styles.titleStruct}>
-          <Image src={logo} width={80} height={35} />
+          <NextImage src={logo} width={80} height={35} />
           <p className={styles.desc}>Simulator</p>
         </div>
-        <p
-          style={{
-            color: "#8c8c8c",
-            textAlign: "left",
-            fontSize: 12,
-            letterSpacing: -0.5,
-            marginTop: -5,
-          }}
-          className={styles.subtitle}
-        >
-          Powered by STEP
-        </p>
+        <div className={styles.poweredTextMainHeader}>
+          <p className={styles.poweredText}>Powered by</p>
+          <NextImage
+            className={styles.poweredLogo}
+            src={logoStep}
+            width={105}
+            height={45}
+          />
+        </div>
       </div>
 
       <main

@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import { fabric } from "fabric";
+import NextImage from "next/image";
+import styles from "../../../styles/page.module.css";
+import logoStep from "../../../../public/logoStepTransparent.png";
 
 const fetchScene = async (params) => {
   try {
@@ -114,9 +117,21 @@ const FabricCanvas = ({ params }) => {
   // Render canvases
   return (
     <>
+      <p className={styles.copiaText}>
+        Copia o link para poderes partilhar a tua obra!
+      </p>
       {canvasRefs.current.map((canvasRef, index) => (
         <canvas key={index} ref={(el) => (canvasRefs.current[index] = el)} />
       ))}
+      <div className={styles.poweredTextMain}>
+        <p className={styles.poweredText}>Powered by</p>
+        <NextImage
+          className={styles.poweredLogo}
+          src={logoStep}
+          width={105}
+          height={45}
+        />
+      </div>
     </>
   );
 };
