@@ -73,6 +73,7 @@ const ThreeDViewer = () => {
   const [tutorial, setTutorial] = useState(false);
 
   const [canvasSize, setCanvasSize] = useState(480); // Default to larger size
+  const [variavelAjuste, setVariavelAjuste] = useState(15.67);
 
   const [fabricCanvases, setFabricCanvases] = useState([]);
 
@@ -84,8 +85,10 @@ const ThreeDViewer = () => {
 
     if (isSafari) {
       setCanvasSize(480); // Supondo que você quer um tamanho menor para Safari
+      setVariavelAjuste(15.67);
     } else {
       setCanvasSize(1024); // Tamanho padrão para outros navegadores
+      setVariavelAjuste(33.43);
     }
   }, []);
 
@@ -361,10 +364,7 @@ const ThreeDViewer = () => {
       //caso existam interseções
       if (intersections.length > 0) {
         openTabs();
-        if (!isDragging) {
-          isDragging = true; // Start dragging only if it's a new interaction
-          // selectAndHandleObject(intersections);
-        }
+
         // if (activeObject && activeObject.type == "image") {
         //   const imageSrc = activeObject.getSrc();
         //   setImageSrc(imageSrc); // Seta a URL da fonte da imagem no estado
@@ -446,6 +446,10 @@ const ThreeDViewer = () => {
                   selectedHandle = i;
                   isHandleSelected = true;
                 }
+              }
+              if (!isDragging) {
+                isDragging = true; // Start dragging only if it's a new interaction
+                // selectAndHandleObject(intersections);
               }
             }
           } else {
@@ -1205,19 +1209,30 @@ const ThreeDViewer = () => {
 
   // //calcular area imprimida
   const calcularEImprimirAreasOcupadas = () => {
-    let precoTotal = 13.25; // Preço base de 10€
-    fabricCanvases.forEach((canvas) => {
-      const areaTotalCanvas = canvas.width * canvas.height; // área em cm²
-      canvas.getObjects().forEach((obj) => {
-        const areaObjeto = obj.width * obj.scaleX * (obj.height * obj.scaleY); // área ocupada em cm²
-        const areaEmDezCm2 = (areaObjeto / (obj.width * obj.height)) * 2; // converter área ocupada para blocos de 10 cm²
-        const custoAdicional = areaEmDezCm2 * 1.6; // custo adicional baseado em 1.65€ por cada 10 cm²
+    let precoTotal = 10.0; // Preço base de 13.25€
 
+    fabricCanvases.forEach((canvas) => {
+      const areaTotalCanvas = canvas.width * canvas.height; // área total do canvas em cm²
+      canvas.getObjects().forEach((obj) => {
+        const areaObjeto =
+          (obj.width * obj.scaleX * obj.height * obj.scaleY) / variavelAjuste; // área ocupada do objeto em cm²
+        const percentagemAreaOcupada =
+          areaObjeto / areaTotalCanvas / variavelAjuste; // percentagem da área ocupada pelo objeto no canvas
+        const blocosDezCm2Ocupados = Math.ceil(
+          (areaTotalCanvas * percentagemAreaOcupada) / 10
+        ); // blocos de 10 cm² ocupados pelo objeto
+        const custoAdicional = blocosDezCm2Ocupados * 1.6; // custo adicional baseado em 1.60€ por bloco de 10 cm²
+        // console.log("area do canvas", areaTotalCanvas);
+        // console.log("area do obj", areaObjeto);
+        // console.log("% ocupada obj - canvas", percentagemAreaOcupada);
+        // console.log("..........");
+        // console.log("blocos", blocosDezCm2Ocupados);
+        // console.log("custoAdd", custoAdicional);
         precoTotal += custoAdicional; // soma o custo adicional ao preço total
       });
     });
-    setPrecoFinal(precoTotal.toFixed(2)); // atualiza o estado com o preço total
-    animatePrice(0, precoTotal, 1000);
+    setPrecoFinal(precoTotal.toFixed(2)); // atualiza o estado com o preço final
+    animatePrice(0, precoTotal, 1000); // anima a mudança de preço
   };
 
   const animatePrice = (start, end, duration) => {
@@ -1850,7 +1865,7 @@ const ThreeDViewer = () => {
             className={styles.priceBtn}
             onClick={() => logAllObjectsFromAllCanvases()}
           >
-            Continuarr
+            Continuar
           </button>
         )}
       </div>
@@ -1899,22 +1914,6 @@ const ThreeDViewer = () => {
           ) : (
             "Concluído"
           )}
-        </button>
-        <button
-          onClick={() => testP()}
-          style={{
-            right: preview
-              ? window.innerWidth < 750
-                ? 200
-                : 200
-              : window.innerWidth < 750
-              ? 200
-              : 200,
-            color: preview ? "#fff" : "#000",
-            backgroundColor: preview ? "transparent" : "#fff",
-          }}
-        >
-          Test
         </button>
       </div>
 
