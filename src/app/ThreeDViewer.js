@@ -307,7 +307,7 @@ const ThreeDViewer = () => {
       model == 1
         ? "/mugFinal.glb"
         : model == 2
-        ? "/1.glb"
+        ? "/capaTlm.glb"
         : model == 3
         ? "./2.glb"
         : model == 4
