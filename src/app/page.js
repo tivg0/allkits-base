@@ -4,7 +4,7 @@ import ThreeDViewer from "./ThreeDViewer";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "../styles/page.module.css";
-import logo from "../imgs/logoAllkits.png";
+import logo from "../imgs/logoStep.png";
 import ImageEditor from "./ImageEditor";
 
 const Home = () => {
