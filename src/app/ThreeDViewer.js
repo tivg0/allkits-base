@@ -1576,12 +1576,12 @@ const ThreeDViewer = () => {
         backgroundColor: canvas.backgroundColor,
         texts: [],
         images: [],
+        part: canvas.part, 
       };
 
       for (const obj of objects) {
         if (obj.type === "textbox") {
           canvasData.texts.push({
-            part: canvas.part,
             text: obj.text,
             fontFamily: obj.fontFamily,
             fontSize: obj.fontSize,
