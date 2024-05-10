@@ -321,9 +321,9 @@ const TextEditor = forwardRef(
                           className={styles.alignBtn}
                         >
                           <img
-                            src={"./textIconalign.png"}
+                            src={"./alignLeft.png"}
                             style={{ width: 20, height: 20, marginTop: 4 }}
-                            alt="Description"
+                            alt="Step"
                           />
                         </button>
                         <button
@@ -334,9 +334,9 @@ const TextEditor = forwardRef(
                           className={styles.alignBtn}
                         >
                           <img
-                            src={"./textIconalign.png"}
+                            src={"./alignMiddle.png"}
                             style={{ width: 20, height: 20, marginTop: 4 }}
-                            alt="Description"
+                            alt="Step"
                           />
                         </button>
                         <button
@@ -347,9 +347,9 @@ const TextEditor = forwardRef(
                           className={styles.alignBtn}
                         >
                           <img
-                            src={"./textIconalign.png"}
+                            src={"./alignRight.png"}
                             style={{ width: 20, height: 20, marginTop: 4 }}
-                            alt="Description"
+                            alt="Step"
                           />
                         </button>
                         <button
