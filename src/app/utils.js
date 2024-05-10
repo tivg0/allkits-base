@@ -34,12 +34,37 @@ const loadGLBModel = (path, scenario, setIsLoading, onNamesLoaded) => {
       scenario.add(gltf.scene);
 
       // Inicia a animação da escala da cena completa
+
       new TWEEN.Tween({ x: 0, y: 0, z: 0 })
         .to({ x: 1.1, y: 1.1, z: 1.1 }, 1610)
-        .easing(TWEEN.Easing.Cubic.Out)
+        .easing(TWEEN.Easing.Exponential.InOut)
         .onUpdate((scale) => {
           gltf.scene.scale.set(scale.x, scale.y, scale.z);
         })
+        .start();
+
+      new TWEEN.Tween({ opacity: 0 })
+        .to({ opacity: 1 }, 1610)
+        .easing(TWEEN.Easing.Exponential.InOut)
+        .onUpdate((object) => {
+          // Update opacity of meshes in gltf.scene
+          gltf.scene.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material.transparent = true; // Ensure material is transparent
+              child.material.opacity = object.opacity;
+            }
+          });
+        })
+        .delay(500)
+        .start();
+
+      new TWEEN.Tween({ x: 0, y: 0, z: 0 })
+        .to({ x: 0, y: Math.PI * 2, z: 0 }, 2000)
+        .easing(TWEEN.Easing.Exponential.InOut)
+        .onUpdate((rotation) => {
+          gltf.scene.rotation.set(rotation.x, rotation.y, rotation.z);
+        })
+        .delay(500)
         .start();
 
       setIsLoading(false);
