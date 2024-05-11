@@ -224,6 +224,7 @@ const ThreeDViewer = () => {
           body: JSON.stringify({
             sceneData: dataL,
             clientData,
+            model: model,
           }),
         }
       );
@@ -292,7 +293,7 @@ const ThreeDViewer = () => {
         : model == 5
         ? "./4.glb"
         : null;
-
+    console.log(model);
     if (model == 1 || model == 2 || model == 3 || model == 4 || model == 5)
       loadGLBModel(url, scene, setIsLoading, setObjectNames);
 
@@ -1558,7 +1559,7 @@ const ThreeDViewer = () => {
     const allCanvasData = [];
 
     for (const canvas of fabricCanvases) {
-      console.log(canvas);
+      console.log(canvas.part);
       const objects = canvas.getObjects();
       const canvasData = {
         width: canvas.width,
@@ -1597,7 +1598,8 @@ const ThreeDViewer = () => {
             const downloadURL = await getDownloadURL(imageRef);
 
             canvasData.images.push({
-              url: baseImage,
+              url: downloadURL,
+              base64: baseImage,
               scaleX: obj.scaleX,
               scaleY: obj.scaleY,
               top: obj.top,
@@ -1649,20 +1651,7 @@ const ThreeDViewer = () => {
           alignItems: "center",
           height: 0,
         }}
-      >
-        <div style={{ position: "absolute", top: "0", left: "0" }}>
-          <canvas
-            id="fabric-canvas"
-            style={{
-              border: "1px solid #00bfff",
-              marginRight: "20px",
-              position: "absolute",
-              top: "0",
-              left: "0",
-            }}
-          />
-        </div>
-      </div>
+      ></div>
 
       {editingComponent.current && (
         <>

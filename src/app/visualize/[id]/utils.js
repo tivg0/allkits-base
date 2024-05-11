@@ -16,6 +16,8 @@ export const fetchScene = async (params) => {
       throw new Error("Failed to fetch scene");
     }
     const jsonData = await response.json();
+
+    console.log(jsonData);
     return jsonData;
   } catch (error) {
     console.error("Error fetching scene:", error);

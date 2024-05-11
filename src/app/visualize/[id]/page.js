@@ -17,6 +17,18 @@ const FabricCanvas = ({ params }) => {
   const [objectNames, setObjectNames] = useState([]);
   let orbit;
 
+  const model = params.id[params.id.length - 1];
+
+  const modelUrls = {
+    1: "/hoodieTest.glb",
+    2: "/1.glb",
+    3: "/2.glb",
+    4: "/3.glb",
+    5: "/4.glb",
+  };
+
+  const url = modelUrls[model] || null;
+
   const mesh = useRef(null);
 
   useEffect(() => {
@@ -60,10 +72,10 @@ const FabricCanvas = ({ params }) => {
 
         if (images && images.length > 0) {
           images.forEach(
-            ({ url, top, left, width, height, scaleX, scaleY, angle }) => {
+            ({ base64, top, left, width, height, scaleX, scaleY, angle }) => {
               console.log(`Loading image from URL: ${url}`);
               fabric.Image.fromURL(
-                url,
+                base64,
                 (img) => {
                   console.log(`Image loaded successfully: ${url}`);
                   img.set({
@@ -95,20 +107,14 @@ const FabricCanvas = ({ params }) => {
 
       setTimeout(() => {
         scene.children.forEach((child) => {
+          console.log(child instanceof THREE.Group);
           if (child instanceof THREE.Group) {
+            console.log("WW", child);
             child.children.forEach((meshh) => {
+              console.log(meshh);
               if (Object.keys(canvasRefs.current).includes(meshh.name)) {
                 mesh.current = meshh;
-                let fabricCanvas = new fabric.Canvas();
-                fabricCanvas.setDimensions({
-                  width: 512,
-                  height: 512,
-                  backgroundColor: "",
-                });
-                fabricCanvas.add(
-                  new fabric.Text("Hello, Fabric!", { left: 50, top: 50 })
-                );
-
+                console.log(meshh.name);
                 try {
                   const newTexture = new THREE.CanvasTexture(
                     canvasRefs.current[meshh.name].lowerCanvasEl
@@ -125,14 +131,14 @@ const FabricCanvas = ({ params }) => {
         });
 
         animate();
-      }, 500);
+      }, 5000);
     };
 
     initializeCanvas();
 
     const scene = new THREE.Scene();
 
-    loadGLBModel("/hoodieTest.glb", scene, setIsLoading, setObjectNames);
+    loadGLBModel(url, scene, setIsLoading, setObjectNames);
 
     const camera = new THREE.PerspectiveCamera(
       35,

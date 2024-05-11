@@ -26,6 +26,7 @@ const loadGLBModel = (path, scenario, setIsLoading, onNamesLoaded) => {
           child.material.needsUpdate = true;
           child.castShadow = true;
           child.receiveShadow = true;
+
           objectNames.push(child.name); // Adiciona o nome ao array
         }
       });
