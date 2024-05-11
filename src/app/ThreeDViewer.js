@@ -1584,6 +1584,8 @@ const ThreeDViewer = () => {
           obj._element &&
           obj._element.src.startsWith("data:image")
         ) {
+          const baseImage = obj._element.src;
+          console.log("YEYEY", baseImage);
           const imageData = obj._element.src.split(";base64,").pop();
           const imageName = `image_${Date.now()}.png`;
           const imagePath = `images/${imageName}`;
@@ -1595,7 +1597,7 @@ const ThreeDViewer = () => {
             const downloadURL = await getDownloadURL(imageRef);
 
             canvasData.images.push({
-              url: downloadURL,
+              url: baseImage,
               scaleX: obj.scaleX,
               scaleY: obj.scaleY,
               top: obj.top,
@@ -1629,8 +1631,7 @@ const ThreeDViewer = () => {
           <p>A carregar...</p>
         </div>
       )}
-
-      <div ref={containerRef}>{/* Content in the behind div */}</div>
+      <div ref={containerRef}> </div>
 
       {/* {tutorial && (
         <>
@@ -1649,12 +1650,15 @@ const ThreeDViewer = () => {
           height: 0,
         }}
       >
-        <div style={{ display: "none" }}>
+        <div style={{ position: "absolute", top: "0", left: "0" }}>
           <canvas
             id="fabric-canvas"
             style={{
               border: "1px solid #00bfff",
               marginRight: "20px",
+              position: "absolute",
+              top: "0",
+              left: "0",
             }}
           />
         </div>

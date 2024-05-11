@@ -9,7 +9,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { loadGLBModel } from "../../utils";
 import { fetchScene } from "./utils";
-import { image } from "../../../../public/image_1715136095823.png";
 
 const FabricCanvas = ({ params }) => {
   const canvasRefs = useRef({});
@@ -17,10 +16,6 @@ const FabricCanvas = ({ params }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [objectNames, setObjectNames] = useState([]);
   let orbit;
-
-  const [caitfo, setCaitfo] = useState(false);
-
-  const mesh = useRef(null);
 
   useEffect(() => {
     const initializeCanvas = async () => {
@@ -32,11 +27,6 @@ const FabricCanvas = ({ params }) => {
       sceneDataArray.forEach((sceneData, index) => {
         const { width, height, backgroundColor, texts, images, part } =
           sceneData;
-
-        // Logging canvas properties
-        console.log(
-          `Creating canvas for part ${part} with width ${width} and height ${height}`
-        );
 
         const canvas = new fabric.Canvas(`${part}`, {
           width,
@@ -53,15 +43,12 @@ const FabricCanvas = ({ params }) => {
 
         if (texts && texts.length > 0) {
           texts.forEach(({ text, fontFamily, color, top, left, fontSize }) => {
-            console.log(`Adding text '${text}' to canvas`);
             const textObject = new fabric.Text(text, {
               fontFamily,
               fontSize,
               fill: color,
               left,
               top,
-              originX: "center",
-              originY: "center",
             });
             canvas.add(textObject);
           });
@@ -70,11 +57,9 @@ const FabricCanvas = ({ params }) => {
         if (images && images.length > 0) {
           images.forEach(
             ({ url, top, left, width, height, scaleX, scaleY, angle }) => {
-              console.log(`Loading image from URL: ${url}`);
               fabric.Image.fromURL(
                 url,
                 (img) => {
-                  console.log(`Image loaded successfully: ${url}`);
                   img.set({
                     left,
                     top,
@@ -83,12 +68,11 @@ const FabricCanvas = ({ params }) => {
                     width,
                     height,
                     angle,
-                    originX: "center",
-                    originY: "center",
                   });
-
+                  console.log(url);
                   canvas.add(img);
                 },
+
                 (error) => {
                   console.error("Error loading image:", error);
                 }
@@ -96,7 +80,6 @@ const FabricCanvas = ({ params }) => {
             }
           );
         }
-
         canvas.renderAll();
 
         canvasRefs.current[`${part}`] = canvas;
@@ -104,42 +87,43 @@ const FabricCanvas = ({ params }) => {
 
       // Associate each fabric canvas with its corresponding mesh
       setTimeout(() => {
-        // Inside the setTimeout block in useEffect after initializing canvases
+        console.log("1");
         // Inside the setTimeout block in useEffect after initializing canvases
         scene.children.forEach((child) => {
           if (child instanceof THREE.Group) {
-            child.children.forEach((meshh) => {
-              if (Object.keys(canvasRefs.current).includes(meshh.name)) {
-                mesh.current = meshh;
-                let fabricCanvas = new fabric.Canvas(); // Create a new Fabric.js canvas
-                fabricCanvas.setDimensions({
-                  width: 512,
-                  height: 512,
-                  backgroundColor: "",
-                }); // Set dimensions as needed
-                // Draw something on the Fabric.js canvas
-                fabricCanvas.add(
-                  new fabric.Text("Hello, Fabric!", { left: 50, top: 50 })
-                );
+            child.children.forEach((mesh) => {
+              if (Object.keys(canvasRefs.current).includes(mesh.name)) {
+                let canvas = canvasRefs.current[mesh.name];
+                canvas.renderAll();
+                let imageDataURL = canvas.toDataURL({ format: "png" }); // Convert fabric canvas to image data URL
+                console.log(imageDataURL);
 
-                try {
-                  // Create a new CanvasTexture directly from the Fabric.js canvas element
-                  const newTexture = new THREE.CanvasTexture(
-                    canvasRefs.current[meshh.name].lowerCanvasEl
-                  );
-                  newTexture.flipY = false; // Adjust if needed
-                  mesh.current.material.map = newTexture; // Apply texture to mesh material
-                  mesh.current.material.map.needsUpdate = true;
-                } catch (error) {
-                  console.error("Error creating texture:", error);
-                }
+                // Create texture from image data URL
+                let textureLoader = new THREE.TextureLoader();
+                textureLoader.load(
+                  imageDataURL,
+                  (texture) => {
+                    // Dispose old texture if exists
+                    if (mesh.material.map) {
+                      mesh.material.map.dispose();
+                    }
+
+                    // Apply new texture to the mesh
+                    mesh.material.map = texture;
+                    mesh.material.needsUpdate = true;
+                    mesh.material.map.flipY = false;
+                  },
+                  undefined,
+                  (error) => {
+                    console.error("Error loading texture:", error);
+                  }
+                );
               }
             });
           }
         });
-
-        animate();
       }, 500);
+      console.log("run");
     };
 
     initializeCanvas();
@@ -199,9 +183,10 @@ const FabricCanvas = ({ params }) => {
       renderer.render(scene, camera);
       orbit.update();
     };
+    animate();
 
     return () => {};
-  }, [params, caitfo]);
+  }, [params]);
 
   return (
     <>

@@ -1,44 +1,63 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
-import NextImage from "next/image";
-import styles from "../../../styles/page.module.css";
-import logoStep from "../../../../public/logoStepTransparent.png";
-import copyIcon from "../../../../public/copy.png";
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { loadGLBModel } from "../../utils";
-import { fetchScene } from "./utils";
-import { image } from "../../../../public/image_1715136095823.png";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+const fetchScene = async (params) => {
+  try {
+    const response = await fetch(
+      "https://allkits-server.onrender.com/getScene",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uid: params.id,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch scene");
+    }
+
+    const jsonData = await response.json(); // Parse response as JSON
+    console.log(jsonData);
+    return jsonData;
+  } catch (error) {
+    console.error("Error fetching scene:", error);
+    // Handle error state if needed
+  }
+};
 
 const FabricCanvas = ({ params }) => {
-  const canvasRefs = useRef({});
-  const containerRef = useRef(null);
+  const canvasRefs = useRef([]);
   const [isLoading, setIsLoading] = useState(false);
   const [objectNames, setObjectNames] = useState([]);
   let orbit;
-
-  const [caitfo, setCaitfo] = useState(false);
-
-  const mesh = useRef(null);
+  let containerRef = useRef(null);
 
   useEffect(() => {
     const initializeCanvas = async () => {
       const sceneDataArray = await fetchScene(params);
 
       if (!sceneDataArray || !Array.isArray(sceneDataArray)) {
+        // Handle if scene data is not available or not an array
         return;
       }
+
       sceneDataArray.forEach((sceneData, index) => {
-        const { width, height, backgroundColor, texts, images, part } =
-          sceneData;
+        if (!canvasRefs.current[index]) {
+          canvasRefs.current[index] = document.createElement("canvas");
+          document.body.appendChild(canvasRefs.current[index]);
+        }
 
-        // Logging canvas properties
-        console.log(
-          `Creating canvas for part ${part} with width ${width} and height ${height}`
-        );
+        const { width, height, backgroundColor, texts, images } = sceneData;
 
-        const canvas = new fabric.Canvas(`${part}`, {
+        const canvas = new fabric.Canvas(canvasRefs.current[index], {
           width,
           height,
         });
@@ -48,12 +67,9 @@ const FabricCanvas = ({ params }) => {
           canvas.renderAll.bind(canvas)
         );
 
-        // Set the canvas background color as a property
-        canvas.backgroundColor = backgroundColor;
-
+        // Add text objects to canvas if texts array is not empty
         if (texts && texts.length > 0) {
           texts.forEach(({ text, fontFamily, color, top, left, fontSize }) => {
-            console.log(`Adding text '${text}' to canvas`);
             const textObject = new fabric.Text(text, {
               fontFamily,
               fontSize,
@@ -67,14 +83,14 @@ const FabricCanvas = ({ params }) => {
           });
         }
 
+        // Add image objects to canvas if images array is not empty
         if (images && images.length > 0) {
+          console.log(images[0].url);
           images.forEach(
             ({ url, top, left, width, height, scaleX, scaleY, angle }) => {
-              console.log(`Loading image from URL: ${url}`);
               fabric.Image.fromURL(
                 url,
                 (img) => {
-                  console.log(`Image loaded successfully: ${url}`);
                   img.set({
                     left,
                     top,
@@ -86,9 +102,9 @@ const FabricCanvas = ({ params }) => {
                     originX: "center",
                     originY: "center",
                   });
-
                   canvas.add(img);
                 },
+                // Error callback
                 (error) => {
                   console.error("Error loading image:", error);
                 }
@@ -96,50 +112,7 @@ const FabricCanvas = ({ params }) => {
             }
           );
         }
-
-        canvas.renderAll();
-
-        canvasRefs.current[`${part}`] = canvas;
       });
-
-      // Associate each fabric canvas with its corresponding mesh
-      setTimeout(() => {
-        // Inside the setTimeout block in useEffect after initializing canvases
-        // Inside the setTimeout block in useEffect after initializing canvases
-        scene.children.forEach((child) => {
-          if (child instanceof THREE.Group) {
-            child.children.forEach((meshh) => {
-              if (Object.keys(canvasRefs.current).includes(meshh.name)) {
-                mesh.current = meshh;
-                let fabricCanvas = new fabric.Canvas(); // Create a new Fabric.js canvas
-                fabricCanvas.setDimensions({
-                  width: 512,
-                  height: 512,
-                  backgroundColor: "",
-                }); // Set dimensions as needed
-                // Draw something on the Fabric.js canvas
-                fabricCanvas.add(
-                  new fabric.Text("Hello, Fabric!", { left: 50, top: 50 })
-                );
-
-                try {
-                  // Create a new CanvasTexture directly from the Fabric.js canvas element
-                  const newTexture = new THREE.CanvasTexture(
-                    canvasRefs.current[meshh.name].lowerCanvasEl
-                  );
-                  newTexture.flipY = false; // Adjust if needed
-                  mesh.current.material.map = newTexture; // Apply texture to mesh material
-                  mesh.current.material.map.needsUpdate = true;
-                } catch (error) {
-                  console.error("Error creating texture:", error);
-                }
-              }
-            });
-          }
-        });
-
-        animate();
-      }, 500);
     };
 
     initializeCanvas();
@@ -177,7 +150,9 @@ const FabricCanvas = ({ params }) => {
     scene.add(directionalLight);
     scene.add(directionalLight2);
 
-    containerRef.current.appendChild(renderer.domElement);
+    if (containerRef.current) {
+      containerRef.current.appendChild(renderer.domElement);
+    }
 
     orbit = new OrbitControls(camera, renderer.domElement);
     orbit.target.set(0, 0, 0);
@@ -199,28 +174,32 @@ const FabricCanvas = ({ params }) => {
       renderer.render(scene, camera);
       orbit.update();
     };
+    animate();
 
-    return () => {};
-  }, [params, caitfo]);
+    return () => {
+      renderer.domElement.remove();
+      renderer.dispose();
+      orbit.dispose();
+    };
+  }, [params]);
 
   return (
     <>
-      <div ref={containerRef}></div>
-      <button className={styles.copiaTextMain}>
-        <NextImage src={copyIcon} width={17} height={17} />
-        <p className={styles.copiaText} style={{ zIndex: "1000" }}>
-          Copia o link para poderes partilhar a tua obra!
-        </p>
-      </button>
-      <div className={styles.poweredTextMain}>
-        <p className={styles.poweredText}>Powered by</p>
-        <NextImage
-          className={styles.poweredLogo}
-          src={logoStep}
-          width={105}
-          height={45}
-        />
-      </div>
+      {/*  <div ref={containerRef}></div> */}
+      {canvasRefs.current.map((canvasRef, index) => (
+        <div style={{ position: "absolute", top: "0", left: "0" }} key={index}>
+          <canvas
+            style={{
+              border: "1px solid #00bfff",
+              marginRight: "20px",
+              position: "absolute",
+              top: "0",
+              left: "0",
+            }}
+            ref={(el) => (canvasRefs.current[index] = el)}
+          />
+        </div>
+      ))}
     </>
   );
 };
