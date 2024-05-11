@@ -433,7 +433,7 @@ const ThreeDViewer = () => {
               isHandleSelected
             );
             let obj = fabricCanvas.current.getActiveObject();
-
+            //obj
             if (obj) {
               setActiveObject(obj);
               let tolerance = (obj.scaleX * obj.width) / 10;
