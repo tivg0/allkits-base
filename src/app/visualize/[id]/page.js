@@ -9,7 +9,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { loadGLBModel } from "../../utils";
 import { fetchScene } from "./utils";
-import { image } from "../../../../public/image_1715136095823.png";
 
 const FabricCanvas = ({ params }) => {
   const canvasRefs = useRef({});
@@ -17,8 +16,6 @@ const FabricCanvas = ({ params }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [objectNames, setObjectNames] = useState([]);
   let orbit;
-
-  const [caitfo, setCaitfo] = useState(false);
 
   const mesh = useRef(null);
 
@@ -33,11 +30,6 @@ const FabricCanvas = ({ params }) => {
         const { width, height, backgroundColor, texts, images, part } =
           sceneData;
 
-        // Logging canvas properties
-        console.log(
-          `Creating canvas for part ${part} with width ${width} and height ${height}`
-        );
-
         const canvas = new fabric.Canvas(`${part}`, {
           width,
           height,
@@ -48,7 +40,6 @@ const FabricCanvas = ({ params }) => {
           canvas.renderAll.bind(canvas)
         );
 
-        // Set the canvas background color as a property
         canvas.backgroundColor = backgroundColor;
 
         if (texts && texts.length > 0) {
@@ -102,33 +93,28 @@ const FabricCanvas = ({ params }) => {
         canvasRefs.current[`${part}`] = canvas;
       });
 
-      // Associate each fabric canvas with its corresponding mesh
       setTimeout(() => {
-        // Inside the setTimeout block in useEffect after initializing canvases
-        // Inside the setTimeout block in useEffect after initializing canvases
         scene.children.forEach((child) => {
           if (child instanceof THREE.Group) {
             child.children.forEach((meshh) => {
               if (Object.keys(canvasRefs.current).includes(meshh.name)) {
                 mesh.current = meshh;
-                let fabricCanvas = new fabric.Canvas(); // Create a new Fabric.js canvas
+                let fabricCanvas = new fabric.Canvas();
                 fabricCanvas.setDimensions({
                   width: 512,
                   height: 512,
                   backgroundColor: "",
-                }); // Set dimensions as needed
-                // Draw something on the Fabric.js canvas
+                });
                 fabricCanvas.add(
                   new fabric.Text("Hello, Fabric!", { left: 50, top: 50 })
                 );
 
                 try {
-                  // Create a new CanvasTexture directly from the Fabric.js canvas element
                   const newTexture = new THREE.CanvasTexture(
                     canvasRefs.current[meshh.name].lowerCanvasEl
                   );
-                  newTexture.flipY = false; // Adjust if needed
-                  mesh.current.material.map = newTexture; // Apply texture to mesh material
+                  newTexture.flipY = false;
+                  mesh.current.material.map = newTexture;
                   mesh.current.material.map.needsUpdate = true;
                 } catch (error) {
                   console.error("Error creating texture:", error);
@@ -159,16 +145,16 @@ const FabricCanvas = ({ params }) => {
 
     const renderer = new THREE.WebGLRenderer({ alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0xf4f4f4); // background color of the scene
-    renderer.setPixelRatio(2); // increase pixel density
+    renderer.setClearColor(0xf4f4f4);
+    renderer.setPixelRatio(2);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     scene.add(ambientLight);
     const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
     scene.add(hemisphereLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xf4f4f4, 1.5); // luz para se ver à frente
-    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1.5); // luz para se ver à frente
+    const directionalLight = new THREE.DirectionalLight(0xf4f4f4, 1.5);
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1.5);
     directionalLight.position.set(90, 45, -45);
     directionalLight2.position.set(-45, 90, 90);
     directionalLight.castShadow = true;
@@ -201,7 +187,7 @@ const FabricCanvas = ({ params }) => {
     };
 
     return () => {};
-  }, [params, caitfo]);
+  }, [params]);
 
   return (
     <>
