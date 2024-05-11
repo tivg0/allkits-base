@@ -20,6 +20,8 @@ const TextEditor = forwardRef(
       setTextAlign,
       fillColor,
       setFillColor,
+      maxTextSize,
+      setMaxTextSize,
     },
     ref
   ) => {
@@ -36,8 +38,9 @@ const TextEditor = forwardRef(
       // Determine which active object is currently selected based on the targetCanvasId
       if (fabricCanvas.current && activeObject) {
         setText(activeObject.text);
-        setFontSize(activeObject.fontSize || 15); // Atualiza o estado do tamanho da fonte com base no objeto ativo
+        setFontSize(activeObject.fontSize || 35); // Atualiza o estado do tamanho da fonte com base no objeto ativo
         setFillColor(activeObject.fill || "#000000"); // Atualiza o estado do tamanho da fonte com base no objeto ativo
+        setFontFamily(activeObject.fontFamily || "Arial"); // Atualiza o estado do tamanho da fonte com base no objeto ativo
       }
     }, [activeObject]);
 
@@ -83,8 +86,22 @@ const TextEditor = forwardRef(
       updateTexture(); // Update the texture to reflect the changes
     };
 
+    const [newSize, setNewSize] = useState(fontSize);
     const handleSizeChange = (e) => {
-      const newSize = e.target.value;
+      let newSize =
+        e.target.value < maxTextSize && e.target.value > 0
+          ? e.target.value
+          : e.target.value >= maxTextSize
+          ? maxTextSize
+          : e.target.value <= 0
+          ? 0.1
+          : e.target.value;
+
+      for (let i = 0; i < newSize.length; i++) {
+        if (newSize[0] == 0) {
+          newSize = String(Number(newSize)); // Convert to Number to remove leading zeros, then back to String
+        }
+      }
 
       // Check which canvas is currently being targeted and if there's an active object selected
       if (fabricCanvas.current && activeObject) {
@@ -380,7 +397,7 @@ const TextEditor = forwardRef(
                         <input
                           className={styles.inputText}
                           // style={{ width: 90 }}
-                          value={fontSize}
+                          value={fontSize == 0.1 ? 0 : fontSize}
                           inputMode={"numeric"}
                           // value={text} // Display text from the active object
                           onChange={handleSizeChange}

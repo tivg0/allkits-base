@@ -73,9 +73,10 @@ const ThreeDViewer = () => {
   const [tutorial, setTutorial] = useState(false);
 
   const [canvasSize, setCanvasSize] = useState(480); // Default to larger size
-  const [variavelAjuste, setVariavelAjuste] = useState(15.67);
+  const [variavelAjuste, setVariavelAjuste] = useState(23.67); //9732cm^2 totais de area || area do canvas 230400cm2
 
   const [fabricCanvases, setFabricCanvases] = useState([]);
+  const [maxTextSize, setMaxTextSize] = useState(100);
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent;
@@ -85,10 +86,12 @@ const ThreeDViewer = () => {
 
     if (isSafari) {
       setCanvasSize(480); // Supondo que você quer um tamanho menor para Safari
-      setVariavelAjuste(15.67);
+      setVariavelAjuste(23.67);
+      setMaxTextSize(100);
     } else {
       setCanvasSize(1024); // Tamanho padrão para outros navegadores
-      setVariavelAjuste(33.43);
+      setVariavelAjuste(47.47);
+      setMaxTextSize(200);
     }
   }, []);
 
@@ -365,6 +368,8 @@ const ThreeDViewer = () => {
       if (intersections.length > 0) {
         openTabs();
 
+        let obj = fabricCanvas.current.getActiveObject();
+
         // if (activeObject && activeObject.type == "image") {
         //   const imageSrc = activeObject.getSrc();
         //   setImageSrc(imageSrc); // Seta a URL da fonte da imagem no estado
@@ -430,6 +435,7 @@ const ThreeDViewer = () => {
             let obj = fabricCanvas.current.getActiveObject();
 
             if (obj) {
+              setActiveObject(obj);
               let tolerance = (obj.scaleX * obj.width) / 10;
               rotated = obj.angle;
               for (let i in obj.oCoords) {
@@ -1209,7 +1215,7 @@ const ThreeDViewer = () => {
 
   // //calcular area imprimida
   const calcularEImprimirAreasOcupadas = () => {
-    let precoTotal = 10.0; // Preço base de 13.25€
+    let precoTotal = 13.25; // Preço base de 13.25€
 
     fabricCanvases.forEach((canvas) => {
       const areaTotalCanvas = canvas.width * canvas.height; // área total do canvas em cm²
@@ -1338,15 +1344,6 @@ const ThreeDViewer = () => {
       }
       textbox.set("fontFamily", "Arial");
 
-      /*textbox.setControlsVisibility({
-        mt: false,
-        mb: false,
-        tl: false,
-        tr: false,
-        bl: false,
-        br: false,
-      });*/
-
       delete textbox.controls.tr;
       delete textbox.controls.tl;
       delete textbox.controls.br;
@@ -1362,28 +1359,6 @@ const ThreeDViewer = () => {
       updateTexture();
     }
   }
-
-  const updateActiveObjectProperties = (property, value) => {
-    const canvas = fabricCanvas.current;
-    const activeObject = canvas.getActiveObject();
-
-    if (activeObject) {
-      activeObject.set(property, value); // Set the new value for the specified property
-      canvas.renderAll(); // Re-render the canvas to show changes
-      updateTexture(); // If you use a texture that needs to be updated
-    }
-  };
-
-  // useEffect(() => {
-  //   // This effect will run whenever fillColor changes and apply it to the selected object
-  //   if (fillColor && activeObject) {
-  //     updateActiveObjectProperties("fill", fillColor);
-  //   }
-
-  //   if (fontFamily && activeObject) {
-  //     updateActiveObjectProperties("fontFamily", fontFamily);
-  //   }
-  // }, [fillColor, fontFamily, activeObject]); // Depend on fillColor and activeObject
 
   useEffect(() => {
     const canvas = fabricCanvasRef.current;
@@ -1951,6 +1926,8 @@ const ThreeDViewer = () => {
           setTextAlign={setTextAlign}
           fillColor={fillColor}
           setFillColor={setFillColor}
+          maxTextSize={maxTextSize}
+          setMaxTextSize={setMaxTextSize}
         />
       )}
       {/* {colorEditor && (
