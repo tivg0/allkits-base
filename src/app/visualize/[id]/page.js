@@ -182,6 +182,10 @@ const FabricCanvas = ({ params }) => {
       MIDDLE: THREE.MOUSE.DOLLY,
       RIGHT: null,
     };
+    orbit.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: null,
+    };
     orbit.enabled = true;
     orbit.minDistance = 16.1;
     orbit.maxDistance = 35;
@@ -200,7 +204,7 @@ const FabricCanvas = ({ params }) => {
       <div ref={containerRef}></div>
       <button className={styles.copiaTextMain}>
         <NextImage src={copyIcon} width={17} height={17} />
-        <p className={styles.copiaText} style={{ zIndex: "1000" }}>
+        <p className={styles.copiaText}>
           Copia o link para poderes partilhar a tua obra!
         </p>
       </button>
