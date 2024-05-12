@@ -1,10 +1,10 @@
 "use client";
 import * as THREE from "three";
 import { fabric } from "fabric";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TWEEN from "@tweenjs/tween.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import Link from "next/link";
 import {
   getIntersections,
   loadGLBModel,
@@ -15,7 +15,6 @@ import {
   toHexString,
   handleImage,
 } from "./utils";
-import { color } from "three/examples/jsm/nodes/shadernode/ShaderNode";
 import NextImage from "next/image";
 import styles from "@/styles/page.module.css";
 import galeryIcon from "../imgs/galeryBlack.png";
@@ -194,7 +193,7 @@ const ThreeDViewer = () => {
         ? editingComponent.current.name
         : "bodyFMIX",
     });
-    // setFabricCanvases((prevCanvases) => [...prevCanvases, newCanvas]);
+    //setFabricCanvases((prevCanvases) => [...prevCanvases, newCanvas]);
 
     const texture = new THREE.CanvasTexture(fabricCanvas.current.getElement());
     texture.repeat.y = -1;
@@ -205,14 +204,15 @@ const ThreeDViewer = () => {
   }, [canvasSize]);
 
   const [clientData, setClientData] = useState({
-    name: "Afonso",
-    email: "afonso@gmail.com",
-    phone: "912445566",
+    name: "",
+    email: "",
+    phone: "",
   });
 
   async function getActiveScene() {
     const dataL = await testP();
-    console.log("EEE", dataL);
+    console.log("dataL", dataL);
+
     try {
       const response = await fetch(
         "https://allkits-server.onrender.com/convertSceneToText",
@@ -293,7 +293,7 @@ const ThreeDViewer = () => {
         : model == 5
         ? "./4.glb"
         : null;
-    console.log(model);
+
     if (model == 1 || model == 2 || model == 3 || model == 4 || model == 5)
       loadGLBModel(url, scene, setIsLoading, setObjectNames);
 
@@ -1013,8 +1013,6 @@ const ThreeDViewer = () => {
                         break;
                       }
 
-                      console.log(aCoords.tl, aCoords.br);
-
                       activeObject.set({
                         left: aCoords.tl.lerp(aCoords.br).x,
                         top: aCoords.tl.lerp(aCoords.br).y,
@@ -1401,8 +1399,6 @@ const ThreeDViewer = () => {
       const activeObject = canvas.getActiveObject();
       setActiveObject(activeObject);
     }
-
-    console.log("active object selecionado", activeObject);
   }, [activeObject]);
 
   // Função para retroceder ao nome anterior
@@ -1468,69 +1464,11 @@ const ThreeDViewer = () => {
     }
   };
 
-  const logAllObjectsFromAllCanvases = async () => {
-    const customizationData = [];
+  const [allCanvasData, setAllCanvasData] = useState([]);
 
-    for (const canvas of fabricCanvases) {
-      if (!canvas) {
-        continue;
-      }
-
-      const objects = canvas.getObjects();
-
-      const component = {
-        part: getPartName(canvas.part),
-        color: canvas.backgroundColor,
-        images: [],
-        texts: [],
-      };
-
-      for (const obj of objects) {
-        if (
-          obj.type === "image" &&
-          obj._element &&
-          obj._element.src.startsWith("data:image")
-        ) {
-          // Object is an image and is in base64 format
-          const imageData = obj._element.src.split(";base64,").pop();
-          const imageName = `image_${Date.now()}.png`; // Generate a unique name for the image
-          const imagePath = `images/${imageName}`; // Specify the directory path
-          const imageRef = ref(storage, imagePath);
-
-          try {
-            // Upload image to Firebase Storage
-            await uploadString(imageRef, imageData, "base64");
-
-            // Get the download URL for the uploaded image
-            const downloadURL = await getDownloadURL(imageRef);
-
-            // Push the download URL to the images array in the component
-            component.images.push(downloadURL);
-          } catch (error) {
-            console.error("Error uploading image:", error);
-          }
-        } else if (obj.type === "textbox") {
-          component.texts.push({
-            text: obj.text,
-            fontFamily: obj.fontFamily,
-            color: obj.fill,
-          });
-        }
-      }
-
-      customizationData.push(component);
-    }
-
-    sendData(customizationData);
-
-    // Send data to Firebase or wherever needed
-
-    return customizationData;
-  };
-
-  const sendData = async (data) => {
-    // Merge clientData with the incoming data
-    const mergedData = { data, clientData };
+  const sendData = async () => {
+    console.log(allCanvasData);
+    const mergedData = { data: allCanvasData, clientData, docId: docId };
 
     try {
       const response = await fetch(
@@ -1549,7 +1487,6 @@ const ThreeDViewer = () => {
       }
 
       const responseData = await response.text();
-      console.log(responseData); // Output: Success
     } catch (error) {
       console.error("Error:", error);
     }
@@ -1559,7 +1496,6 @@ const ThreeDViewer = () => {
     const allCanvasData = [];
 
     for (const canvas of fabricCanvases) {
-      console.log(canvas.part);
       const objects = canvas.getObjects();
       const canvasData = {
         width: canvas.width,
@@ -1586,7 +1522,7 @@ const ThreeDViewer = () => {
           obj._element.src.startsWith("data:image")
         ) {
           const baseImage = obj._element.src;
-          console.log("YEYEY", baseImage);
+
           const imageData = obj._element.src.split(";base64,").pop();
           const imageName = `image_${Date.now()}.png`;
           const imagePath = `images/${imageName}`;
@@ -1613,9 +1549,10 @@ const ThreeDViewer = () => {
           }
         }
       }
-      console.log(canvasData);
+
       allCanvasData.push(canvasData);
     }
+    setAllCanvasData(allCanvasData);
     return allCanvasData;
   };
 
@@ -1626,6 +1563,14 @@ const ThreeDViewer = () => {
     });
   };
 
+  const nextStep =
+    clientData.name != "" &&
+    clientData.email != "" &&
+    clientData.phone != "" &&
+    docId != "";
+
+  const [success, setSuccess] = useState(false);
+
   return (
     <>
       {isLoading && (
@@ -1634,15 +1579,6 @@ const ThreeDViewer = () => {
         </div>
       )}
       <div ref={containerRef}> </div>
-
-      {/* {tutorial && (
-        <>
-          <div className={styles.front}></div>
-          <div className={styles.left}></div>
-          <div className={styles.right}></div>
-          <div className={styles.front}></div>
-        </>
-      )} */}
 
       <div
         style={{
@@ -1842,63 +1778,71 @@ const ThreeDViewer = () => {
           )}
         </>
       )}
-      <div className={styles.priceBtnMain}>
-        {preview && (
-          <button
-            className={styles.priceBtn}
-            onClick={() => logAllObjectsFromAllCanvases()}
-          >
-            Continuar
-          </button>
-        )}
-      </div>
-      <div className={styles.exportBtnNot}>
-        <button
-          onClick={() => {
-            // setTimeout(() => {
-            getActiveScene();
-            // }, 500);
-            calcularEImprimirAreasOcupadas();
-            setPreview(!preview);
-            setTimeout(() => {
-              closeEditor();
-            }, 200);
-            closeTabs();
-          }}
-          style={{
-            right: preview
-              ? window.innerWidth < 750
-                ? 110
-                : 165
-              : window.innerWidth < 750
-              ? 25
-              : 50,
-            color: preview ? "#fff" : "#000",
-            backgroundColor: preview ? "transparent" : "#fff",
-          }}
-        >
-          {preview ? (
-            window.innerWidth < 450 ? (
-              <p
+      {success == false && (
+        <>
+          <div className={styles.priceBtnMain}>
+            {preview && (
+              <button
+                className={styles.priceBtn}
                 style={{
-                  marginTop: 0,
-                  // backgroundColor: "rgba(0, 0, 0 ,0.3)",
-                  // padding: 10,
-                  // borderRadius: 100,
-                  // paddingLeft: 15,
-                  // paddingRight: 15,
+                  opacity: nextStep ? "1" : "0.5",
+                  pointerEvents: nextStep ? "auto" : "none",
+                }}
+                onClick={() => {
+                  nextStep && (setSuccess(true), sendData());
                 }}
               >
-                &#8592;
-              </p>
-            ) : (
-              "Voltar à Personalização"
-            )
-          ) : (
-            "Concluído"
-          )}
-        </button>
-      </div>
+                Continuar
+              </button>
+            )}
+          </div>
+          <div className={styles.exportBtnNot}>
+            <button
+              onClick={() => {
+                getActiveScene();
+                calcularEImprimirAreasOcupadas();
+                setPreview(!preview);
+                setTimeout(() => {
+                  closeEditor();
+                }, 200);
+                closeTabs();
+              }}
+              style={{
+                right: preview
+                  ? window.innerWidth < 750
+                    ? 110
+                    : 165
+                  : window.innerWidth < 750
+                  ? 25
+                  : 50,
+                color: preview ? "#fff" : "#000",
+                backgroundColor: preview ? "transparent" : "#fff",
+              }}
+            >
+              {preview ? (
+                window.innerWidth < 450 ? (
+                  <p
+                    style={{
+                      marginTop: 0,
+                      // backgroundColor: "rgba(0, 0, 0 ,0.3)",
+                      // padding: 10,
+                      // borderRadius: 100,
+                      // paddingLeft: 15,
+                      // paddingRight: 15,
+                    }}
+                  >
+                    &#8592;
+                  </p>
+                ) : (
+                  "Voltar à Personalização"
+                )
+              ) : (
+                "Concluído"
+              )}
+            </button>
+          </div>
+        </>
+      )}
 
       {colorEditor && (
         <ColorEditor setBGColor={setBGColor} closeTabs={closeTabs} />
@@ -2060,74 +2004,94 @@ const ThreeDViewer = () => {
         </div>
       )}
 
-      {preview && (
+      {preview === true && (
         <div className={styles.checkoutZone}>
-          <div className={styles.modelsList}>
-            <p
-              className={styles.title}
-              style={{
-                textAlign: "center",
-                fontSize: 15,
-                color: "#fff",
-              }}
-            >
-              PREÇO TOTAL ESTIMADO (POR UN.)
-            </p>
+          {success === false ? (
+            <>
+              <div className={styles.modelsList}>
+                <p
+                  className={styles.title}
+                  style={{
+                    textAlign: "center",
+                    fontSize: 15,
+                    color: "#fff",
+                  }}
+                >
+                  PREÇO TOTAL ESTIMADO (POR UN.)
+                </p>
 
-            <h1
-              id="precoFinal"
-              className={styles.title}
-              style={{
-                textAlign: "center",
-                marginBottom: 15,
-                fontSize: 100,
-                color: "#fff",
-                fontWeight: 800,
-                letterSpacing: -3.2,
-                marginTop: -15,
-              }}
-            >
-              €{precoAnimado}
-            </h1>
-          </div>
-          {docId != "" ? (
-            <button
-              className={styles.btnPreviewLink}
-              onClick={() => router.push(`/visualize/${docId}`)}
-              // target={"_blank"}
-            >
-              <NextImage src={shareIcon} width={20} height={20} />
-              <p>Copiar e ir para o teu link de pré-visualização</p>
-            </button>
+                <h1
+                  id="precoFinal"
+                  className={styles.title}
+                  style={{
+                    textAlign: "center",
+                    marginBottom: 15,
+                    fontSize: 100,
+                    color: "#fff",
+                    fontWeight: 800,
+                    letterSpacing: -3.2,
+                    marginTop: -15,
+                  }}
+                >
+                  €{precoAnimado}
+                </h1>
+              </div>
+              <h1
+                style={{
+                  color: "white",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  display: "flex",
+                }}
+              >
+                Informações de envio
+              </h1>
+              <div className={styles.inputsForm}>
+                <input
+                  className={styles.inputForm}
+                  placeholder="Nome"
+                  name="name"
+                  value={clientData.name}
+                  onChange={handleChange}
+                />
+                <input
+                  className={styles.inputForm}
+                  placeholder="Email"
+                  name="email"
+                  value={clientData.email}
+                  onChange={handleChange}
+                />
+                <input
+                  className={styles.inputForm}
+                  placeholder="Telemóvel"
+                  name="phone"
+                  value={clientData.phone}
+                  onChange={handleChange}
+                />
+              </div>
+            </>
           ) : (
-            <button className={styles.btnBuildLink}>
-              <NextImage src={buildingIcon} width={20} height={20} />
-              <p>A criar o teu link de pré-visualização</p>
-            </button>
+            <div>
+              <h1>Personalização submetida com sucesso</h1>
+              <h5>Iremos entrar em contacto consigo muito brevemente</h5>
+              {docId != "" ? (
+                <button
+                  className={styles.btnPreviewLink}
+                  onClick={() => router.push(`/visualize/${docId}`)}
+                  // target={"_blank"}
+                >
+                  <NextImage src={shareIcon} width={20} height={20} />
+                  <p>Copiar e ir para o teu link de pré-visualização</p>
+                </button>
+              ) : (
+                <button className={styles.btnBuildLink}>
+                  <NextImage src={buildingIcon} width={20} height={20} />
+                  <p>A criar o teu link de pré-visualização</p>
+                </button>
+              )}
+              <Link href={"https://www.allkits.pt"}>Voltar à Allkits</Link>
+            </div>
           )}
-          <div className={styles.inputsForm}>
-            <input
-              className={styles.inputForm}
-              placeholder="Nome"
-              name="name"
-              value={clientData.name}
-              onChange={handleChange}
-            />
-            <input
-              className={styles.inputForm}
-              placeholder="Email"
-              name="email"
-              value={clientData.email}
-              onChange={handleChange}
-            />
-            <input
-              className={styles.inputForm}
-              placeholder="Phone"
-              name="phone"
-              value={clientData.phone}
-              onChange={handleChange}
-            />
-          </div>
         </div>
       )}
     </>
