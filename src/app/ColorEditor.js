@@ -70,7 +70,7 @@ const ColorEditor = forwardRef(({ setBGColor, closeTabs }, ref) => {
             <button
               style={{ backgroundColor: "#000000" }}
               className={styles.addCorBtn}
-              onClick={() => setBGColor("#000000")}
+              onClick={() => setBGColor("#070707")}
             />
             <button
               style={{ backgroundColor: "#90240c" }}

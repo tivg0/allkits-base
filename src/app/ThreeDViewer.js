@@ -370,6 +370,9 @@ const ThreeDViewer = () => {
         openTabs();
 
         let obj = fabricCanvas.current.getActiveObject();
+        // if (obj) {
+        //   setEditorOpen(false);
+        // }
 
         // if (activeObject && activeObject.type == "image") {
         //   const imageSrc = activeObject.getSrc();
@@ -478,7 +481,7 @@ const ThreeDViewer = () => {
               new THREE.Color(currentEmissive),
               400
             );
-            closeTabs();
+            // closeTabs();
 
             fabricCanvas.current.renderAll();
             copyCanvas(
@@ -1314,6 +1317,12 @@ const ThreeDViewer = () => {
       setTextEditor(true);
     }
   };
+  // const [cornerColor, setCornerColor] = useState("rgba(0, 0, 0, 0.4)");
+  // useEffect(() => {
+  //   if (fabricCanvas.current.backgroundColor == "#000000") {
+  //     setCornerColor("rgba(255, 255, 255, 0.4)");
+  //   }
+  // }, [fabricCanvas.current]);
 
   function addTextbox(text) {
     const canvas = fabricCanvas.current;
@@ -1332,7 +1341,10 @@ const ThreeDViewer = () => {
         textAlign: textAlign, // Adjust as needed
         editable: false, // Set to true to allow editing
         borderColor: "transparent",
-        cornerColor: "rgba(0, 0, 0, 0.4)",
+        cornerColor:
+          fabricCanvas.current.backgroundColor == "#000000"
+            ? "rgba(255, 255, 255, 0.4)"
+            : "rgba(0, 0, 0, 0.4)",
         padding: 5,
         transparentCorners: false,
         // cornerSize: (scale * 0.65 * fabricImage.scaleX) / 10,
