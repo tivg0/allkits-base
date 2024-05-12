@@ -113,7 +113,8 @@ function selectImage(
       fabricCanvas.current.getActiveObject() == obj
     ) {
       isSelected = true;
-      fabricCanvas.current.bringToFront(obj);
+      fabricCanvas.current.setActiveObject(obj).bringToFront(obj).renderAll();
+      updateTexture();
     } else if (obj.containsPoint(point) && !imageSelectedContainsPoint) {
       rotated = obj.angle;
       isSelected = true;

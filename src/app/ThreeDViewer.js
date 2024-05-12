@@ -461,6 +461,8 @@ const ThreeDViewer = () => {
                 isDragging = true; // Start dragging only if it's a new interaction
                 // selectAndHandleObject(intersections);
               }
+            } else {
+              setActiveObject(null);
             }
           } else {
             //o editing component é atualizado se não for igual
@@ -481,7 +483,7 @@ const ThreeDViewer = () => {
               new THREE.Color(currentEmissive),
               400
             );
-            // closeTabs();
+            closeTabs();
 
             fabricCanvas.current.renderAll();
             copyCanvas(
@@ -534,6 +536,13 @@ const ThreeDViewer = () => {
               selectedHandle,
               isHandleSelected
             );
+            const obj = fabricCanvas.current.getActiveObject();
+            if (obj) {
+              openTabs();
+              setActiveObject(obj);
+            } else {
+              setActiveObject(null);
+            }
             editingComponent.current.material.map = fabricTexture;
             editingComponent.current.material.needsUpdate = true;
 
@@ -1410,6 +1419,10 @@ const ThreeDViewer = () => {
       const canvas = fabricCanvas.current;
       const activeObject = canvas.getActiveObject();
       setActiveObject(activeObject);
+      console.log("Active Object do momento: ", activeObject);
+      if (activeObject == null) {
+        closeTabs();
+      }
     }
   }, [activeObject]);
 
