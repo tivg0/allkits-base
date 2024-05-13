@@ -55,6 +55,7 @@ const ImageEditor = forwardRef(
           scaleY: activeObject.scaleY,
           originX: "center",
           originY: "center",
+          flipX: activeObject.flipX,
         };
 
         // Verifica se já existe uma imagem substituta e remove-a antes de adicionar uma nova
@@ -72,6 +73,7 @@ const ImageEditor = forwardRef(
             height: newImgObj.height,
             scaleX: originalProps.scaleX,
             scaleY: originalProps.scaleY,
+            flipX: originalProps.flipX,
             cornerSize: 15,
             borderColor: "transparent",
             cornerColor: "rgba(0, 0, 0, 0.2)",

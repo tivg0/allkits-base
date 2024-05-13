@@ -10,8 +10,8 @@ const partNames = {
   argolas: "Argolas",
   corda: "Cordas",
   elasticoC: "Elástico Central",
-  elasticoL: "Elástico Esquerdo",
-  elasticoR: "Elástico Direito",
+  punhoL: "Elástico Esquerdo",
+  punhoR: "Elástico Direito",
 };
 
 export const getPartName = (filename) => {
