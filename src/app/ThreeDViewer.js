@@ -193,10 +193,10 @@ const ThreeDViewer = () => {
         ? editingComponent.current.name
         : "bodyFMIX",
     });
-    setFabricCanvases((prevCanvases) => [
+    /* setFabricCanvases((prevCanvases) => [
       ...prevCanvases,
       fabricCanvas.current,
-    ]);
+    ]); */
 
     const texture = new THREE.CanvasTexture(fabricCanvas.current.getElement());
     texture.repeat.y = -1;
@@ -1521,7 +1521,7 @@ const ThreeDViewer = () => {
       console.error("Error:", error);
     }
   };
-
+  console.log(fabricCanvases);
   const testP = async () => {
     const allCanvasData = [];
 

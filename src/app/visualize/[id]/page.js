@@ -15,7 +15,7 @@ const FabricCanvas = ({ params }) => {
   const containerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [objectNames, setObjectNames] = useState([]);
-  const [link, setLink] = useState("Here goes your link to be copied"); // Initialize with your link
+
   let orbit;
 
   const model = params.id[params.id.length - 1];
@@ -217,14 +217,16 @@ const FabricCanvas = ({ params }) => {
   }, [params]);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(link).then(
-      () => {
-        alert("Link de pré-visualização copiado com sucesso!"); // Optionally show a message
-      },
-      (err) => {
-        console.error("Não foi possível copiar o link: ", err); // Error handling
-      }
-    );
+    navigator.clipboard
+      .writeText(`http://localhost:3000/visualize/${params.id}`)
+      .then(
+        () => {
+          alert("Link de pré-visualização copiado com sucesso!"); // Optionally show a message
+        },
+        (err) => {
+          console.error("Não foi possível copiar o link: ", err); // Error handling
+        }
+      );
   };
 
   return (
