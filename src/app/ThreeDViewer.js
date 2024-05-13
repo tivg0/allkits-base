@@ -193,7 +193,6 @@ const ThreeDViewer = () => {
         ? editingComponent.current.name
         : "bodyFMIX",
     });
-    //setFabricCanvases((prevCanvases) => [...prevCanvases, newCanvas]);
 
     const texture = new THREE.CanvasTexture(fabricCanvas.current.getElement());
     texture.repeat.y = -1;
@@ -1248,6 +1247,8 @@ const ThreeDViewer = () => {
         precoTotal += custoAdicional; // soma o custo adicional ao preço total
       });
     });
+
+    // console.log("fabricCanvases:", fabricCanvases);
     setPrecoFinal(precoTotal.toFixed(2)); // atualiza o estado com o preço final
     animatePrice(0, precoTotal, 1000); // anima a mudança de preço
   };
@@ -1533,6 +1534,7 @@ const ThreeDViewer = () => {
 
       for (const obj of objects) {
         if (obj.type === "textbox") {
+          console.log(obj);
           canvasData.texts.push({
             text: obj.text,
             fontFamily: obj.fontFamily,
@@ -1540,6 +1542,9 @@ const ThreeDViewer = () => {
             color: obj.fill,
             top: obj.top,
             left: obj.left,
+            width: obj.width,
+            height: obj.height,
+            textLines: obj.textLines,
           });
         } else if (
           obj.type === "image" &&
@@ -1568,6 +1573,7 @@ const ThreeDViewer = () => {
               width: obj.width,
               height: obj.height,
               angle: obj.angle ? obj.angle : 0,
+              flipX: obj.flipX,
             });
           } catch (error) {
             console.error("Error uploading image:", error);
@@ -2061,60 +2067,77 @@ const ThreeDViewer = () => {
                   €{precoAnimado}
                 </h1>
               </div>
-              <h1
-                style={{
-                  color: "white",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  display: "flex",
-                }}
-              >
-                Informações de envio
-              </h1>
-              <div className={styles.inputsForm}>
-                <input
-                  className={styles.inputForm}
-                  placeholder="Nome"
-                  name="name"
-                  value={clientData.name}
-                  onChange={handleChange}
-                />
-                <input
-                  className={styles.inputForm}
-                  placeholder="Email"
-                  name="email"
-                  value={clientData.email}
-                  onChange={handleChange}
-                />
-                <input
-                  className={styles.inputForm}
-                  placeholder="Telemóvel"
-                  name="phone"
-                  value={clientData.phone}
-                  onChange={handleChange}
-                />
+              <div className={styles.inputsFormMain}>
+                <h1
+                  className={styles.title}
+                  style={{
+                    textAlign: "center",
+                    fontSize: 15,
+                    color: "#8c8c8c",
+                  }}
+                >
+                  INFORMAÇÕES DE ENVIO
+                </h1>
+                <div className={styles.inputsForm}>
+                  <input
+                    className={styles.inputForm}
+                    placeholder="Nome"
+                    name="name"
+                    value={clientData.name}
+                    onChange={handleChange}
+                  />
+                  <input
+                    className={styles.inputForm}
+                    placeholder="Email"
+                    name="email"
+                    value={clientData.email}
+                    onChange={handleChange}
+                  />
+                  <input
+                    className={styles.inputForm}
+                    placeholder="Telemóvel"
+                    name="phone"
+                    value={clientData.phone}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
             </>
           ) : (
-            <div>
-              <h1>Personalização submetida com sucesso</h1>
-              <h5>Iremos entrar em contacto consigo muito brevemente</h5>
-              {docId != "" ? (
-                <button
-                  className={styles.btnPreviewLink}
-                  onClick={() => router.push(`/visualize/${docId}`)}
-                  // target={"_blank"}
+            <div className={styles.successOrderMain}>
+              <h1 className={styles.successOrderText}>
+                Personalização submetida com sucesso
+              </h1>
+              <p
+                style={{ marginTop: -10, marginBottom: 35 }}
+                className={styles.successOrderSubText}
+              >
+                Iremos entrar em contacto consigo muito brevemente
+              </p>
+              <div className={styles.finalBtns}>
+                {docId != "" ? (
+                  <button
+                    className={styles.btnPreviewLink}
+                    onClick={() => router.push(`/visualize/${docId}`)}
+                    // target={"_blank"}
+                  >
+                    <NextImage src={shareIcon} width={20} height={20} />
+                    <p>Abrir link de pré-visualização</p>
+                  </button>
+                ) : (
+                  <button className={styles.btnBuildLink}>
+                    <NextImage src={buildingIcon} width={20} height={20} />
+                    <p>A criar o teu link de pré-visualização</p>
+                  </button>
+                )}
+                <Link
+                  className={styles.goToAllkitsBtn}
+                  style={{ textDecoration: "none" }}
+                  href={"https://www.allkits.pt"}
                 >
-                  <NextImage src={shareIcon} width={20} height={20} />
-                  <p>Copiar e ir para o teu link de pré-visualização</p>
-                </button>
-              ) : (
-                <button className={styles.btnBuildLink}>
-                  <NextImage src={buildingIcon} width={20} height={20} />
-                  <p>A criar o teu link de pré-visualização</p>
-                </button>
-              )}
-              <Link href={"https://www.allkits.pt"}>Voltar à Allkits</Link>
+                  Voltar à Allkits
+                </Link>
+              </div>
             </div>
           )}
         </div>

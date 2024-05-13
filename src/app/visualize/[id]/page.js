@@ -55,19 +55,35 @@ const FabricCanvas = ({ params }) => {
         canvas.backgroundColor = backgroundColor;
 
         if (texts && texts.length > 0) {
-          texts.forEach(({ text, fontFamily, color, top, left, fontSize }) => {
-            console.log(`Adding text '${text}' to canvas`);
-            const textObject = new fabric.Text(text, {
+          texts.forEach(
+            ({
+              text,
               fontFamily,
-              fontSize,
-              fill: color,
-              left,
+              color,
               top,
-              originX: "center",
-              originY: "center",
-            });
-            canvas.add(textObject);
-          });
+              left,
+              fontSize,
+              width,
+              height,
+              textLines,
+            }) => {
+              console.log(`Adding text '${text}' to canvas`);
+              const textObject = new fabric.Text(text, {
+                fontFamily,
+                fontSize,
+                fill: color,
+                left,
+                top,
+                originX: "center",
+                originY: "center",
+                width: width,
+                height: height,
+                textLines,
+              });
+              console.log(textObject);
+              canvas.add(textObject);
+            }
+          );
         }
 
         if (images && images.length > 0) {

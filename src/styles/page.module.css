@@ -881,8 +881,8 @@
     transition: all 0.3s ease-in-out;
     color: rgba(191, 191, 191, 1);
     align-self: center;
-    justify-content: center;
     margin: auto;
+    justify-content: center;
     padding-left: 25px;
     padding-right: 25px;
   }
@@ -999,16 +999,20 @@
     opacity: 0.5;
   }
 
-  .inputsForm {
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    justify-content: center;
+  .inputsFormMain {
     position: fixed;
     bottom: 16.1%;
     left: 0;
     right: 0;
     margin: auto;
+  }
+
+  .inputsForm {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    justify-content: center;
+    margin-top: 25px;
   }
 
   .inputForm {
@@ -1099,6 +1103,46 @@
   .poweredLogo {
     width: 75px;
     height: 30px;
+  }
+
+  /* sucesso order */
+  .successOrderMain {
+    display: block;
+    margin: auto;
+    margin-top: 22%;
+  }
+
+  .successOrderText {
+    color: #fff;
+    font-size: 25px;
+    letter-spacing: -1.2px;
+    font-family: "Inter";
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .successOrderSubText {
+    color: #8c8c8c;
+    font-size: 16px;
+    letter-spacing: -0.6px;
+    font-family: "Inter";
+    font-weight: 400;
+    text-align: center;
+  }
+
+  .finalBtns {
+    display: block;
+    margin: auto;
+  }
+
+  .goToAllkitsBtn {
+    color: #00bfff;
+    text-align: center;
+    left: 0;
+    right: 0;
+    position: fixed;
+    bottom: 16.1%;
+    margin: auto;
   }
 }
 
@@ -1351,6 +1395,13 @@
   }
 
   /* menu de preco */
+  .inputsFormMain {
+    position: fixed;
+    bottom: 16.1%;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
 
   .inputsForm {
     display: flex;
@@ -1358,11 +1409,6 @@
     gap: 5px;
     overflow-x: auto;
     justify-content: flex-start;
-    position: fixed;
-    bottom: 16.1%;
-    left: 0;
-    right: 0;
-    margin: auto;
     scroll-snap-type: x mandatory;
     padding-left: 50vw;
     padding-right: 50vw;
@@ -1412,6 +1458,34 @@
   /* visualize */
   .copiaTextMain:hover {
     width: 350px;
+  }
+
+  .successOrderMain {
+    display: block;
+    margin: auto;
+    margin-top: 30%;
+  }
+
+  .successOrderText {
+    color: #fff;
+    font-size: 20px;
+    letter-spacing: -0.8px;
+    font-family: "Inter";
+    font-weight: 800;
+    text-align: center;
+    margin-left: 25px;
+    margin-right: 25px;
+  }
+
+  .successOrderSubText {
+    color: #8c8c8c;
+    font-size: 14px;
+    letter-spacing: -0.6px;
+    font-family: "Inter";
+    font-weight: 400;
+    text-align: center;
+    margin-left: 25px;
+    margin-right: 25px;
   }
 }
 
