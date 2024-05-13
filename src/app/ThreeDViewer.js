@@ -35,6 +35,7 @@ import { useRouter } from "next/navigation";
 import { getPartName } from "@/utils/getPartName";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { storage } from "@/firebase";
+import { calculateAverageUV, getUVDimensions } from '@/app/get-uv-data'
 
 const ThreeDViewer = () => {
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
@@ -1338,16 +1339,18 @@ const ThreeDViewer = () => {
 
   function addTextbox(text) {
     const canvas = fabricCanvas.current;
+    let position = calculateAverageUV(editingComponent.current);
+    let scaleF = getUVDimensions(editingComponent.current) * 0.5;
     if (canvas) {
       // Create a new textbox
       const textbox = new fabric.Textbox(text, {
-        left: canvas.width / 2, // Center the textbox horizontally
-        top: canvas.height / 2,
+        left: canvas.width * position.averageU, // Center the textbox horizontally
+        top: canvas.height * (position.averageV - 0.1),
         originX: "center",
         originY: "center",
-        width: 155, // Adjust as needed
-        height: 200,
-        fontSize: fontSize,
+        width: scaleF * canvas.width * 0.5,
+        //height: scaleF * canvas.height ,
+        fontSize: Math.floor(fontSize * scaleF * 5),
         fontFamily: fontFamily,
         fill: fillColor,
         textAlign: textAlign, // Adjust as needed
@@ -1578,7 +1581,7 @@ const ThreeDViewer = () => {
               width: obj.width,
               height: obj.height,
               angle: obj.angle ? obj.angle : 0,
-              flipX: obj.flipX,
+              flipX: obj.flipX ? obj.flipX : false,
             });
           } catch (error) {
             console.error("Error uploading image:", error);

@@ -3,6 +3,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { fabric } from "fabric";
 import TWEEN from "@tweenjs/tween.js";
 import { TextureLoader } from "three";
+import { calculateAverageUV, getUVDimensions } from "./get-uv-data";
 
 const loadGLBModel = (path, scenario, setIsLoading, onNamesLoaded) => {
   const loader = new GLTFLoader();
@@ -165,6 +166,8 @@ const updateTexture = (fabricTexture) => {
 
 const handleImage = (e, fabricCanvas) => {
   const file = e.target.files[0];
+  let position = calculateAverageUV(editingComponent.current);
+  let scaleF = getUVDimensions(editingComponent.current) * 0.5;
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
@@ -175,15 +178,15 @@ const handleImage = (e, fabricCanvas) => {
       const scale = Math.min(
         fabricCanvas.current.width / fabricImage.width,
         fabricCanvas.current.height / fabricImage.height
-      );
+      ) * scaleF;
       fabricImage.set({
         selectable: true,
-        left: fabricCanvas.current.width / 2,
-        top: fabricCanvas.current.height / 2,
+        left: fabricCanvas.current.width * position.averageU,
+        top: fabricCanvas.current.height * (position.averageV - 0.1),
         originX: "center",
         originY: "center",
-        // scaleX: scale * 0.65,
-        // scaleY: scale * 0.65,
+        scaleX: scale * 0.65,
+        scaleY: scale * 0.65,
         cornerSize: (fabricImage.width * fabricImage.scaleX) / 100,
         transparentCorners: false,
         cornerColor: "rgb(255,0,0)",

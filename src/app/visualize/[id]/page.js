@@ -89,7 +89,7 @@ const FabricCanvas = ({ params }) => {
 
         if (images && images.length > 0) {
           images.forEach(
-            ({ base64, top, left, width, height, scaleX, scaleY, angle }) => {
+            ({ base64, top, left, width, height, scaleX, scaleY, angle, flipX }) => {
               console.log(`Loading image from URL: ${url}`);
               fabric.Image.fromURL(
                 base64,
@@ -105,6 +105,7 @@ const FabricCanvas = ({ params }) => {
                     angle,
                     originX: "center",
                     originY: "center",
+                    flipX
                   });
 
                   canvas.add(img);
