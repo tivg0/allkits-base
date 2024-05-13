@@ -1484,13 +1484,14 @@ const ThreeDViewer = () => {
 
     if (modelos) {
       modelos.current.style.gap = "1000px";
-      modelos.current.style.transition = "all 1.6s ease-in-out";
+      modelos.current.style.transition = "all 0.4s ease-in-out";
+      modelos.current.style.opacity = "0";
     }
 
     if (titleModels) {
       titleModels.current.style.marginTop = "-100%";
       titleModels.current.style.opacity = "0";
-      titleModels.current.style.transition = "all 1.6s ease-in-out";
+      titleModels.current.style.transition = "all 1.2s ease-in-out";
     }
   };
 
