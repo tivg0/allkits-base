@@ -193,6 +193,10 @@ const ThreeDViewer = () => {
         ? editingComponent.current.name
         : "bodyFMIX",
     });
+    setFabricCanvases((prevCanvases) => [
+      ...prevCanvases,
+      fabricCanvas.current,
+    ]);
 
     const texture = new THREE.CanvasTexture(fabricCanvas.current.getElement());
     texture.repeat.y = -1;

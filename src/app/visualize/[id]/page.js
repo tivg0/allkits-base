@@ -15,6 +15,7 @@ const FabricCanvas = ({ params }) => {
   const containerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [objectNames, setObjectNames] = useState([]);
+  const [link, setLink] = useState("Here goes your link to be copied"); // Initialize with your link
   let orbit;
 
   const model = params.id[params.id.length - 1];
@@ -215,10 +216,21 @@ const FabricCanvas = ({ params }) => {
     return () => {};
   }, [params]);
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(link).then(
+      () => {
+        alert("Link de pré-visualização copiado com sucesso!"); // Optionally show a message
+      },
+      (err) => {
+        console.error("Não foi possível copiar o link: ", err); // Error handling
+      }
+    );
+  };
+
   return (
     <>
       <div ref={containerRef}></div>
-      <button className={styles.copiaTextMain}>
+      <button onClick={copyToClipboard} className={styles.copiaTextMain}>
         <NextImage src={copyIcon} width={17} height={17} />
         <p className={styles.copiaText}>
           Copia o link para poderes partilhar a tua obra!

@@ -1157,6 +1157,15 @@
     scale: 0.84;
   }
 
+  .copiaTextMain {
+    bottom: 25px;
+    top: auto;
+  }
+
+  .poweredTextMain {
+    bottom: 75px;
+  }
+
   .checkoutZone {
     position: fixed;
     background-color: rgba(0, 0, 0, 0.8);
@@ -1463,7 +1472,7 @@
   .successOrderMain {
     display: block;
     margin: auto;
-    margin-top: 30%;
+    margin-top: 35%;
   }
 
   .successOrderText {
