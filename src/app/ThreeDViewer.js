@@ -95,6 +95,11 @@ const ThreeDViewer = () => {
     }
   }, []);
 
+  useEffect(() => {
+    let scaleF = getUVDimensions(editingComponent.current) * 0.5;
+    setMaxTextSize(Math.floor(maxTextSize / scaleF / 5));
+  },[editingComponent.current])
+
   const [objectNames, setObjectNames] = useState([]); // Estado para armazenar os nomes dos objetos
   const [currentIndex, setCurrentIndex] = useState(0); // Estado para o índice atual
 
