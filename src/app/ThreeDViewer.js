@@ -35,7 +35,7 @@ import { useRouter } from "next/navigation";
 import { getPartName } from "@/utils/getPartName";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { storage } from "@/firebase";
-import { calculateAverageUV, getUVDimensions } from '@/app/get-uv-data'
+import { calculateAverageUV, getUVDimensions } from "@/app/get-uv-data";
 
 const ThreeDViewer = () => {
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
@@ -1602,6 +1602,25 @@ const ThreeDViewer = () => {
     });
   };
 
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    // Function to update window width
+    const updateWindowWidth = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Update window width when component mounts
+    updateWindowWidth();
+
+    // Add event listener to update window width on resize
+    window.addEventListener("resize", updateWindowWidth);
+
+    // Clean up the event listener when component unmounts
+    return () => {
+      window.removeEventListener("resize", updateWindowWidth);
+    };
+  }, []);
   const nextStep =
     clientData.name != "" &&
     clientData.email != "" &&
@@ -1609,6 +1628,19 @@ const ThreeDViewer = () => {
     docId != "";
 
   const [success, setSuccess] = useState(false);
+
+  // Style based on preview state
+  const buttonStyle = {
+    right: preview
+      ? windowWidth < 750
+        ? 110
+        : 165
+      : windowWidth < 750
+      ? 25
+      : 50,
+    color: preview ? "#fff" : "#000",
+    backgroundColor: preview ? "transparent" : "#fff",
+  };
 
   return (
     <>
@@ -1846,20 +1878,10 @@ const ThreeDViewer = () => {
                 }, 200);
                 closeTabs();
               }}
-              style={{
-                right: preview
-                  ? window.innerWidth < 750
-                    ? 110
-                    : 165
-                  : window.innerWidth < 750
-                  ? 25
-                  : 50,
-                color: preview ? "#fff" : "#000",
-                backgroundColor: preview ? "transparent" : "#fff",
-              }}
+              style={buttonStyle}
             >
               {preview ? (
-                window.innerWidth < 450 ? (
+                windowWidth < 450 ? (
                   <p
                     style={{
                       marginTop: 0,
