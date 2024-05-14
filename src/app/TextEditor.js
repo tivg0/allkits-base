@@ -41,7 +41,7 @@ const TextEditor = forwardRef(
       // Determine which active object is currently selected based on the targetCanvasId
       if (fabricCanvas.current && activeObject) {
         setText(activeObject.text);
-        setFontSize(Math.floor(activeObject.fontSize / scaleF / 5) || 35); // Atualiza o estado do tamanho da fonte com base no objeto ativo
+        setFontSize(activeObject.fontSize || 35); // Atualiza o estado do tamanho da fonte com base no objeto ativo
         setFillColor(activeObject.fill || "#000000"); // Atualiza o estado do tamanho da fonte com base no objeto ativo
         setFontFamily(activeObject.fontFamily || "Arial"); // Atualiza o estado do tamanho da fonte com base no objeto ativo
       }
