@@ -1647,10 +1647,16 @@ const ThreeDViewer = () => {
               <button onClick={closeEditor} className={styles.fileUploadLabeal}>
                 <p
                   style={{
-                    marginTop: -16,
-                    justifyContent: "center",
-                    fontSize: 14.5,
+                    marginTop: -15,
+                    // justifyContent: "center",
+                    fontSize: 12.5,
+                    // marginLeft: -1,
+                    fontFamily: "Arial",
                     color: "#fff",
+                    alignSelf: "center",
+                    justifyContent: "center",
+                    display: "flex",
+                    flexDirection: "column",
                   }}
                 >
                   &#10005;
