@@ -35,6 +35,7 @@ import { useRouter } from "next/navigation";
 import { getPartName } from "@/utils/getPartName";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { storage } from "@/firebase";
+import { calculateAverageUV, getUVDimensions } from "@/app/get-uv-data";
 
 const ThreeDViewer = () => {
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
@@ -193,10 +194,10 @@ const ThreeDViewer = () => {
         ? editingComponent.current.name
         : "bodyFMIX",
     });
-    setFabricCanvases((prevCanvases) => [
+    /* setFabricCanvases((prevCanvases) => [
       ...prevCanvases,
       fabricCanvas.current,
-    ]);
+    ]); */
 
     const texture = new THREE.CanvasTexture(fabricCanvas.current.getElement());
     texture.repeat.y = -1;
@@ -214,7 +215,7 @@ const ThreeDViewer = () => {
 
   async function getActiveScene() {
     const dataL = await testP();
-    console.log("dataL", dataL);
+    //console.log("dataL", dataL);
 
     try {
       const response = await fetch(
@@ -1227,12 +1228,65 @@ const ThreeDViewer = () => {
     };
   }, [fabricTexture, model]);
 
+  function copyCanvasWOBG(originCanvas, destinationCanvas) {
+    destinationCanvas.clear();
+    destinationCanvas.backgroundColor = "transparent";
+    originCanvas.forEachObject(function (i) {
+      destinationCanvas.add(i);
+    });
+    destinationCanvas.renderAll();
+  }
+
   // //calcular area imprimida
   const calcularEImprimirAreasOcupadas = () => {
     let precoTotal = 13.25; // Preço base de 13.25€
 
+
+
     fabricCanvases.forEach((canvas) => {
-      const areaTotalCanvas = canvas.width * canvas.height; // área total do canvas em cm²
+      let alphaCanvas = new fabric.Canvas('temp', {width: canvas.width, height: canvas.height});
+      copyCanvasWOBG(canvas, alphaCanvas);
+
+      
+
+      let alphaData = alphaCanvas.toDataURL({format: 'png'});
+
+      let alphaImage = new Image();
+      alphaImage.src = alphaData;
+
+
+
+      let ctx = alphaCanvas.getContext('2d');
+      let imageData = ctx.getImageData(0, 0, alphaCanvas.width, alphaCanvas.height);
+      let data = imageData.data;
+
+      console.log(alphaData)
+
+
+      let factor = 0;
+
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] < 10) {
+          factor += 1;
+        }
+      }
+
+      
+
+      const areaTotalCanvas = alphaCanvas.width * alphaCanvas.height;
+      const areaObjeto = factor / areaTotalCanvas;
+      const percentagemAreaOcupada = areaObjeto / areaTotalCanvas / variavelAjuste;
+
+      const blocosDezCm2Ocupados = Math.ceil(
+        (areaTotalCanvas * percentagemAreaOcupada) / 10
+      );
+
+      const custoAdicional = blocosDezCm2Ocupados * 1.6;
+
+      precoTotal += custoAdicional;
+      
+
+      /*const areaTotalCanvas = canvas.width * canvas.height; // área total do canvas em cm²
       canvas.getObjects().forEach((obj) => {
         const areaObjeto =
           (obj.width * obj.scaleX * obj.height * obj.scaleY) / variavelAjuste; // área ocupada do objeto em cm²
@@ -1249,7 +1303,7 @@ const ThreeDViewer = () => {
         // console.log("blocos", blocosDezCm2Ocupados);
         // console.log("custoAdd", custoAdicional);
         precoTotal += custoAdicional; // soma o custo adicional ao preço total
-      });
+      });*/
     });
 
     // console.log("fabricCanvases:", fabricCanvases);
@@ -1338,16 +1392,18 @@ const ThreeDViewer = () => {
 
   function addTextbox(text) {
     const canvas = fabricCanvas.current;
+    let position = calculateAverageUV(editingComponent.current);
+    let scaleF = getUVDimensions(editingComponent.current) * 0.5;
     if (canvas) {
       // Create a new textbox
       const textbox = new fabric.Textbox(text, {
-        left: canvas.width / 2, // Center the textbox horizontally
-        top: canvas.height / 2,
+        left: canvas.width * position.averageU, // Center the textbox horizontally
+        top: canvas.height * (position.averageV - 0.1),
         originX: "center",
         originY: "center",
-        width: 155, // Adjust as needed
-        height: 200,
-        fontSize: fontSize,
+        width: scaleF * canvas.width * 0.5,
+        //height: scaleF * canvas.height ,
+        fontSize: Math.floor(fontSize * scaleF * 5),
         fontFamily: fontFamily,
         fill: fillColor,
         textAlign: textAlign, // Adjust as needed
@@ -1424,7 +1480,7 @@ const ThreeDViewer = () => {
       const canvas = fabricCanvas.current;
       const activeObject = canvas.getActiveObject();
       setActiveObject(activeObject);
-      console.log("Active Object do momento: ", activeObject);
+      //console.log("Active Object do momento: ", activeObject);
       if (activeObject == null) {
         closeTabs();
       }
@@ -1498,7 +1554,7 @@ const ThreeDViewer = () => {
   const [allCanvasData, setAllCanvasData] = useState([]);
 
   const sendData = async () => {
-    console.log(allCanvasData);
+    //console.log(allCanvasData);
     const mergedData = { data: allCanvasData, clientData, docId: docId };
 
     try {
@@ -1522,7 +1578,7 @@ const ThreeDViewer = () => {
       console.error("Error:", error);
     }
   };
-
+  //console.log(fabricCanvases);
   const testP = async () => {
     const allCanvasData = [];
 
@@ -1539,7 +1595,7 @@ const ThreeDViewer = () => {
 
       for (const obj of objects) {
         if (obj.type === "textbox") {
-          console.log(obj);
+          //console.log(obj);
           canvasData.texts.push({
             text: obj.text,
             fontFamily: obj.fontFamily,
@@ -1578,7 +1634,7 @@ const ThreeDViewer = () => {
               width: obj.width,
               height: obj.height,
               angle: obj.angle ? obj.angle : 0,
-              flipX: obj.flipX,
+              flipX: obj.flipX ? obj.flipX : false,
             });
           } catch (error) {
             console.error("Error uploading image:", error);
@@ -1599,6 +1655,25 @@ const ThreeDViewer = () => {
     });
   };
 
+  const [windowWidth, setWindowWidth] = useState(0);
+
+  useEffect(() => {
+    // Function to update window width
+    const updateWindowWidth = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    // Update window width when component mounts
+    updateWindowWidth();
+
+    // Add event listener to update window width on resize
+    window.addEventListener("resize", updateWindowWidth);
+
+    // Clean up the event listener when component unmounts
+    return () => {
+      window.removeEventListener("resize", updateWindowWidth);
+    };
+  }, []);
   const nextStep =
     clientData.name != "" &&
     clientData.email != "" &&
@@ -1606,6 +1681,19 @@ const ThreeDViewer = () => {
     docId != "";
 
   const [success, setSuccess] = useState(false);
+
+  // Style based on preview state
+  const buttonStyle = {
+    right: preview
+      ? windowWidth < 750
+        ? 110
+        : 165
+      : windowWidth < 750
+      ? 25
+      : 50,
+    color: preview ? "#fff" : "#000",
+    backgroundColor: preview ? "transparent" : "#fff",
+  };
 
   return (
     <>
@@ -1849,20 +1937,10 @@ const ThreeDViewer = () => {
                 }, 200);
                 closeTabs();
               }}
-              style={{
-                right: preview
-                  ? window.innerWidth < 750
-                    ? 110
-                    : 165
-                  : window.innerWidth < 750
-                  ? 25
-                  : 50,
-                color: preview ? "#fff" : "#000",
-                backgroundColor: preview ? "transparent" : "#fff",
-              }}
+              style={buttonStyle}
             >
               {preview ? (
-                window.innerWidth < 450 ? (
+                windowWidth < 450 ? (
                   <p
                     style={{
                       marginTop: 0,
