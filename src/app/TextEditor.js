@@ -3,6 +3,7 @@ import styles from "@/styles/page.module.css";
 import { fontList } from "./fonts";
 import deleteIcon from "@/imgs/binIcon.png";
 import NextImage from "next/image";
+import { getUVDimensions } from "./get-uv-data";
 
 const TextEditor = forwardRef(
   (
@@ -22,6 +23,7 @@ const TextEditor = forwardRef(
       setFillColor,
       maxTextSize,
       setMaxTextSize,
+      editingComponent
     },
     ref
   ) => {
@@ -35,10 +37,11 @@ const TextEditor = forwardRef(
     const [deleteBtn, setDeleteBtn] = useState(false);
 
     useEffect(() => {
+      let scaleF = getUVDimensions(editingComponent.current) * 0.5;
       // Determine which active object is currently selected based on the targetCanvasId
       if (fabricCanvas.current && activeObject) {
         setText(activeObject.text);
-        setFontSize(activeObject.fontSize || 35); // Atualiza o estado do tamanho da fonte com base no objeto ativo
+        setFontSize(activeObject.fontSize / scaleF / 5 || 35); // Atualiza o estado do tamanho da fonte com base no objeto ativo
         setFillColor(activeObject.fill || "#000000"); // Atualiza o estado do tamanho da fonte com base no objeto ativo
         setFontFamily(activeObject.fontFamily || "Arial"); // Atualiza o estado do tamanho da fonte com base no objeto ativo
       }
@@ -84,6 +87,7 @@ const TextEditor = forwardRef(
 
       setText(newText);
       updateTexture(); // Update the texture to reflect the changes
+      console.log(fontSize)
     };
 
     const [newSize, setNewSize] = useState(fontSize);
@@ -109,7 +113,7 @@ const TextEditor = forwardRef(
         activeObject.set("fontSize", newSize);
         fabricCanvas.current.renderAll();
       }
-
+      console.log(newSize)
       setFontSize(newSize);
       updateTexture(); // Update the texture to reflect the changes
     };

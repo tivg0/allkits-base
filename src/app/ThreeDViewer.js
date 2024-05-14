@@ -77,6 +77,7 @@ const ThreeDViewer = () => {
 
   const [fabricCanvases, setFabricCanvases] = useState([]);
   const [maxTextSize, setMaxTextSize] = useState(100);
+  const [maxTextSizeStatic, setMaxTextSizeStatic] = useState(100);
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent;
@@ -88,16 +89,22 @@ const ThreeDViewer = () => {
       setCanvasSize(480); // Supondo que você quer um tamanho menor para Safari
       setVariavelAjuste(23.67);
       setMaxTextSize(100);
+      setMaxTextSizeStatic(100);
     } else {
       setCanvasSize(1024); // Tamanho padrão para outros navegadores
       setVariavelAjuste(47.47);
       setMaxTextSize(200);
+      setMaxTextSizeStatic(200);
     }
   }, []);
 
   useEffect(() => {
-    let scaleF = getUVDimensions(editingComponent.current) * 0.5;
-    setMaxTextSize(Math.floor(maxTextSize / scaleF / 5));
+    let scaleF;
+    if (editingComponent.current) {
+      scaleF = getUVDimensions(editingComponent.current) * 0.5;
+    }
+    
+    setMaxTextSize(Math.floor(maxTextSizeStatic / scaleF / 5));
   },[editingComponent.current])
 
   const [objectNames, setObjectNames] = useState([]); // Estado para armazenar os nomes dos objetos
@@ -1267,8 +1274,6 @@ const ThreeDViewer = () => {
       );
       let data = imageData.data;
 
-      console.log(alphaData);
-
       let factor = 0;
 
       for (let i = 0; i < data.length; i += 4) {
@@ -1405,6 +1410,9 @@ const ThreeDViewer = () => {
     const canvas = fabricCanvas.current;
     let position = calculateAverageUV(editingComponent.current);
     let scaleF = getUVDimensions(editingComponent.current) * 0.5;
+    console.log(maxTextSizeStatic)
+    console.log(maxTextSize)
+    console.log(fontSize)
     if (canvas) {
       // Create a new textbox
       const textbox = new fabric.Textbox(text, {
@@ -2007,6 +2015,7 @@ const ThreeDViewer = () => {
           setFillColor={setFillColor}
           maxTextSize={maxTextSize}
           setMaxTextSize={setMaxTextSize}
+          editingComponent={editingComponent}
         />
       )}
       {/* {colorEditor && (
