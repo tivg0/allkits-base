@@ -215,7 +215,7 @@ const ThreeDViewer = () => {
 
   async function getActiveScene() {
     const dataL = await testP();
-    console.log("dataL", dataL);
+    //console.log("dataL", dataL);
 
     try {
       const response = await fetch(
@@ -1228,12 +1228,65 @@ const ThreeDViewer = () => {
     };
   }, [fabricTexture, model]);
 
+  function copyCanvasWOBG(originCanvas, destinationCanvas) {
+    destinationCanvas.clear();
+    destinationCanvas.backgroundColor = "transparent";
+    originCanvas.forEachObject(function (i) {
+      destinationCanvas.add(i);
+    });
+    destinationCanvas.renderAll();
+  }
+
   // //calcular area imprimida
   const calcularEImprimirAreasOcupadas = () => {
     let precoTotal = 13.25; // Preço base de 13.25€
 
+
+
     fabricCanvases.forEach((canvas) => {
-      const areaTotalCanvas = canvas.width * canvas.height; // área total do canvas em cm²
+      let alphaCanvas = new fabric.Canvas('temp', {width: canvas.width, height: canvas.height});
+      copyCanvasWOBG(canvas, alphaCanvas);
+
+      
+
+      let alphaData = alphaCanvas.toDataURL({format: 'png'});
+
+      let alphaImage = new Image();
+      alphaImage.src = alphaData;
+
+
+
+      let ctx = alphaCanvas.getContext('2d');
+      let imageData = ctx.getImageData(0, 0, alphaCanvas.width, alphaCanvas.height);
+      let data = imageData.data;
+
+      console.log(alphaData)
+
+
+      let factor = 0;
+
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] < 10) {
+          factor += 1;
+        }
+      }
+
+      
+
+      const areaTotalCanvas = alphaCanvas.width * alphaCanvas.height;
+      const areaObjeto = factor / areaTotalCanvas;
+      const percentagemAreaOcupada = areaObjeto / areaTotalCanvas / variavelAjuste;
+
+      const blocosDezCm2Ocupados = Math.ceil(
+        (areaTotalCanvas * percentagemAreaOcupada) / 10
+      );
+
+      const custoAdicional = blocosDezCm2Ocupados * 1.6;
+
+      precoTotal += custoAdicional;
+      
+
+      /*const areaTotalCanvas = canvas.width * canvas.height; // área total do canvas em cm²
       canvas.getObjects().forEach((obj) => {
         const areaObjeto =
           (obj.width * obj.scaleX * obj.height * obj.scaleY) / variavelAjuste; // área ocupada do objeto em cm²
@@ -1250,7 +1303,7 @@ const ThreeDViewer = () => {
         // console.log("blocos", blocosDezCm2Ocupados);
         // console.log("custoAdd", custoAdicional);
         precoTotal += custoAdicional; // soma o custo adicional ao preço total
-      });
+      });*/
     });
 
     // console.log("fabricCanvases:", fabricCanvases);
@@ -1427,7 +1480,7 @@ const ThreeDViewer = () => {
       const canvas = fabricCanvas.current;
       const activeObject = canvas.getActiveObject();
       setActiveObject(activeObject);
-      console.log("Active Object do momento: ", activeObject);
+      //console.log("Active Object do momento: ", activeObject);
       if (activeObject == null) {
         closeTabs();
       }
@@ -1501,7 +1554,7 @@ const ThreeDViewer = () => {
   const [allCanvasData, setAllCanvasData] = useState([]);
 
   const sendData = async () => {
-    console.log(allCanvasData);
+    //console.log(allCanvasData);
     const mergedData = { data: allCanvasData, clientData, docId: docId };
 
     try {
@@ -1525,7 +1578,7 @@ const ThreeDViewer = () => {
       console.error("Error:", error);
     }
   };
-  console.log(fabricCanvases);
+  //console.log(fabricCanvases);
   const testP = async () => {
     const allCanvasData = [];
 
@@ -1542,7 +1595,7 @@ const ThreeDViewer = () => {
 
       for (const obj of objects) {
         if (obj.type === "textbox") {
-          console.log(obj);
+          //console.log(obj);
           canvasData.texts.push({
             text: obj.text,
             fontFamily: obj.fontFamily,
