@@ -1241,27 +1241,28 @@ const ThreeDViewer = () => {
   const calcularEImprimirAreasOcupadas = () => {
     let precoTotal = 13.25; // Preço base de 13.25€
 
-
-
     fabricCanvases.forEach((canvas) => {
-      let alphaCanvas = new fabric.Canvas('temp', {width: canvas.width, height: canvas.height});
+      let alphaCanvas = new fabric.Canvas("temp", {
+        width: canvas.width,
+        height: canvas.height,
+      });
       copyCanvasWOBG(canvas, alphaCanvas);
 
-      
-
-      let alphaData = alphaCanvas.toDataURL({format: 'png'});
+      let alphaData = alphaCanvas.toDataURL({ format: "png" });
 
       let alphaImage = new Image();
       alphaImage.src = alphaData;
 
-
-
-      let ctx = alphaCanvas.getContext('2d');
-      let imageData = ctx.getImageData(0, 0, alphaCanvas.width, alphaCanvas.height);
+      let ctx = alphaCanvas.getContext("2d");
+      let imageData = ctx.getImageData(
+        0,
+        0,
+        alphaCanvas.width,
+        alphaCanvas.height
+      );
       let data = imageData.data;
 
-      console.log(alphaData)
-
+      console.log(alphaData);
 
       let factor = 0;
 
@@ -1271,11 +1272,10 @@ const ThreeDViewer = () => {
         }
       }
 
-      
-
       const areaTotalCanvas = alphaCanvas.width * alphaCanvas.height;
       const areaObjeto = factor / areaTotalCanvas;
-      const percentagemAreaOcupada = areaObjeto / areaTotalCanvas / variavelAjuste;
+      const percentagemAreaOcupada =
+        areaObjeto / areaTotalCanvas / variavelAjuste;
 
       const blocosDezCm2Ocupados = Math.ceil(
         (areaTotalCanvas * percentagemAreaOcupada) / 10
@@ -1284,7 +1284,6 @@ const ThreeDViewer = () => {
       const custoAdicional = blocosDezCm2Ocupados * 1.6;
 
       precoTotal += custoAdicional;
-      
 
       /*const areaTotalCanvas = canvas.width * canvas.height; // área total do canvas em cm²
       canvas.getObjects().forEach((obj) => {
@@ -1379,8 +1378,15 @@ const ThreeDViewer = () => {
   const textEditorTab = () => {
     if (textEditor) {
       setTextEditor(false);
+      // if (!activeObject) {
+      //   addTextbox("Seu texto aqui");
+      // }
     } else {
       setTextEditor(true);
+      // onClick={() => addTextbox("Seu texto aqui")} // Use a function call to ensure parameters are passed correctly
+      if (!activeObject) {
+        addTextbox("Seu texto aqui");
+      }
     }
   };
   // const [cornerColor, setCornerColor] = useState("rgba(0, 0, 0, 0.4)");

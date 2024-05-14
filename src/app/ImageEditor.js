@@ -534,7 +534,7 @@ const ImageEditor = forwardRef(
                 />
                 <div className={styles.noImage}>
                   <p className={styles.trititle}>
-                    Selecione uma imagem para começar
+                    Arraste uma imagem para começar
                   </p>
                 </div>
               </div>
