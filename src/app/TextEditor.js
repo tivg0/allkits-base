@@ -23,7 +23,7 @@ const TextEditor = forwardRef(
       setFillColor,
       maxTextSize,
       setMaxTextSize,
-      editingComponent
+      editingComponent,
     },
     ref
   ) => {
@@ -41,7 +41,7 @@ const TextEditor = forwardRef(
       // Determine which active object is currently selected based on the targetCanvasId
       if (fabricCanvas.current && activeObject) {
         setText(activeObject.text);
-        setFontSize(activeObject.fontSize / scaleF / 5 || 35); // Atualiza o estado do tamanho da fonte com base no objeto ativo
+        setFontSize(Math.floor(activeObject.fontSize / scaleF / 5) || 35); // Atualiza o estado do tamanho da fonte com base no objeto ativo
         setFillColor(activeObject.fill || "#000000"); // Atualiza o estado do tamanho da fonte com base no objeto ativo
         setFontFamily(activeObject.fontFamily || "Arial"); // Atualiza o estado do tamanho da fonte com base no objeto ativo
       }
@@ -87,7 +87,7 @@ const TextEditor = forwardRef(
 
       setText(newText);
       updateTexture(); // Update the texture to reflect the changes
-      console.log(fontSize)
+      console.log(fontSize);
     };
 
     const [newSize, setNewSize] = useState(fontSize);
@@ -113,7 +113,7 @@ const TextEditor = forwardRef(
         activeObject.set("fontSize", newSize);
         fabricCanvas.current.renderAll();
       }
-      console.log(newSize)
+      console.log(newSize);
       setFontSize(newSize);
       updateTexture(); // Update the texture to reflect the changes
     };

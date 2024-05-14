@@ -9,6 +9,7 @@ import styles from "../styles/page.module.css";
 import deleteIcon from "@/imgs/binIcon.png";
 import mirrorIcon from "@/imgs/mirrorIcon.png";
 import NextImage from "next/image";
+import { calculateAverageUV, getUVDimensions } from "./get-uv-data";
 const ImageEditor = forwardRef(
   (
     {
@@ -18,6 +19,7 @@ const ImageEditor = forwardRef(
       activeObject,
       imageSrc,
       setImageSrc,
+      editingComponent,
     },
     ref
   ) => {
@@ -136,6 +138,8 @@ const ImageEditor = forwardRef(
 
     const handleImage = (e) => {
       const file = e.target.files[0];
+      let position = calculateAverageUV(editingComponent.current);
+      let scaleF = getUVDimensions(editingComponent.current) * 0.8;
       if (!file) return;
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -143,15 +147,16 @@ const ImageEditor = forwardRef(
         imgObj.src = e.target.result;
         imgObj.onload = function () {
           const fabricImage = new fabric.Image(imgObj);
-          const scale = Math.min(
-            fabricCanvas.current.width / fabricImage.width,
-            fabricCanvas.current.height / fabricImage.height
-          );
+          const scale =
+            Math.min(
+              fabricCanvas.current.width / fabricImage.width,
+              fabricCanvas.current.height / fabricImage.height
+            ) * scaleF;
           const aspectRatio = fabricImage.width / fabricImage.height;
           fabricImage.set({
             selectable: true,
-            left: fabricCanvas.current.width / 2,
-            top: fabricCanvas.current.height / 2,
+            left: fabricCanvas.current.width * position.averageU,
+            top: fabricCanvas.current.height * (position.averageV - 0.1),
             originX: "center",
             originY: "center",
             scaleX: scale * 0.65,

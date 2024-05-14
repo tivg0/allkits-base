@@ -103,9 +103,9 @@ const ThreeDViewer = () => {
     if (editingComponent.current) {
       scaleF = getUVDimensions(editingComponent.current) * 0.5;
     }
-    
+
     setMaxTextSize(Math.floor(maxTextSizeStatic / scaleF / 5));
-  },[editingComponent.current])
+  }, [editingComponent.current]);
 
   const [objectNames, setObjectNames] = useState([]); // Estado para armazenar os nomes dos objetos
   const [currentIndex, setCurrentIndex] = useState(0); // Estado para o índice atual
@@ -1410,9 +1410,9 @@ const ThreeDViewer = () => {
     const canvas = fabricCanvas.current;
     let position = calculateAverageUV(editingComponent.current);
     let scaleF = getUVDimensions(editingComponent.current) * 0.5;
-    console.log(maxTextSizeStatic)
-    console.log(maxTextSize)
-    console.log(fontSize)
+    console.log(maxTextSizeStatic);
+    console.log(maxTextSize);
+    console.log(fontSize);
     if (canvas) {
       // Create a new textbox
       const textbox = new fabric.Textbox(text, {
@@ -1995,6 +1995,7 @@ const ThreeDViewer = () => {
           activeObject={activeObject}
           setImageSrc={setImageSrc}
           imageSrc={imageSrc}
+          editingComponent={editingComponent}
         />
       )}
 
