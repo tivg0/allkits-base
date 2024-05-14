@@ -1422,7 +1422,8 @@ const ThreeDViewer = () => {
         originY: "center",
         width: scaleF * canvas.width * 0.5,
         //height: scaleF * canvas.height ,
-        fontSize: Math.floor(fontSize * scaleF * 5),
+        // fontSize: Math.floor(fontSize * scaleF * 5),
+        fontSize: fontSize,
         fontFamily: fontFamily,
         fill: fillColor,
         textAlign: textAlign, // Adjust as needed
