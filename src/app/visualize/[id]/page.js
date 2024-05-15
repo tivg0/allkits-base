@@ -65,21 +65,20 @@ const FabricCanvas = ({ params }) => {
               left,
               fontSize,
               width,
-              height,
-              textLines,
+              textAlign,
             }) => {
-              console.log(`Adding text '${text}' to canvas`);
-              const textObject = new fabric.Text(text, {
+              //console.log(`Adding text '${text}' to canvas`);
+              console.log(width)
+              const textObject = new fabric.Textbox(text, {
                 fontFamily,
                 fontSize,
                 fill: color,
                 left,
                 top,
+                width,
                 originX: "center",
                 originY: "center",
-                width: width,
-                height: height,
-                textLines,
+                textAlign,
               });
               console.log(textObject);
               canvas.add(textObject);
