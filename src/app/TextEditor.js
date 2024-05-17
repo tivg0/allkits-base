@@ -77,6 +77,7 @@ const TextEditor = forwardRef(
     // };
     const handleTextChange = (e) => {
       const newText = e.target.value;
+      console.log(newText);
 
       // Check which canvas is currently being targeted and if there's an active object selected
       if (fabricCanvas.current && activeObject) {

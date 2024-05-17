@@ -35,7 +35,7 @@ import { useRouter } from "next/navigation";
 import { getPartName } from "@/utils/getPartName";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
 import { storage } from "@/firebase";
-import { calculateAverageUV, getUVDimensions } from "@/app/get-uv-data";
+import { calculateAverageUV, calculateUVArea, getUVDimensions } from "@/app/get-uv-data";
 
 const ThreeDViewer = () => {
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
@@ -78,6 +78,8 @@ const ThreeDViewer = () => {
   const [fabricCanvases, setFabricCanvases] = useState([]);
   const [maxTextSize, setMaxTextSize] = useState(100);
   const [maxTextSizeStatic, setMaxTextSizeStatic] = useState(100);
+  const [minScaleAllowed, setMinScaleAllowed] = useState(40);
+
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent;
@@ -90,11 +92,13 @@ const ThreeDViewer = () => {
       setVariavelAjuste(23.67);
       setMaxTextSize(100);
       setMaxTextSizeStatic(100);
+      setMinScaleAllowed(40);
     } else {
       setCanvasSize(1024); // Tamanho padrão para outros navegadores
       setVariavelAjuste(47.47);
       setMaxTextSize(200);
       setMaxTextSizeStatic(200);
+      setMinScaleAllowed(100);
     }
   }, []);
 
@@ -102,6 +106,13 @@ const ThreeDViewer = () => {
     let scaleF;
     if (editingComponent.current) {
       scaleF = getUVDimensions(editingComponent.current) * 0.5;
+
+      if (!editingComponent.current.userData.uvArea) {
+        let area = calculateUVArea(editingComponent.current.geometry);
+        editingComponent.current.userData.uvArea = area;
+        
+      }
+
     }
 
     setMaxTextSize(Math.floor(maxTextSizeStatic / scaleF / 5));
@@ -115,7 +126,6 @@ const ThreeDViewer = () => {
 
   const [editorOpen, setEditorOpen] = useState(false);
 
-  const minScaleAllowed = 100;
 
   //fabric variables----------------------------------------------------------------------------------------------
   let fabricCanvas = useRef(null);
@@ -1257,6 +1267,7 @@ const ThreeDViewer = () => {
       let alphaCanvas = new fabric.Canvas("temp", {
         width: canvas.width,
         height: canvas.height,
+        backgroundColor: 'transparent'
       });
       copyCanvasWOBG(canvas, alphaCanvas);
 
@@ -1440,6 +1451,7 @@ const ThreeDViewer = () => {
         cornerStyle: "circle",
         shadow: "rgba(0,0,0,0.3) 0px 0px 10px",
       });
+      console.log(textbox.width)
       for (const font of fontList) {
         textbox.set("fontFamily", font);
       }
@@ -1615,6 +1627,7 @@ const ThreeDViewer = () => {
 
       for (const obj of objects) {
         if (obj.type === "textbox") {
+          console.log(obj);
           //console.log(obj);
           canvasData.texts.push({
             text: obj.text,
@@ -1624,8 +1637,7 @@ const ThreeDViewer = () => {
             top: obj.top,
             left: obj.left,
             width: obj.width,
-            height: obj.height,
-            textLines: obj.textLines,
+            textAlign: obj.textAlign,
           });
         } else if (
           obj.type === "image" &&
@@ -1686,7 +1698,7 @@ const ThreeDViewer = () => {
     // Update window width when component mounts
     updateWindowWidth();
 
-    // Add event listener to update window width on resize
+    // event listener to update window width on resize
     window.addEventListener("resize", updateWindowWidth);
 
     // Clean up the event listener when component unmounts
