@@ -8,7 +8,7 @@ const partNames = {
   agulhetas: "Agulhetas",
   pocket: "Bolso",
   argolas: "Argolas",
-  corda: "Cordas",
+  corda: "Cordões",
   elasticoC: "Elástico Central",
   punhoL: "Elástico Esquerdo",
   punhoR: "Elástico Direito",
