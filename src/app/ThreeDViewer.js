@@ -128,7 +128,7 @@ const ThreeDViewer = () => {
   const [editorOpen, setEditorOpen] = useState(false);
 
   //fabric variables----------------------------------------------------------------------------------------------
-  const [isDrawingMode, setIsDrawingMode] = useState(false);
+  // const [isDrawingMode, setIsDrawingMode] = useState(false);
   let fabricCanvas = useRef(null);
   const [fabricTexture, setFabricTexture] = useState(null);
   let isDragging = false;
@@ -146,12 +146,12 @@ const ThreeDViewer = () => {
   const [activeObject, setActiveObject] = useState(null);
 
   //nomes certos dos objetos
-  const toggleDrawingMode = () => {
-    setIsDrawingMode((prevMode) => !prevMode);
-    if (fabricCanvas.current) {
-      fabricCanvas.current.isDrawingMode = !fabricCanvas.current.isDrawingMode;
-    }
-  };
+  // const toggleDrawingMode = () => {
+  //   setIsDrawingMode((prevMode) => !prevMode);
+  //   if (fabricCanvas.current) {
+  //     fabricCanvas.current.isDrawingMode = !fabricCanvas.current.isDrawingMode;
+  //   }
+  // };
 
   function setBGColor(hexColor) {
     const color = hexColor.trim(); // Clean the input
@@ -218,7 +218,7 @@ const ThreeDViewer = () => {
     fabricCanvas.current = new fabric.Canvas("fabric-canvas", {
       width: canvasSize,
       height: canvasSize,
-      isDrawingMode: isDrawingMode,
+      // isDrawingMode: isDrawingMode,
 
       backgroundColor: "#fff",
       part: editingComponent.current
@@ -1753,7 +1753,9 @@ const ThreeDViewer = () => {
           height: 0,
         }}
       >
-        <div style={{ position: "absolute", top: "0", left: "0" }}>
+        <div
+          style={{ position: "absolute", top: "0", left: "0", display: "none" }}
+        >
           <canvas
             id="fabric-canvas"
             style={{
@@ -1897,14 +1899,14 @@ const ThreeDViewer = () => {
                             </p>
                           </div>
                         </button>
-                        <button
+                        {/* <button
                           onClick={toggleDrawingMode}
                           className={styles.button}
                         >
                           {isDrawingMode
                             ? "Disable Drawing Mode"
                             : "Enable Drawing Mode"}
-                        </button>
+                        </button> */}
                       </>
                     ) : (
                       <>
