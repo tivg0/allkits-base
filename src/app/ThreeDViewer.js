@@ -40,8 +40,6 @@ import {
   calculateUVArea,
   getUVDimensions,
 } from "@/app/get-uv-data";
-// import { calculateUVArea } from "./get-uv-data";
-import { calculateArea } from "./calculate-area";
 
 const ThreeDViewer = () => {
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
@@ -85,8 +83,6 @@ const ThreeDViewer = () => {
   const [maxTextSize, setMaxTextSize] = useState(100);
   const [maxTextSizeStatic, setMaxTextSizeStatic] = useState(100);
   const [minScaleAllowed, setMinScaleAllowed] = useState(40);
-
-  const [animatedPrice, setAnimatedPrice] = useState("0.00");
 
   useEffect(() => {
     const userAgent = window.navigator.userAgent;
@@ -132,6 +128,7 @@ const ThreeDViewer = () => {
   const [editorOpen, setEditorOpen] = useState(false);
 
   //fabric variables----------------------------------------------------------------------------------------------
+  const [isDrawingMode, setIsDrawingMode] = useState(false);
   let fabricCanvas = useRef(null);
   const [fabricTexture, setFabricTexture] = useState(null);
   let isDragging = false;
@@ -149,6 +146,12 @@ const ThreeDViewer = () => {
   const [activeObject, setActiveObject] = useState(null);
 
   //nomes certos dos objetos
+  const toggleDrawingMode = () => {
+    setIsDrawingMode((prevMode) => !prevMode);
+    if (fabricCanvas.current) {
+      fabricCanvas.current.isDrawingMode = !fabricCanvas.current.isDrawingMode;
+    }
+  };
 
   function setBGColor(hexColor) {
     const color = hexColor.trim(); // Clean the input
@@ -194,6 +197,13 @@ const ThreeDViewer = () => {
   const [precoFinal, setPrecoFinal] = useState("13.25"); // Preço inicial de 10€ como string para fácil manipulação na renderização
   const [precoAnimado, setPrecoAnimado] = useState("0.00"); // Estado para controlar o valor animado do preço
 
+  const setupCanvases = () => {
+    fabricCanvases[0].setDimensions({ width: 100, height: 80 }); // Front
+    fabricCanvases[1].setDimensions({ width: 100, height: 100 }); // Back
+    fabricCanvases[2].setDimensions({ width: 60, height: 100 }); // Left
+    fabricCanvases[3].setDimensions({ width: 60, height: 100 }); // Right
+  };
+
   const [fontSize, setFontSize] = useState(35);
   const [tex, setTex] = useState("");
   const [texMesh, setTexMesh] = useState("");
@@ -208,6 +218,8 @@ const ThreeDViewer = () => {
     fabricCanvas.current = new fabric.Canvas("fabric-canvas", {
       width: canvasSize,
       height: canvasSize,
+      isDrawingMode: isDrawingMode,
+
       backgroundColor: "#fff",
       part: editingComponent.current
         ? editingComponent.current.name
@@ -1256,102 +1268,102 @@ const ThreeDViewer = () => {
     destinationCanvas.renderAll();
   }
 
-  // // //calcular area imprimida
-  // const calcularEImprimirAreasOcupadas = () => {
-  //   let precoTotal = 13.25; // Preço base de 13.25€
+  // //calcular area imprimida
+  const calcularEImprimirAreasOcupadas = () => {
+    let precoTotal = 13.25; // Preço base de 13.25€
 
-  //   fabricCanvases.forEach((canvas) => {
-  //     let alphaCanvas = new fabric.Canvas("temp", {
-  //       width: canvas.width,
-  //       height: canvas.height,
-  //       backgroundColor: "transparent",
-  //     });
-  //     copyCanvasWOBG(canvas, alphaCanvas);
+    fabricCanvases.forEach((canvas) => {
+      let alphaCanvas = new fabric.Canvas("temp", {
+        width: canvas.width,
+        height: canvas.height,
+        backgroundColor: "transparent",
+      });
+      copyCanvasWOBG(canvas, alphaCanvas);
 
-  //     let alphaData = alphaCanvas.toDataURL({ format: "png" });
+      let alphaData = alphaCanvas.toDataURL({ format: "png" });
 
-  //     let alphaImage = new Image();
-  //     alphaImage.src = alphaData;
+      let alphaImage = new Image();
+      alphaImage.src = alphaData;
 
-  //     let ctx = alphaCanvas.getContext("2d");
-  //     let imageData = ctx.getImageData(
-  //       0,
-  //       0,
-  //       alphaCanvas.width,
-  //       alphaCanvas.height
-  //     );
-  //     let data = imageData.data;
+      let ctx = alphaCanvas.getContext("2d");
+      let imageData = ctx.getImageData(
+        0,
+        0,
+        alphaCanvas.width,
+        alphaCanvas.height
+      );
+      let data = imageData.data;
 
-  //     let factor = 0;
+      let factor = 0;
 
-  //     for (let i = 0; i < data.length; i += 4) {
-  //       if (data[i + 3] < 10) {
-  //         factor += 1;
-  //       }
-  //     }
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] < 10) {
+          factor += 1;
+        }
+      }
 
-  //     const areaTotalCanvas = alphaCanvas.width * alphaCanvas.height;
-  //     const areaObjeto = factor / areaTotalCanvas;
-  //     const percentagemAreaOcupada =
-  //       areaObjeto / areaTotalCanvas / variavelAjuste;
+      const areaTotalCanvas = alphaCanvas.width * alphaCanvas.height;
+      const areaObjeto = factor / areaTotalCanvas;
+      const percentagemAreaOcupada =
+        areaObjeto / areaTotalCanvas / variavelAjuste;
 
-  //     const blocosDezCm2Ocupados = Math.ceil(
-  //       (areaTotalCanvas * percentagemAreaOcupada) / 10
-  //     );
+      const blocosDezCm2Ocupados = Math.ceil(
+        (areaTotalCanvas * percentagemAreaOcupada) / 10
+      );
 
-  //     const custoAdicional = blocosDezCm2Ocupados * 1.6;
+      const custoAdicional = blocosDezCm2Ocupados * 1.6;
 
-  //     precoTotal += custoAdicional;
+      precoTotal += custoAdicional;
 
-  //     /*const areaTotalCanvas = canvas.width * canvas.height; // área total do canvas em cm²
-  //     canvas.getObjects().forEach((obj) => {
-  //       const areaObjeto =
-  //         (obj.width * obj.scaleX * obj.height * obj.scaleY) / variavelAjuste; // área ocupada do objeto em cm²
-  //       const percentagemAreaOcupada =
-  //         areaObjeto / areaTotalCanvas / variavelAjuste; // percentagem da área ocupada pelo objeto no canvas
-  //       const blocosDezCm2Ocupados = Math.ceil(
-  //         (areaTotalCanvas * percentagemAreaOcupada) / 10
-  //       ); // blocos de 10 cm² ocupados pelo objeto
-  //       const custoAdicional = blocosDezCm2Ocupados * 1.6; // custo adicional baseado em 1.60€ por bloco de 10 cm²
-  //       // console.log("area do canvas", areaTotalCanvas);
-  //       // console.log("area do obj", areaObjeto);
-  //       // console.log("% ocupada obj - canvas", percentagemAreaOcupada);
-  //       // console.log("..........");
-  //       // console.log("blocos", blocosDezCm2Ocupados);
-  //       // console.log("custoAdd", custoAdicional);
-  //       precoTotal += custoAdicional; // soma o custo adicional ao preço total
-  //     });*/
-  //   });
+      /*const areaTotalCanvas = canvas.width * canvas.height; // área total do canvas em cm²
+      canvas.getObjects().forEach((obj) => {
+        const areaObjeto =
+          (obj.width * obj.scaleX * obj.height * obj.scaleY) / variavelAjuste; // área ocupada do objeto em cm²
+        const percentagemAreaOcupada =
+          areaObjeto / areaTotalCanvas / variavelAjuste; // percentagem da área ocupada pelo objeto no canvas
+        const blocosDezCm2Ocupados = Math.ceil(
+          (areaTotalCanvas * percentagemAreaOcupada) / 10
+        ); // blocos de 10 cm² ocupados pelo objeto
+        const custoAdicional = blocosDezCm2Ocupados * 1.6; // custo adicional baseado em 1.60€ por bloco de 10 cm²
+        // console.log("area do canvas", areaTotalCanvas);
+        // console.log("area do obj", areaObjeto);
+        // console.log("% ocupada obj - canvas", percentagemAreaOcupada);
+        // console.log("..........");
+        // console.log("blocos", blocosDezCm2Ocupados);
+        // console.log("custoAdd", custoAdicional);
+        precoTotal += custoAdicional; // soma o custo adicional ao preço total
+      });*/
+    });
 
-  //   // console.log("fabricCanvases:", fabricCanvases);
-  //   setPrecoFinal(precoTotal.toFixed(2)); // atualiza o estado com o preço final
-  //   animatePrice(0, precoTotal, 1000); // anima a mudança de preço
-  // };
+    // console.log("fabricCanvases:", fabricCanvases);
+    setPrecoFinal(precoTotal.toFixed(2)); // atualiza o estado com o preço final
+    animatePrice(0, precoTotal, 1000); // anima a mudança de preço
+  };
 
-  // const animatePrice = (start, end, duration) => {
-  //   let startTime = null;
-  //   const step = (currentTime) => {
-  //     if (!startTime) startTime = currentTime;
-  //     const progress = Math.min((currentTime - startTime) / duration, 1);
-  //     setPrecoAnimado((progress * (end - start) + start).toFixed(2));
-  //     if (progress < 1) {
-  //       window.requestAnimationFrame(step);
-  //     } else {
-  //       setPrecoAnimado(end.toFixed(2)); // Certifica-se de que o preço final é exatamente o que deve ser
-  //     }
-  //   };
-  //   window.requestAnimationFrame(step);
-  // };
+  const animatePrice = (start, end, duration) => {
+    let startTime = null;
+    const step = (currentTime) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      setPrecoAnimado((progress * (end - start) + start).toFixed(2));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      } else {
+        setPrecoAnimado(end.toFixed(2)); // Certifica-se de que o preço final é exatamente o que deve ser
+      }
+    };
+    window.requestAnimationFrame(step);
+  };
 
-  // const onConcluirClicked = () => {
-  //   const precoFinal = calcularEImprimirAreasOcupadas();
-  //   document.getElementById("precoFinal").textContent = `Preço: €${precoFinal}`;
-  // };
+  const onConcluirClicked = () => {
+    const precoFinal = calcularEImprimirAreasOcupadas();
+    document.getElementById("precoFinal").textContent = `Preço: €${precoFinal}`;
+  };
 
   useEffect(() => {
     const area = 300;
     // A função que realiza o cálculo da área ocupada
-    // calcularEImprimirAreasOcupadas();
+    calcularEImprimirAreasOcupadas();
   }, [fabricCanvases, preview, activeObject]);
 
   //funcoes de abrir e fechar a janela de edicao-------------------------------------------------------------------
@@ -1741,9 +1753,7 @@ const ThreeDViewer = () => {
           height: 0,
         }}
       >
-        <div
-          style={{ position: "absolute", top: "0", left: "0", display: "none" }}
-        >
+        <div style={{ position: "absolute", top: "0", left: "0" }}>
           <canvas
             id="fabric-canvas"
             style={{
@@ -1887,6 +1897,14 @@ const ThreeDViewer = () => {
                             </p>
                           </div>
                         </button>
+                        <button
+                          onClick={toggleDrawingMode}
+                          className={styles.button}
+                        >
+                          {isDrawingMode
+                            ? "Disable Drawing Mode"
+                            : "Enable Drawing Mode"}
+                        </button>
                       </>
                     ) : (
                       <>
@@ -1959,8 +1977,7 @@ const ThreeDViewer = () => {
             <button
               onClick={() => {
                 getActiveScene();
-                // calcularEImprimirAreasOcupadas();
-                calculateArea(fabricCanvases, sceneRef, setAnimatedPrice);
+                calcularEImprimirAreasOcupadas();
                 setPreview(!preview);
                 setTimeout(() => {
                   closeEditor();
@@ -2185,7 +2202,7 @@ const ThreeDViewer = () => {
                     marginTop: -15,
                   }}
                 >
-                  €{animatedPrice}
+                  €{precoAnimado}
                 </h1>
               </div>
               <div className={styles.inputsFormMain}>
