@@ -64,15 +64,15 @@
     margin-top: 65px;
   }
 
-  .fileUploadLabeal,
   .fileUploadLabealAdd,
-  .fileUploadLabealBack {
+  .fileUploadLabealBack,
+  .fileUploadLabeal {
     display: inline-block;
-    width: 25px; /* ou qualquer tamanho que prefiras */
-    height: 25px; /* para torná-lo quadrado */
+    width: 25px;
+    height: 25px;
     border-radius: 100px;
     text-align: center;
-    line-height: 50px; /* para centralizar o '+' verticalmente */
+    line-height: 50px;
     background-color: #ddd;
     cursor: pointer;
     color: #000;
@@ -81,19 +81,34 @@
     border: 1px solid transparent;
   }
 
-  .fileUploadLabeal:hover {
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
-    background-color: rgba(255, 0, 0, 0.3);
+  .fileUploadLabealAdd {
+    background-color: #00bfff9f;
+  }
+
+  .fileUploadLabealBack {
+    background-color: #edc6459f;
+  }
+
+  .fileUploadLabeal {
+    background-color: #ed454555;
   }
 
   .fileUploadLabealAdd:hover {
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
-    background-color: #00afefd6;
+    background-color: #00bfff;
+    scale: 1.161;
   }
 
   .fileUploadLabealBack:hover {
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
-    background-color: #ffbf0090;
+    background-color: #edc645;
+    scale: 1.161;
+  }
+
+  .fileUploadLabeal:hover {
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.02);
+    background-color: #ed4545;
+    scale: 1.161;
   }
 
   .menuPicker {
