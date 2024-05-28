@@ -1414,7 +1414,7 @@ const ThreeDViewer = () => {
     } else {
       setTextEditor(true);
       // onClick={() => addTextbox("Seu texto aqui")} // Use a function call to ensure parameters are passed correctly
-      if (!activeObject) {
+      if (!activeObject || activeObject.type == "image") {
         addTextbox("Seu texto aqui");
       }
     }
