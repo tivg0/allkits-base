@@ -1965,7 +1965,12 @@ const ThreeDViewer = () => {
                   nextStep && (setSuccess(true), sendData());
                 }}
               >
-                Continuar
+                {docId == "" &&
+                clientData.email != "" &&
+                clientData.phone != "" &&
+                clientData.name != ""
+                  ? "Aguarde"
+                  : "Continuar"}
               </button>
             )}
           </div>
