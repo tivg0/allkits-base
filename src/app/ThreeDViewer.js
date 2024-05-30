@@ -1360,12 +1360,6 @@ const ThreeDViewer = () => {
     document.getElementById("precoFinal").textContent = `Preço: €${precoFinal}`;
   };
 
-  useEffect(() => {
-    const area = 300;
-    // A função que realiza o cálculo da área ocupada
-    calcularEImprimirAreasOcupadas();
-  }, [fabricCanvases, preview, activeObject]);
-
   //funcoes de abrir e fechar a janela de edicao-------------------------------------------------------------------
 
   const editZoneRef = useRef(null);
