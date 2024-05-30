@@ -526,6 +526,18 @@ const ThreeDViewer = () => {
               editingComponent.current.userData.canva
             );
             editingComponent.current.userData.canva.renderAll();
+            let canvases = fabricCanvases;
+
+            if (canvases) {
+              canvases.forEach((canvas, index) => {
+                if (canvas.part == editingComponent.current.name) {
+                  canvases.splice(index, 1);
+                }
+              });
+            }
+            canvases.push(editingComponent.current.userData.canva);
+            setFabricCanvases(canvases);
+
             const texture = new THREE.CanvasTexture(
               editingComponent.current.userData.canva.getElement()
             );
@@ -544,7 +556,7 @@ const ThreeDViewer = () => {
                 backgroundColor: "#ffffff",
                 part: editingComponent.current.name,
               });
-              setFabricCanvases((prevCanvases) => [...prevCanvases, ownCanva]);
+              //setFabricCanvases((prevCanvases) => [...prevCanvases, ownCanva]);
 
               ownCanva.renderAll();
 
@@ -607,7 +619,7 @@ const ThreeDViewer = () => {
                 ? editingComponent.current.name
                 : "bodyFMIX",
             });
-            setFabricCanvases((prevCanvases) => [...prevCanvases, ownCanva]);
+            //setFabricCanvases((prevCanvases) => [...prevCanvases, ownCanva]);
 
             ownCanva.renderAll();
             const initialTexture = new THREE.CanvasTexture(
@@ -667,6 +679,17 @@ const ThreeDViewer = () => {
             editingComponent.current.userData.canva
           );
           editingComponent.current.userData.canva.renderAll();
+          let canvases = fabricCanvases;
+
+          if (canvases) {
+            canvases.forEach((canvas, index) => {
+              if (canvas.part == editingComponent.current.name) {
+                canvases.splice(index, 1);
+              }
+            });
+          }
+          canvases.push(editingComponent.current.userData.canva);
+          setFabricCanvases(canvases);
           const texture = new THREE.CanvasTexture(
             editingComponent.current.userData.canva.getElement()
           );
@@ -695,7 +718,7 @@ const ThreeDViewer = () => {
 
       if (editingComponent.current)
         setEditingComponentHTML(editingComponent.current.userData.name);
-      else if (!editingComponent.current) setEditingComponentHTML("hoodInCOR");
+      //else if (!editingComponent.current) setEditingComponentHTML("hoodInCOR");
     };
 
     const handleMove = (x, y) => {
@@ -1269,7 +1292,7 @@ const ThreeDViewer = () => {
   }
 
   // //calcular area imprimida
-  const calcularEImprimirAreasOcupadas = () => {
+  /*const calcularEImprimirAreasOcupadas = () => {
     let precoTotal = 13.25; // Preço base de 13.25€
 
     fabricCanvases.forEach((canvas) => {
@@ -1332,14 +1355,98 @@ const ThreeDViewer = () => {
         // console.log("blocos", blocosDezCm2Ocupados);
         // console.log("custoAdd", custoAdicional);
         precoTotal += custoAdicional; // soma o custo adicional ao preço total
-      });*/
+      });/////////
     });
 
     // console.log("fabricCanvases:", fabricCanvases);
     setPrecoFinal(precoTotal.toFixed(2)); // atualiza o estado com o preço final
     animatePrice(0, precoTotal, 1000); // anima a mudança de preço
-  };
+  };*/
 
+  function calculateArea() {
+    let totalPrice = 13.25;
+    let realPartArea;
+
+    console.log(fabricCanvases);
+
+    fabricCanvases.forEach((canvas) => {
+      let percentageOccupiedByUV;
+      let meshGeometry;
+      sceneRef.current.children.forEach((child) => {
+        if (child instanceof THREE.Group) {
+          child.children.forEach((mesh) => {
+            if (mesh.name == canvas.part) {
+              percentageOccupiedByUV = calculateUVArea(mesh.geometry);
+              meshGeometry = mesh.geometry;
+            }
+          });
+        }
+      });
+
+      if (canvas.part.includes("body")) {
+        realPartArea = 63 * 54; //cm^2
+      } else if (canvas.part.includes("manga")) {
+        realPartArea = 61 * 48; //cm^2
+      } else {
+        //pocket
+        realPartArea = 36 * 18; //cm^2
+      }
+
+      // realPartAreaCm----------------percentageOccupiedByUV
+      // canvasAreaCm------------------1
+
+      const canvasAreaCm = realPartArea / percentageOccupiedByUV;
+
+      let finalPrintCanvas = new fabric.Canvas("temp", {
+        width: canvas.width,
+        height: canvas.height,
+        backgroundColor: "transparent",
+      });
+      copyCanvasWOBG(canvas, finalPrintCanvas);
+
+      let finalPrintPngData = finalPrintCanvas.toDataURL({ format: "png" });
+      /*
+      let finalPrintImage = new Image();
+      finalPrintImage.src = finalPrintPngData;*/
+
+      let ctx = finalPrintCanvas.getContext("2d");
+      let imageData = ctx.getImageData(
+        0,
+        0,
+        finalPrintCanvas.width,
+        finalPrintCanvas.height
+      );
+      let data = imageData.data;
+
+      let pixelsWithPrint = 0;
+
+      for (let i = 0; i < data.length; i += 4) {
+        /*let index = i / 4;
+        let x = index % finalPrintCanvas.width;
+        let y = Math.floor(index / finalPrintCanvas.width);*/
+
+        //const pointInUV = isPointInUV(x, y, meshGeometry);
+
+        if (data[i + 3] > 10 /*&& pointInUV*/) {
+          pixelsWithPrint += 1;
+        }
+      }
+
+      const canvasAreaPixels = canvas.width * canvas.height;
+
+      const percentageOfPrint = pixelsWithPrint / canvasAreaPixels;
+
+      const areaOfPrintingCm = canvasAreaCm * percentageOfPrint;
+
+      const tenCm2Blocks = Math.ceil(areaOfPrintingCm) / 100;
+
+      const aditionalCost = tenCm2Blocks * 1.6;
+
+      totalPrice += aditionalCost;
+    });
+
+    animatePrice(0, totalPrice, 1000, setPrecoAnimado);
+  }
   const animatePrice = (start, end, duration) => {
     let startTime = null;
     const step = (currentTime) => {
@@ -1424,9 +1531,9 @@ const ThreeDViewer = () => {
     const canvas = fabricCanvas.current;
     let position = calculateAverageUV(editingComponent.current);
     let scaleF = getUVDimensions(editingComponent.current) * 0.5;
-    console.log(maxTextSizeStatic);
-    console.log(maxTextSize);
-    console.log(fontSize);
+    //console.log(maxTextSizeStatic);
+    //console.log(maxTextSize);
+    //console.log(fontSize);
     if (canvas) {
       // Create a new textbox
       const textbox = new fabric.Textbox(text, {
@@ -1454,7 +1561,7 @@ const ThreeDViewer = () => {
         cornerStyle: "circle",
         shadow: "rgba(0,0,0,0.3) 0px 0px 10px",
       });
-      console.log(textbox.width);
+      //console.log(textbox.width);
       for (const font of fontList) {
         textbox.set("fontFamily", font);
       }
@@ -1630,7 +1737,7 @@ const ThreeDViewer = () => {
 
       for (const obj of objects) {
         if (obj.type === "textbox") {
-          console.log(obj);
+          //console.log(obj);
           //console.log(obj);
           canvasData.texts.push({
             text: obj.text,
@@ -1978,12 +2085,40 @@ const ThreeDViewer = () => {
             <button
               onClick={() => {
                 getActiveScene();
-                calcularEImprimirAreasOcupadas();
+                //calcularEImprimirAreasOcupadas();
+                if (editingComponent.current) {
+                  fabricCanvas.current.renderAll();
+                  copyCanvas(
+                    fabricCanvas.current,
+                    editingComponent.current.userData.canva
+                  );
+                  editingComponent.current.userData.canva.renderAll();
+                  let canvases = fabricCanvases;
+
+                  if (canvases) {
+                    canvases.forEach((canvas, index) => {
+                      if (canvas.part == editingComponent.current.name) {
+                        canvases.splice(index, 1);
+                      }
+                    });
+                  }
+                  canvases.push(editingComponent.current.userData.canva);
+                  setFabricCanvases(canvases);
+
+                  const texture = new THREE.CanvasTexture(
+                    editingComponent.current.userData.canva.getElement()
+                  );
+                  texture.repeat.y = -1;
+                  texture.offset.y = 1;
+                  editingComponent.current.material.map = texture;
+                }
+                calculateArea();
                 setPreview(!preview);
                 setTimeout(() => {
                   closeEditor();
                 }, 200);
                 closeTabs();
+                console.log(fabricCanvases);
               }}
               style={buttonStyle}
             >

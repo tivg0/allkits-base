@@ -3,7 +3,6 @@ import * as THREE from "three";
 function calculateAverageUV(mesh) {
   const uvAttribute = mesh.geometry.getAttribute("uv");
   if (!uvAttribute) {
-    console.error("No UV coordinates found in the mesh.");
     return null;
   }
 
@@ -27,7 +26,6 @@ function calculateAverageUV(mesh) {
 function getUVDimensions(mesh) {
   const uvAttribute = mesh.geometry.getAttribute("uv");
   if (!uvAttribute) {
-    console.error("No UV coordinates found in the mesh.");
     return null;
   }
 
@@ -50,8 +48,6 @@ function getUVDimensions(mesh) {
   // Calculate dimensions
   const width = maxU - minU;
   const height = maxV - minV;
-
-  console.log(minU, maxU, minV, maxV);
 
   const smallerSide = Math.min(width, height);
 
