@@ -1367,7 +1367,7 @@ const ThreeDViewer = () => {
     let totalPrice = 13.25;
     let realPartArea;
 
-    console.log(fabricCanvases);
+    //console.log(fabricCanvases);
 
     fabricCanvases.forEach((canvas) => {
       let percentageOccupiedByUV;
@@ -1382,6 +1382,8 @@ const ThreeDViewer = () => {
           });
         }
       });
+
+      //console.log(percentageOccupiedByUV);
 
       if (canvas.part.includes("body")) {
         realPartArea = 63 * 54; //cm^2
@@ -1402,39 +1404,56 @@ const ThreeDViewer = () => {
         height: canvas.height,
         backgroundColor: "transparent",
       });
+
+      finalPrintCanvas.clear();
+
+      canvas.renderAll();
+
       copyCanvasWOBG(canvas, finalPrintCanvas);
 
-      let finalPrintPngData = finalPrintCanvas.toDataURL({ format: "png" });
-      /*
-      let finalPrintImage = new Image();
-      finalPrintImage.src = finalPrintPngData;*/
+      //console.log(finalPrintCanvas);
 
-      let ctx = finalPrintCanvas.getContext("2d");
-      let imageData = ctx.getImageData(
+      //let finalPrintPngData = canvas.toDataURL({ format: "png" });
+      //console.log(finalPrintPngData);
+      /*
+        let finalPrintImage = new Image();
+        finalPrintImage.src = finalPrintPngData;*/
+
+      const pixelRatio = window.devicePixelRatio || 1;
+
+      const ctx = finalPrintCanvas.getContext("2d");
+      const imageData = ctx.getImageData(
         0,
         0,
-        finalPrintCanvas.width,
-        finalPrintCanvas.height
+        finalPrintCanvas.width * pixelRatio,
+        finalPrintCanvas.height * pixelRatio
       );
-      let data = imageData.data;
+      const data = imageData.data;
 
       let pixelsWithPrint = 0;
+      let lastIndex;
 
-      for (let i = 0; i < data.length; i += 4) {
-        /*let index = i / 4;
-        let x = index % finalPrintCanvas.width;
-        let y = Math.floor(index / finalPrintCanvas.width);*/
+      // Adjusting for pixel density
 
-        //const pointInUV = isPointInUV(x, y, meshGeometry);
-
-        if (data[i + 3] > 10 /*&& pointInUV*/) {
-          pixelsWithPrint += 1;
+      for (let i = 3; i < data.length; i += 4) {
+        if (data[i] != 0) {
+          pixelsWithPrint++;
         }
+        lastIndex = i;
       }
+
+      ctx.putImageData(imageData, 0, 0);
+
+      let fff = finalPrintCanvas.toDataURL({ format: "png" });
+      //console.log(fff);
+
+      console.log(lastIndex);
 
       const canvasAreaPixels = canvas.width * canvas.height;
 
       const percentageOfPrint = pixelsWithPrint / canvasAreaPixels;
+
+      //console.log(pixelsWithPrint);
 
       const areaOfPrintingCm = canvasAreaCm * percentageOfPrint;
 
@@ -1443,10 +1462,13 @@ const ThreeDViewer = () => {
       const aditionalCost = tenCm2Blocks * 1.6;
 
       totalPrice += aditionalCost;
+
+      //console.log(aditionalCost);
     });
 
     animatePrice(0, totalPrice, 1000, setPrecoAnimado);
   }
+
   const animatePrice = (start, end, duration) => {
     let startTime = null;
     const step = (currentTime) => {
@@ -2112,13 +2134,13 @@ const ThreeDViewer = () => {
                   texture.offset.y = 1;
                   editingComponent.current.material.map = texture;
                 }
-                calculateArea();
+
                 setPreview(!preview);
                 setTimeout(() => {
+                  if (!preview) calculateArea();
                   closeEditor();
                 }, 200);
                 closeTabs();
-                console.log(fabricCanvases);
               }}
               style={buttonStyle}
             >
