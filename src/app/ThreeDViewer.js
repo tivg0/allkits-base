@@ -255,17 +255,20 @@ const ThreeDViewer = () => {
     console.log("dataL", dataL);
 
     try {
-      const response = await fetch("http://localhost:3030/convertSceneToText", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          sceneData: dataL,
-          clientData,
-          model: model,
-        }),
-      });
+      const response = await fetch(
+        "https://allkits-server.onrender.com/convertSceneToText",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sceneData: dataL,
+            clientData,
+            model: model,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to convert scene to JSON");
