@@ -9,6 +9,8 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { loadGLBModel } from "../../utils";
 import { fetchScene } from "./utils";
+import { db } from "@/firebase";
+import { getDoc, doc } from "firebase/firestore";
 
 const FabricCanvas = ({ params }) => {
   const canvasRefs = useRef({});
@@ -31,6 +33,22 @@ const FabricCanvas = ({ params }) => {
   const url = modelUrls[model] || null;
 
   const mesh = useRef(null);
+
+  const getBase64Data = async (docId) => {
+    try {
+      const docSnap = await getDoc(doc(db, "base64", docId));
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        return data.base64;
+      } else {
+        console.log("No such document!");
+        return null;
+      }
+    } catch (e) {
+      console.error("Error getting document:", e);
+      return null;
+    }
+  };
 
   useEffect(() => {
     const initializeCanvas = async () => {
@@ -67,8 +85,6 @@ const FabricCanvas = ({ params }) => {
               width,
               textAlign,
             }) => {
-              //console.log(`Adding text '${text}' to canvas`);
-              console.log(width)
               const textObject = new fabric.Textbox(text, {
                 fontFamily,
                 fontSize,
@@ -80,7 +96,6 @@ const FabricCanvas = ({ params }) => {
                 originY: "center",
                 textAlign,
               });
-              console.log(textObject);
               canvas.add(textObject);
             }
           );
@@ -88,31 +103,40 @@ const FabricCanvas = ({ params }) => {
 
         if (images && images.length > 0) {
           images.forEach(
-            ({ base64, top, left, width, height, scaleX, scaleY, angle, flipX }) => {
-              console.log(`Loading image from URL: ${url}`);
-              fabric.Image.fromURL(
-                base64,
-                (img) => {
-                  console.log(`Image loaded successfully: ${url}`);
-                  img.set({
-                    left,
-                    top,
-                    scaleX,
-                    scaleY,
-                    width,
-                    height,
-                    angle,
-                    originX: "center",
-                    originY: "center",
-                    flipX
-                  });
+            async ({
+              base64,
+              top,
+              left,
+              width,
+              height,
+              scaleX,
+              scaleY,
+              angle,
+              flipX,
+            }) => {
+              const base64String = await getBase64Data(base64);
+              if (base64String) {
+                fabric.Image.fromURL(
+                  base64String,
+                  (img) => {
+                    img.set({
+                      left,
+                      top,
+                      scaleX,
+                      scaleY,
+                      width,
+                      height,
+                      angle,
+                      originX: "center",
+                      originY: "center",
+                      flipX,
+                    });
 
-                  canvas.add(img);
-                },
-                (error) => {
-                  console.error("Error loading image:", error);
-                }
-              );
+                    canvas.add(img);
+                  },
+                  { crossOrigin: "anonymous" } // Add crossOrigin to handle CORS if needed
+                );
+              }
             }
           );
         }

@@ -33,8 +33,14 @@ import TextEditor from "./TextEditor";
 import { fontList } from "./fonts";
 import { useRouter } from "next/navigation";
 import { getPartName } from "@/utils/getPartName";
-import { ref, uploadString, getDownloadURL } from "firebase/storage";
-import { storage } from "@/firebase";
+import { addDoc, collection } from "firebase/firestore";
+import {
+  ref,
+  uploadString,
+  getDownloadURL,
+  uploadBytes,
+} from "firebase/storage";
+import { storage, db } from "@/firebase";
 import {
   calculateAverageUV,
   calculateUVArea,
@@ -246,23 +252,20 @@ const ThreeDViewer = () => {
 
   async function getActiveScene() {
     const dataL = await testP();
-    //console.log("dataL", dataL);
+    console.log("dataL", dataL);
 
     try {
-      const response = await fetch(
-        "https://allkits-server.onrender.com/convertSceneToText",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            sceneData: dataL,
-            clientData,
-            model: model,
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:3030/convertSceneToText", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sceneData: dataL,
+          clientData,
+          model: model,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to convert scene to JSON");
@@ -1743,6 +1746,19 @@ const ThreeDViewer = () => {
     }
   };
   //console.log(fabricCanvases);
+
+  const addDocument = async (value) => {
+    try {
+      const docRef = await addDoc(collection(db, "base64"), {
+        base64: value,
+      });
+      return docRef.id;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      return null; // Return null in case of error
+    }
+  };
+
   const testP = async () => {
     const allCanvasData = [];
 
@@ -1785,12 +1801,13 @@ const ThreeDViewer = () => {
 
           try {
             await uploadString(imageRef, imageData, "base64");
+            const base64 = await addDocument(baseImage);
 
             const downloadURL = await getDownloadURL(imageRef);
 
             canvasData.images.push({
               url: downloadURL,
-              base64: baseImage,
+              base64: base64,
               scaleX: obj.scaleX,
               scaleY: obj.scaleY,
               top: obj.top,
