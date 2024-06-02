@@ -1575,7 +1575,7 @@ const ThreeDViewer = () => {
       // Create a new textbox
       const textbox = new fabric.Textbox(text, {
         left: canvas.width * position.averageU, // Center the textbox horizontally
-        top: canvas.height * (position.averageV - 0.1),
+        top: canvas.height * (position.averageV + 0.2),
         originX: "center",
         originY: "center",
         width: scaleF * canvas.width * 0.5,
