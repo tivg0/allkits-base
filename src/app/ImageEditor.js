@@ -156,7 +156,7 @@ const ImageEditor = forwardRef(
           fabricImage.set({
             selectable: true,
             left: fabricCanvas.current.width * position.averageU,
-            top: fabricCanvas.current.height * (position.averageV - 0.1),
+            top: fabricCanvas.current.height * (position.averageV + 0.2),
             originX: "center",
             originY: "center",
             scaleX: scale * 0.65,

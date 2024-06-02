@@ -22,8 +22,8 @@ const loadGLBModel = (path, scenario, setIsLoading, onNamesLoaded) => {
       gltf.scene.position.set(0, -1, 0);
       gltf.scene.traverse(function (child) {
         if (child.isMesh) {
-          child.material.normalMap = normalMap;
-          child.material.roughnessMap = roughnessMap;
+          //child.material.normalMap = normalMap;
+          //child.material.roughnessMap = roughnessMap;
           child.material.needsUpdate = true;
           child.castShadow = true;
           child.receiveShadow = true;
@@ -176,14 +176,15 @@ const handleImage = (e, fabricCanvas) => {
     imgObj.src = e.target.result;
     imgObj.onload = function () {
       const fabricImage = new fabric.Image(imgObj);
-      const scale = Math.min(
-        fabricCanvas.current.width / fabricImage.width,
-        fabricCanvas.current.height / fabricImage.height
-      ) * scaleF;
+      const scale =
+        Math.min(
+          fabricCanvas.current.width / fabricImage.width,
+          fabricCanvas.current.height / fabricImage.height
+        ) * scaleF;
       fabricImage.set({
         selectable: true,
         left: fabricCanvas.current.width * position.averageU,
-        top: fabricCanvas.current.height * (position.averageV - 0.1),
+        top: fabricCanvas.current.height * (position.averageV + 0.2),
         originX: "center",
         originY: "center",
         scaleX: scale * 0.65,

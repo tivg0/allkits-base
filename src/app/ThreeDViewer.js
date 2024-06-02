@@ -322,8 +322,8 @@ const ThreeDViewer = () => {
     scene.add(directionalLight);
     scene.add(directionalLight2);
 
-    const url =
-      model == 1
+    const url = "capaTlm.glb";
+    /*model == 1
         ? "/hoodieTest.glb"
         : model == 2
         ? "/1.glb"
@@ -333,7 +333,7 @@ const ThreeDViewer = () => {
         ? "./3.glb"
         : model == 5
         ? "./4.glb"
-        : null;
+        : null;*/
 
     if (model == 1 || model == 2 || model == 3 || model == 4 || model == 5)
       loadGLBModel(url, scene, setIsLoading, setObjectNames);
@@ -742,8 +742,17 @@ const ThreeDViewer = () => {
           )[0];
         orbit.enabled = false;
         if (intersection != null) {
+          if (
+            intersection.uv.x < 0 ||
+            intersection.uv.x > 1 ||
+            intersection.uv.y < 0 ||
+            intersection.uv.y > 1
+          )
+            return;
+
           currentUVCursor.x = intersection.uv.x * fabricCanvas.current.width;
           currentUVCursor.y = intersection.uv.y * fabricCanvas.current.height;
+
           //fabricCanvas.current.renderAll();
           //updateTexture();
 
@@ -1713,12 +1722,12 @@ const ThreeDViewer = () => {
       modelos.current.style.transition = "all 0.4s ease-in-out";
       modelos.current.style.opacity = "0";
     }
-
+    /*
     if (titleModels) {
       titleModels.current.style.marginTop = "-100%";
       titleModels.current.style.opacity = "0";
       titleModels.current.style.transition = "all 1.2s ease-in-out";
-    }
+    }*/
   };
 
   const [allCanvasData, setAllCanvasData] = useState([]);
@@ -2237,7 +2246,39 @@ const ThreeDViewer = () => {
       {escolheBtn == false && (
         <div ref={backgroundMagic} className={styles.modelsZone}>
           <div ref={modelosZone} className={styles.modelsList}>
-            <h1
+            <button
+              onClick={() => {
+                magicLoading();
+                setTimeout(() => {
+                  simulateCenterClick();
+                  setEscolheBtn(true);
+                }, 1610);
+                setModel("5");
+
+                setTutorial(true);
+              }}
+              style={{
+                border: "none",
+                backgroundColor: "#eee",
+                paddingLeft: "20px",
+                paddingRight: "20px",
+                paddingTop: "12px",
+                paddingBottom: "12px",
+                borderRadius: "100px",
+                color: "#111",
+                fontWeight: "500",
+                fontSize: "20px",
+                textAlign: "center",
+                letterSpacing: "-0.3px",
+                alignSelf: "center",
+                cursor: "pointer",
+                width: "130px",
+              }}
+              ref={modelos}
+            >
+              Começar
+            </button>
+            {/* <h1
               ref={titleModels}
               className={styles.title}
               style={{
@@ -2346,7 +2387,7 @@ const ThreeDViewer = () => {
                   height={150}
                 />
               </button>
-            </div>
+              </div>*/}
           </div>
         </div>
       )}

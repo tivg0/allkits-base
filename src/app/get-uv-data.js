@@ -8,12 +8,20 @@ function calculateAverageUV(mesh) {
 
   let totalU = 0;
   let totalV = 0;
-  const count = uvAttribute.count;
+  let count = 0;
 
   // Sum all UV coordinates
-  for (let i = 0; i < count; i++) {
-    totalU += uvAttribute.getX(i);
-    totalV += uvAttribute.getY(i);
+  for (let i = 0; i < uvAttribute.count; i++) {
+    if (
+      uvAttribute.getX(i) < 1 &&
+      uvAttribute.getX(i) > 0 &&
+      uvAttribute.getY(i) < 1 &&
+      uvAttribute.getY(i) > 0
+    ) {
+      totalU += uvAttribute.getX(i);
+      totalV += uvAttribute.getY(i);
+      count++;
+    }
   }
 
   // Calculate averages
