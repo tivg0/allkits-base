@@ -826,7 +826,7 @@
   }
 
   .modelsList {
-    display: block;
+    display: flex;
     margin: auto;
     width: 50%;
     border-radius: 25px;

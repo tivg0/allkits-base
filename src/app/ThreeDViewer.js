@@ -77,7 +77,7 @@ const ThreeDViewer = () => {
 
   const [fabricCanvases, setFabricCanvases] = useState([]);
 
-  const [parentName, setParentName] = useState('');;
+  const [parentName, setParentName] = useState("");
 
   let filename;
 
@@ -185,7 +185,6 @@ const ThreeDViewer = () => {
 
   let hdriRef = useRef(null);
 
-
   //load fabric canvas--------------------------------------------------------------------------------------------
   useEffect(() => {
     fabricCanvas.current = new fabric.Canvas("fabric-canvas", {
@@ -203,17 +202,16 @@ const ThreeDViewer = () => {
     texture.offset.y = 1;
     setFabricTexture(texture);
 
-    const hdriTexture = hdri('/country_club_4k.exr');
+    const hdriTexture = hdri("/country_club_4k.exr");
     hdriRef.current = hdriTexture;
 
     return () => fabricCanvas.current.dispose();
   }, [canvasSize]);
 
   async function getActiveScene() {
-   
     let groupToExport;
 
-    sceneRef.current.children.forEach(child => {
+    sceneRef.current.children.forEach((child) => {
       if (child instanceof THREE.Group) {
         groupToExport = child;
       }
@@ -223,9 +221,11 @@ const ThreeDViewer = () => {
 
     let objectToExport = {};
 
-    groupToExport.children.forEach(child => {
-      objectToExport[`${child.name}`] =  child.userData.canva ? JSON.stringify(child.userData.canva) : null;
-    })
+    groupToExport.children.forEach((child) => {
+      objectToExport[`${child.name}`] = child.userData.canva
+        ? JSON.stringify(child.userData.canva)
+        : null;
+    });
 
     objectToExport["file"] = filename;
 
@@ -289,7 +289,8 @@ const ThreeDViewer = () => {
     const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
     scene.add(hemisphereLight);
 
-    if (hdriRef.current) scene.environment = hdriRef.current; scene.environmentIntensity = 0.2;
+    if (hdriRef.current) scene.environment = hdriRef.current;
+    scene.environmentIntensity = 0.2;
 
     const directionalLight = new THREE.DirectionalLight(0xf4f4f4, 1.5); // luz para se ver à frente
     const directionalLight2 = new THREE.DirectionalLight(0xffffff, 1.5); // luz para se ver à frente
@@ -301,10 +302,8 @@ const ThreeDViewer = () => {
     scene.add(directionalLight);
     scene.add(directionalLight2);
 
-
-
-    const url =
-      model == 1
+    const url = "/capaTlm.glb";
+    /*model == 1
         ? "/mugFinal.glb"
         : model == 2
         ? "/capaTlm.glb"
@@ -314,9 +313,9 @@ const ThreeDViewer = () => {
         ? "./3.glb"
         : model == 5
         ? "./4.glb"
-        : null;
+        : null;*/
 
-        filename = url;
+    filename = url;
 
     if (model == 1 || model == 2 || model == 3 || model == 4 || model == 5)
       loadGLBModel(url, scene, setIsLoading, setObjectNames);
@@ -376,7 +375,7 @@ const ThreeDViewer = () => {
         initialMouse
       );
 
-      console.log(intersections)
+      console.log(intersections);
 
       if (
         editingComponent.current &&
@@ -667,13 +666,11 @@ const ThreeDViewer = () => {
         handleInteractionStart
       );
 
-      if (editingComponent.current)
-      {
+      if (editingComponent.current) {
         setEditingComponentHTML(editingComponent.current.name);
-        console.log(editingComponent.current.parent.name)
+        console.log(editingComponent.current.parent.name);
         setParentName(editingComponent.current.parent.name);
-      }
-      else setEditingComponentHTML("hoodInCOR");
+      } else setEditingComponentHTML("hoodInCOR");
       setParentName("hoodInCor");
     };
 
@@ -1238,7 +1235,7 @@ const ThreeDViewer = () => {
       fabricCanvas.current.off("object:rotating", updateTexture);
       fabricCanvas.current.off("object:added", updateTexture);
     };
-  }, [fabricTexture, model]);
+  }, [model]);
 
   // //calcular area imprimida
   const calcularEImprimirAreasOcupadas = () => {
@@ -1411,7 +1408,7 @@ const ThreeDViewer = () => {
     const canvas = fabricCanvasRef.current;
     if (!canvas) return;
 
-    console.log('yoyoyoyoyo')
+    console.log("yoyoyoyoyo");
 
     const updateActiveObject = () => {
       const activeObj = canvas.getActiveObject();
@@ -1504,16 +1501,16 @@ const ThreeDViewer = () => {
       backgroundMagic.current.style.transition = "all 1.6s ease-in-out";
     }
 
-    if (modelos) {
+    /*if (modelos) {
       modelos.current.style.gap = "1000px";
       modelos.current.style.transition = "all 1.6s ease-in-out";
-    }
+    }*/
 
-    if (titleModels) {
+    /*if (titleModels) {
       titleModels.current.style.marginTop = "-100%";
       titleModels.current.style.opacity = "0";
       titleModels.current.style.transition = "all 1.6s ease-in-out";
-    }
+    }*/
   };
 
   const logAllObjectsFromAllCanvases = async () => {
@@ -1891,7 +1888,7 @@ const ThreeDViewer = () => {
       {escolheBtn == false && (
         <div ref={backgroundMagic} className={styles.modelsZone}>
           <div ref={modelosZone} className={styles.modelsList}>
-            <h1
+            {/*<h1
               ref={titleModels}
               className={styles.title}
               style={{
@@ -1902,8 +1899,38 @@ const ThreeDViewer = () => {
               }}
             >
               ESCOLHE O TEU MODELO
-            </h1>
-            <div ref={modelos} className={styles.modelosBtns}>
+            </h1>*/}
+            <button
+              onClick={() => {
+                magicLoading();
+                setTimeout(() => {
+                  simulateCenterClick();
+                  setEscolheBtn(true);
+                }, 10);
+                setModel(1);
+                setTutorial(true);
+              }}
+              style={{
+                border: "none",
+                backgroundColor: "#eee",
+                paddingLeft: "20px",
+                paddingRight: "20px",
+                paddingTop: "12px",
+                paddingBottom: "12px",
+                borderRadius: "100px",
+                color: "#111",
+                fontWeight: "500",
+                fontSize: "20px",
+                textAlign: "center",
+                letterSpacing: "-0.3px",
+                justifySelf: "center",
+                cursor: "pointer",
+              }}
+              ref={modelos}
+            >
+              Começar
+            </button>
+            {/* <div ref={modelos} className={styles.modelosBtns}>
               <button
                 className={styles.modeloBtn}
                 onClick={() => {
@@ -2000,7 +2027,7 @@ const ThreeDViewer = () => {
                   height={150}
                 />
               </button>
-            </div>
+              </div>*/}
           </div>
         </div>
       )}
