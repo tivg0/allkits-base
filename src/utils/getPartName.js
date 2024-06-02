@@ -12,6 +12,7 @@ const partNames = {
   elasticoC: "Elástico Central",
   elasticoL: "Elástico Esquerdo",
   elasticoR: "Elástico Direito",
+  capaMIX: "Capa",
 };
 
 export const getPartName = (filename) => {

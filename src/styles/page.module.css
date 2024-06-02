@@ -827,6 +827,7 @@
 
   .modelsList {
     display: flex;
+    flex-direction: column;
     margin: auto;
     width: 50%;
     border-radius: 25px;

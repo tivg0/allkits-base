@@ -1923,8 +1923,9 @@ const ThreeDViewer = () => {
                 fontSize: "20px",
                 textAlign: "center",
                 letterSpacing: "-0.3px",
-                justifySelf: "center",
+                alignSelf: "center",
                 cursor: "pointer",
+                width: "130px",
               }}
               ref={modelos}
             >
