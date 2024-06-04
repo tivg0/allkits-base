@@ -11,6 +11,8 @@ const partNames = {
     argolas: "Argolas",
     corda: "Cordões",
     elasticoC: "Elástico Central",
+    elasticoL: "Elástico Esquerdo",
+    elasticoR: "Elástico Direito",
     punhoL: "Elástico Esquerdo",
     punhoR: "Elástico Direito",
   },
@@ -26,8 +28,10 @@ const partNames = {
     argolas: "Rings",
     corda: "Drawstrings",
     elasticoC: "Central Elastic",
-    punhoL: "Left Elastic",
-    punhoR: "Right Elastic",
+    elasticoL: "Left Elastic",
+    elasticoR: "Right Elastic",
+    punhoL: "Elástico Esquerdo",
+    punhoR: "Elástico Direito",
   },
 };
 
