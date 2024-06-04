@@ -1,9 +1,10 @@
-import { SketchPicker } from "react-color";
 import React, { useRef, useState, useEffect, forwardRef } from "react";
 import styles from "@/styles/page.module.css";
+import { useLanguage } from "@/context/ContentContext";
 const ColorEditor = forwardRef(({ setBGColor, closeTabs }, ref) => {
+  const { content } = useLanguage();
+
   const [heightWindow, setHeightWindow] = useState(292);
-  const [color, setColor] = useState("#fff"); // Initial color state
 
   // This example assumes you have a function that's called when the color changes
   const onColorChange = (color) => {
@@ -35,7 +36,7 @@ const ColorEditor = forwardRef(({ setBGColor, closeTabs }, ref) => {
               &#8592;
             </p>
           </button>
-          <p className={styles.trititle}>Editar cor</p>
+          <p className={styles.trititle}>{content.editColor}</p>
           <label style={{ opacity: 0 }} className={styles.fileUploadLabealAdd}>
             <p
               style={{

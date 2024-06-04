@@ -11,8 +11,10 @@ import { loadGLBModel } from "../../utils";
 import { fetchScene } from "./utils";
 import { db } from "@/firebase";
 import { getDoc, doc } from "firebase/firestore";
+import { useLanguage } from "@/context/ContentContext";
 
 const FabricCanvas = ({ params }) => {
+  const { content } = useLanguage();
   const canvasRefs = useRef({});
   const containerRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -245,7 +247,7 @@ const FabricCanvas = ({ params }) => {
       .writeText(`http://localhost:3000/visualize/${params.id}`)
       .then(
         () => {
-          alert("Link de pré-visualização copiado com sucesso!"); // Optionally show a message
+          alert(content.successCopy); // Optionally show a message
         },
         (err) => {
           console.error("Não foi possível copiar o link: ", err); // Error handling
@@ -258,9 +260,7 @@ const FabricCanvas = ({ params }) => {
       <div ref={containerRef}></div>
       <button onClick={copyToClipboard} className={styles.copiaTextMain}>
         <NextImage src={copyIcon} width={17} height={17} />
-        <p className={styles.copiaText}>
-          Copia o link para poderes partilhar a tua obra!
-        </p>
+        <p className={styles.copiaText}>{content.copyLink}</p>
       </button>
       <div className={styles.poweredTextMain}>
         <p className={styles.poweredText}>Powered by</p>

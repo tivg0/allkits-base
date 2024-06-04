@@ -4,6 +4,7 @@ import { fontList } from "./fonts";
 import deleteIcon from "@/imgs/binIcon.png";
 import NextImage from "next/image";
 import { getUVDimensions } from "./get-uv-data";
+import { useLanguage } from "@/context/ContentContext";
 
 const TextEditor = forwardRef(
   (
@@ -35,6 +36,8 @@ const TextEditor = forwardRef(
 
     const [heightWindow, setHeightWindow] = useState(292);
     const [deleteBtn, setDeleteBtn] = useState(false);
+
+    const { content } = useLanguage();
 
     useEffect(() => {
       let scaleF = getUVDimensions(editingComponent.current) * 0.5;
@@ -188,10 +191,10 @@ const TextEditor = forwardRef(
                 &#8592;
               </p>
             </button>
-            <p className={styles.trititle}>Editar Texto</p>
+            <p className={styles.trititle}>{content.editText}</p>
             {fabricCanvas.current && (
               <label
-                onClick={() => addTextbox("Seu texto aqui")} // Use a function call to ensure parameters are passed correctly
+                onClick={() => addTextbox(content.yourTextHere)} // Use a function call to ensure parameters are passed correctly
                 className={styles.fileUploadLabealAdd}
               >
                 <p
@@ -220,7 +223,7 @@ const TextEditor = forwardRef(
                   className={styles.input_Trash}
                 >
                   <input
-                    placeholder="Escreva o seu texto"
+                    placeholder={content.writeYourText}
                     className={styles.inputText}
                     style={{ width: "90%" }}
                     value={text}
@@ -248,7 +251,7 @@ const TextEditor = forwardRef(
                           fontFamily: "Inter",
                         }}
                       >
-                        Escolha a sua fonte
+                        {content.chooseYourFont}
                       </p>
                       <div>
                         <select
@@ -284,7 +287,7 @@ const TextEditor = forwardRef(
                           marginLeft: 5,
                         }}
                       >
-                        Cor do texto
+                        {content.textColor}
                       </p>
                       <div>
                         <select
@@ -296,27 +299,29 @@ const TextEditor = forwardRef(
                             updateTexture(); // Aplica a nova fonte ao objeto ativo
                           }}
                         >
-                          <option value="#feff00">Amerelo Claro</option>
-                          <option value="#88bcec">Azul</option>
-                          <option value="#f8c404">Amarelo</option>
-                          <option value="#000000">Preto</option>
-                          <option value="#90240c">Castanho Avermelhado</option>
+                          <option value="#feff00">{content.lightYellow}</option>
+                          <option value="#88bcec">{content.blue}</option>
+                          <option value="#f8c404">{content.yellow}</option>
+                          <option value="#000000">{content.black}</option>
+                          <option value="#90240c">
+                            {content.reddishBrown}
+                          </option>
 
-                          <option value="#90240c">Verde</option>
-                          <option value="#f0540c">Vermelho Claro</option>
-                          <option value="#1004d4">Azul Escuro</option>
-                          <option value="#08a4d4">Azul Água</option>
-                          <option value="#600c14">Castanho</option>
+                          <option value="#90240c">{content.green}</option>
+                          <option value="#f0540c">{content.lightRed}</option>
+                          <option value="#1004d4">{content.darkBlue}</option>
+                          <option value="#08a4d4">{content.aquaBlue}</option>
+                          <option value="#600c14">{content.brown}</option>
 
-                          <option value="#48cc3c">Verde Claro</option>
-                          <option value="#d8d49c">Dourado-Bege</option>
-                          <option value="#c8c4c4">Cinza</option>
-                          <option value="#082c0c">Verde Escuro</option>
-                          <option value="#080c1c">Azul-Preto</option>
+                          <option value="#48cc3c">{content.green}</option>
+                          <option value="#d8d49c">{content.beigeGold}</option>
+                          <option value="#c8c4c4">{content.gray}</option>
+                          <option value="#082c0c">{content.darkGreen}</option>
+                          <option value="#080c1c">{content.blueBlack}</option>
 
-                          <option value="#d02414">Vermelho</option>
-                          <option value="#68147c">Violeta</option>
-                          <option value="#ffffff">Branco</option>
+                          <option value="#d02414">{content.red}</option>
+                          <option value="#68147c">{content.violet}</option>
+                          <option value="#ffffff">{content.white}</option>
                         </select>
                       </div>
                     </div>
@@ -332,7 +337,7 @@ const TextEditor = forwardRef(
                           fontFamily: "Inter",
                         }}
                       >
-                        Alinhamento
+                        {content.alignment}
                       </p>
                       <div className={styles.alignBtns}>
                         <button
@@ -396,7 +401,7 @@ const TextEditor = forwardRef(
                           fontFamily: "Inter",
                         }}
                       >
-                        Tamanho
+                        {content.size}
                       </p>
                       <div>
                         <input
@@ -415,7 +420,7 @@ const TextEditor = forwardRef(
             </>
           ) : (
             <div className={styles.noText}>
-              <p className={styles.trititle}>Adicione texto para começar</p>
+              <p className={styles.trititle}>{content.addTextToBegin}</p>
             </div>
           )}
         </div>

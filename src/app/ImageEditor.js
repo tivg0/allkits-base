@@ -10,6 +10,7 @@ import deleteIcon from "@/imgs/binIcon.png";
 import mirrorIcon from "@/imgs/mirrorIcon.png";
 import NextImage from "next/image";
 import { calculateAverageUV, getUVDimensions } from "./get-uv-data";
+import { useLanguage } from "@/context/ContentContext";
 const ImageEditor = forwardRef(
   (
     {
@@ -30,6 +31,8 @@ const ImageEditor = forwardRef(
     const [imgTest, setimgTeste] = useState(null);
     const [picker, setPicker] = useState(false);
     const [removeBtn, setRemoveBtn] = useState(false);
+
+    const { content } = useLanguage();
 
     const initialHeight = window.innerWidth <= 750 ? 120 : 292;
     const [heightWindow, setHeightWindow] = useState(initialHeight);
@@ -394,7 +397,7 @@ const ImageEditor = forwardRef(
                 &#8592;
               </p>
             </button>
-            <p className={styles.trititle}>Editar Imagem</p>
+            <p className={styles.trititle}>{content.editImage}</p>
             <label className={styles.fileUploadLabealAdd}>
               <p
                 style={{
@@ -440,9 +443,11 @@ const ImageEditor = forwardRef(
                             />
                           </div>
                           <div>
-                            <p className={styles.titleText}>Remover Cor</p>
+                            <p className={styles.titleText}>
+                              {content.removeColor}
+                            </p>
                             <p className={styles.infoText}>
-                              Remove cores das tuas imagens.
+                              {content.removeColorDesc}
                             </p>
                           </div>
                         </button>
@@ -460,9 +465,11 @@ const ImageEditor = forwardRef(
                             />
                           </div>
                           <div>
-                            <p className={styles.titleText}>Espelhar Imagem</p>
+                            <p className={styles.titleText}>
+                              {content.mirrorImage}
+                            </p>
                             <p className={styles.infoText}>
-                              Vê a tua imagem espelhada
+                              {content.mirrorImageDesc}
                             </p>
                           </div>
                         </button>
@@ -538,9 +545,7 @@ const ImageEditor = forwardRef(
                   }}
                 />
                 <div className={styles.noImage}>
-                  <p className={styles.trititle}>
-                    Arraste uma imagem para começar
-                  </p>
+                  <p className={styles.trititle}>{content.dragImgToStart}</p>
                 </div>
               </div>
             )}
@@ -573,7 +578,7 @@ const ImageEditor = forwardRef(
                     }}
                     className={styles.trititle}
                   >
-                    Clique em cima da cor
+                    {content.clickColor}
                   </p>
                 </div>
               )}
@@ -609,7 +614,7 @@ const ImageEditor = forwardRef(
                         boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
                       }}
                     ></div>
-                    Remover Cor
+                    {content.removeColor}
                   </div>
                 </button>
               </div>

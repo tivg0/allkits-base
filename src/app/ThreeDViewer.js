@@ -46,8 +46,10 @@ import {
   calculateUVArea,
   getUVDimensions,
 } from "@/app/get-uv-data";
+import { useLanguage } from "@/context/ContentContext";
 
 const ThreeDViewer = () => {
+  const { content, language } = useLanguage();
   //qunado da select image fica tudo azul do componente preciso fazer um if ou tirar o azul por enquanto
 
   //zonas que deixa de dar para pegar na imagem de novo tem a ver com a area de intersecao e preciso fazer alguma diretamente prop. entre a tolerancia
@@ -1544,7 +1546,7 @@ const ThreeDViewer = () => {
       setTextEditor(true);
       // onClick={() => addTextbox("Seu texto aqui")} // Use a function call to ensure parameters are passed correctly
       if (!activeObject || activeObject.type == "image") {
-        addTextbox("Seu texto aqui");
+        addTextbox(content.yourTextHere);
       }
     }
   };
@@ -1936,9 +1938,9 @@ const ThreeDViewer = () => {
               </button>
               <div>
                 <p className={styles.trititle}>
-                  A Costumizar{" "}
+                  {content.customizing}{" "}
                   <b className={styles.subtitle}>
-                    {getPartName(editingComponent.current.name)}
+                    {getPartName(editingComponent.current.name, language)}
                     {/* {editingComponent.current.name} */}
                   </b>
                 </p>
@@ -1967,10 +1969,8 @@ const ThreeDViewer = () => {
                       />
                     </div>
                     <div>
-                      <p className={styles.titleText}>Cor</p>
-                      <p className={styles.infoText}>
-                        Dá um toque final ao teu produto.
-                      </p>
+                      <p className={styles.titleText}>{content.color}</p>
+                      <p className={styles.infoText}>{content.colorDesc}</p>
                     </div>
                   </button>
                 ) : (
@@ -1997,9 +1997,9 @@ const ThreeDViewer = () => {
                             />
                           </div>
                           <div>
-                            <p className={styles.titleText}>Imagem</p>
+                            <p className={styles.titleText}>{content.image}</p>
                             <p className={styles.infoText}>
-                              Remover cores e alterar os atributos.
+                              {content.imageDesc}
                             </p>
                           </div>
                         </button>
@@ -2016,9 +2016,9 @@ const ThreeDViewer = () => {
                             />
                           </div>
                           <div>
-                            <p className={styles.titleText}>Texto</p>
+                            <p className={styles.titleText}>{content.text}</p>
                             <p className={styles.infoText}>
-                              Cor, fontes, tamanhos e alinhamentos.
+                              {content.textDesc}
                             </p>
                           </div>
                         </button>
@@ -2036,9 +2036,9 @@ const ThreeDViewer = () => {
                             />
                           </div>
                           <div>
-                            <p className={styles.titleText}>Cor</p>
+                            <p className={styles.titleText}>{content.color}</p>
                             <p className={styles.infoText}>
-                              Dá um toque final ao teu produto.
+                              {content.colorDesc}
                             </p>
                           </div>
                         </button>
@@ -2075,7 +2075,7 @@ const ThreeDViewer = () => {
                         style={{ marginTop: 75, textAlign: "center" }}
                         className={styles.infoText}
                       >
-                        Não é possível personalizar esta área
+                        {content.noEditPossible}
                       </p>
                     )}
                   </>
@@ -2118,8 +2118,8 @@ const ThreeDViewer = () => {
                 clientData.email != "" &&
                 clientData.phone != "" &&
                 clientData.name != ""
-                  ? "Aguarde"
-                  : "Continuar"}
+                  ? content.wait
+                  : content.continue}
               </button>
             )}
           </div>
@@ -2179,10 +2179,10 @@ const ThreeDViewer = () => {
                     &#8592;
                   </p>
                 ) : (
-                  "Voltar à Personalização"
+                  content.goBackCustom
                 )
               ) : (
-                "Concluído"
+                content.concluded
               )}
             </button>
           </div>
@@ -2247,7 +2247,7 @@ const ThreeDViewer = () => {
                 color: "#fff",
               }}
             >
-              ESCOLHE O TEU MODELO
+              {content.chooseYourModel}
             </h1>
             <div ref={modelos} className={styles.modelosBtns}>
               <button
@@ -2364,7 +2364,7 @@ const ThreeDViewer = () => {
                     color: "#fff",
                   }}
                 >
-                  PREÇO TOTAL ESTIMADO (POR UN.)
+                  {content.estimatedPrice}
                 </p>
 
                 <h1
@@ -2392,12 +2392,12 @@ const ThreeDViewer = () => {
                     color: "#8c8c8c",
                   }}
                 >
-                  INFORMAÇÕES DE ENVIO
+                  {content.shippingInfo}
                 </h1>
                 <div className={styles.inputsForm}>
                   <input
                     className={styles.inputForm}
-                    placeholder="Nome"
+                    placeholder={content.shippingName}
                     name="name"
                     value={clientData.name}
                     onChange={handleChange}
@@ -2411,7 +2411,7 @@ const ThreeDViewer = () => {
                   />
                   <input
                     className={styles.inputForm}
-                    placeholder="Telemóvel"
+                    placeholder={content.shippingPhone}
                     name="phone"
                     value={clientData.phone}
                     onChange={handleChange}
@@ -2421,14 +2421,12 @@ const ThreeDViewer = () => {
             </>
           ) : (
             <div className={styles.successOrderMain}>
-              <h1 className={styles.successOrderText}>
-                Personalização submetida com sucesso
-              </h1>
+              <h1 className={styles.successOrderText}>{content.success}</h1>
               <p
                 style={{ marginTop: -10, marginBottom: 35 }}
                 className={styles.successOrderSubText}
               >
-                Iremos entrar em contacto consigo muito brevemente
+                {content.successDesc}
               </p>
               <div className={styles.finalBtns}>
                 {docId != "" ? (
@@ -2438,12 +2436,12 @@ const ThreeDViewer = () => {
                     // target={"_blank"}
                   >
                     <NextImage src={shareIcon} width={20} height={20} />
-                    <p>Abrir link de pré-visualização</p>
+                    <p>{content.openLink}</p>
                   </button>
                 ) : (
                   <button className={styles.btnBuildLink}>
                     <NextImage src={buildingIcon} width={20} height={20} />
-                    <p>A criar o teu link de pré-visualização</p>
+                    <p>{content.creatingLink}</p>
                   </button>
                 )}
                 <Link
@@ -2451,7 +2449,7 @@ const ThreeDViewer = () => {
                   style={{ textDecoration: "none" }}
                   href={"https://www.allkits.pt"}
                 >
-                  Voltar à Allkits
+                  {content.goBack}
                 </Link>
               </div>
             </div>

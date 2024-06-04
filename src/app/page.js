@@ -7,15 +7,18 @@ import styles from "../styles/page.module.css";
 import logo from "../imgs/logoAllkits.png";
 import logoStep from "../../public/logoStepTransparent.png";
 import ImageEditor from "./ImageEditor";
+import { useLanguage } from "@/context/ContentContext";
 
 const Home = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const { language, content, setLanguage } = useLanguage();
+
   return (
     <div>
       <Head>
-        <title>Allkits Simulator</title>
+        <title>Allkits {content.simuladorTitle}</title>
         {/* <meta name="description" content="Your 3D Sweat Design Simulator" /> */}
         <link rel="icon" href="/favicon.ico" />
 
@@ -27,7 +30,7 @@ const Home = () => {
       <div className={styles.titleZone}>
         <div className={styles.titleStruct}>
           <NextImage src={logo} width={80} height={35} />
-          <p className={styles.desc}>Simulator</p>
+          <p className={styles.desc}>{content.simuladorTitle}</p>
         </div>
         <div className={styles.poweredTextMainHeader}>
           <p className={styles.poweredText}>Powered by</p>
@@ -38,6 +41,14 @@ const Home = () => {
             height={45}
           />
         </div>
+        {/* <div style={{ marginTop: 50 }}>
+          <button onClick={() => setLanguage("pt")}>
+            PT {language == "pt" && "active"}
+          </button>
+          <button onClick={() => setLanguage("en")}>
+            EN {language == "en" && "active"}
+          </button>
+        </div> */}
       </div>
 
       <main
