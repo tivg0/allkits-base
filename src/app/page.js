@@ -41,14 +41,20 @@ const Home = () => {
             height={45}
           />
         </div>
-        {/* <div style={{ marginTop: 50 }}>
-          <button onClick={() => setLanguage("pt")}>
-            PT {language == "pt" && "active"}
+        <div className={styles.buttonsLang}>
+          <button
+            style={{ fontWeight: language == "pt" ? "bold" : 400 }}
+            onClick={() => setLanguage("pt")}
+          >
+            PT
           </button>
-          <button onClick={() => setLanguage("en")}>
-            EN {language == "en" && "active"}
+          <button
+            style={{ fontWeight: language == "en" ? "bold" : 400 }}
+            onClick={() => setLanguage("en")}
+          >
+            EN
           </button>
-        </div> */}
+        </div>
       </div>
 
       <main

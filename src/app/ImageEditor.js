@@ -551,7 +551,7 @@ const ImageEditor = forwardRef(
             )}
 
             <>
-              {activeObject && activeObject.type == "image" && picker && (
+              {/* {activeObject && activeObject.type == "image" && picker && (
                 <div
                   style={{
                     opacity: opacityHint,
@@ -581,7 +581,7 @@ const ImageEditor = forwardRef(
                     {content.clickColor}
                   </p>
                 </div>
-              )}
+              )} */}
             </>
 
             {picker ? (

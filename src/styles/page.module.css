@@ -1099,10 +1099,49 @@
   .poweredTextMainHeader {
     position: fixed;
     left: 50px;
+    bottom: 25px;
     margin-top: -10px;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .buttonsLang {
+    position: fixed;
+    left: 45px;
+    bottom: 75px;
+    margin-top: -10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    background-color: #eee;
+    border: 1px solid #e8e8e9;
+    border-radius: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .buttonsLang button {
+    padding: 5px;
+    border-radius: 7px;
+    color: #333;
+    font-family: "Inter";
+    letter-spacing: -0.4px;
+    font-size: 13px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    transition: all 0.3s ease-in-out;
+    border-radius: 100px;
+    cursor: pointer;
+  }
+
+  .buttonsLang button:hover {
+    opacity: 0.7;
+    border: 1px solid #8c8c8c;
   }
 
   .poweredText {
@@ -1165,11 +1204,22 @@
   .poweredTextMainHeader {
     position: fixed;
     left: 17px;
+    bottom: 10px;
     margin-top: -22px;
     display: flex;
     align-items: center;
     justify-content: center;
     scale: 0.84;
+  }
+
+  .buttonsLang {
+    top: 87px;
+    bottom: auto;
+    left: 25px;
+    padding: 0px;
+    border-radius: 7px;
+    padding-left: 7px;
+    padding-right: 7px;
   }
 
   .copiaTextMain {
